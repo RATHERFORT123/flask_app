@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}Brand Comparison{% endblock %}
+{% block content %}
+
+<style>
+  /* Button loader style */
+  .btn-loader {
+    display: inline-flex;
+    align-items: center;
+  }
+</style>
+
+<div class="box p-4 bg-white mb-4">
+  <h3 class="fw-bold mb-3">Brand Comparison</h3>
+
+  <div class="row g-3 align-items-end">
+
+    <!-- Your Brand -->
+    <div class="col-md-3">
+      <label class="form-label">Your Brand</label>
+      <select id="userBrand" class="form-select">
+        <option value="">Select</option>
+      </select>
+    </div>
+
+    <!-- Competitor Brand -->
+    <div class="col-md-3">
+      <label class="form-label">Competitor Brand</label>
+      <select id="brand_search" style="width:100%"></select>
+    </div>
+
+    <!-- Month -->
+    <div class="col-md-3">
+      <label class="form-label">Month</label>
+      <input type="month" id="compareMonth" class="form-control">
+    </div>
+
+    <!-- 🔥 BUTTON UPDATED (ONLY HTML CHANGE) -->
+    <div class="col-md-3">
+      <button id="compareBtn" class="btn btn-primary w-100">
+        <span class="btn-text">Compare</span>
+        <span class="btn-loader d-none">
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Loading
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="compareCards" class="row g-3 mt-4"></div>
+
+<!-- JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<script>
+  $(document).ready(function () {
+
+    // Load user brands
+    fetch("/user/api/brands/user")
+      .then(r => r.json())
+      .then(data => {
+        const sel = $("#userBrand");
+        data.forEach(b => sel.append(`<option value="${b}">${b}</option>`));
+      });
+
+    // Competitor brand (Select2)
+    $('#brand_search').select2({
+      placeholder: "Search competitor brand",
+      allowClear: true,
+      minimumInputLength: 0,
+      ajax: {
+        url: "/user/api/brands/select2",
+        dataType: "json",
+        delay: 300,
+        data: params => ({ term: params.term || "" }),
+        processResults: data => ({ results: data })
+      }
+    });
+
+    $('#compareBtn').on('click', function () {
+
+      const brand1 = $('#userBrand').val();
+      const brand2 = $('#brand_search').val();
+      const month = $('#compareMonth').val();
+
+      if (!brand1 || !brand2 || !month) {
+        alert("Select all fields");
+        return;
+      }
+
+      const btn = $('#compareBtn');
+
+      /* 🔥 SHOW LOADER (ADDED) */
+      btn.prop('disabled', true);
+      btn.removeClass('btn-primary').addClass('btn-success');
+      btn.find('.btn-text').addClass('d-none');
+      btn.find('.btn-loader').removeClass('d-none');
+
+      fetch(`/user/api/analytics/brand-compare?brand1=${brand1}&brand2=${brand2}&month=${month}`)
+        .then(r => r.json())
+        .then(data => {
+
+          // -------- YOUR ORIGINAL CODE (UNCHANGED) --------
+          $('#compareCards').html('');
+
+          const b1 = data.brand_1;
+          const b2 = data.brand_2;
+
+          const makeCard = (b) => {
+            return `
+            <div class="col-md-6">
+              <div class="card shadow-sm border-primary">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="card-title mb-0">${b.name}</h5>
+                </div>
+                <div class="card-body">
+
+                  <p><strong>Total Orders:</strong> ${b.orders}</p>
+                  <p><strong>Revenue:</strong> ₹${b.revenue.toLocaleString()}</p>
+                  <p><strong>Quantity Sold:</strong> ${b.quantity_sold}</p>
+                  <p><strong>Avg Order Value:</strong> ₹${b.avg_order_value.toFixed(2)}</p>
+
+                  <div class="mt-3">
+                    <h6>Buying Mode Counts</h6>
+                    <ul>
+                      ${Object.entries(b.buying_modes).map(([mode,val]) => `<li>${mode}: ${val}</li>`).join('')}
+                    </ul>
+                  </div>
+
+                  <div class="mt-3">
+                    <h6>Status Breakdown</h6>
+                    <ul>
+                      ${Object.entries(b.status_breakdown).map(([s,c]) => `<li>${s}: ${c}</li>`).join('')}
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            `;
+          };
+
+          $('#compareCards').append(makeCard(b1) + makeCard(b2));
+          // -------- YOUR ORIGINAL CODE ENDS --------
+        })
+        .finally(() => {
+          /* 🔥 HIDE LOADER (ADDED) */
+          btn.prop('disabled', false);
+          btn.removeClass('btn-success').addClass('btn-primary');
+          btn.find('.btn-text').removeClass('d-none');
+          btn.find('.btn-loader').addClass('d-none');
+        });
+
+    });
+
+  });
+
+  function formatMoney(val) {
+    return Number(val).toLocaleString("en-IN", {
+      maximumFractionDigits: 2
+    });
+  }
+</script>
+
+{% endblock %}

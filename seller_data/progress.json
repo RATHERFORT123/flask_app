@@ -1,0 +1,91 @@
+{
+  "13-07-2025_extracted.xlsx": {
+    "status": "completed",
+    "inserted": 1898,
+    "failed": 0,
+    "updated": "2025-12-31 15:38:57"
+  },
+  "_system": {
+    "status": "idle",
+    "message": "No pending seller files",
+    "updated": "2026-05-21 08:41:31"
+  },
+  "email-service.xlsx": {
+    "status": "completed",
+    "inserted": 896,
+    "failed": 0,
+    "updated": "2026-05-21 10:03:02"
+  },
+  "01-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 15371,
+    "failed": 0,
+    "updated": "2026-05-14 17:45:43"
+  },
+  "02-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 14879,
+    "failed": 0,
+    "updated": "2026-05-17 10:13:03"
+  },
+  "03-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 0,
+    "failed": 15103,
+    "updated": "2026-05-21 07:35:33"
+  },
+  "04-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 0,
+    "failed": 15286,
+    "updated": "2026-05-21 07:36:03"
+  },
+  "05-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 0,
+    "failed": 8474,
+    "updated": "2026-05-21 07:36:15"
+  },
+  "06-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 1801,
+    "failed": 0,
+    "updated": "2026-05-21 07:39:27"
+  },
+  "07-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 14056,
+    "failed": 0,
+    "updated": "2026-05-21 07:44:29"
+  },
+  "08-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 14045,
+    "failed": 0,
+    "updated": "2026-05-21 07:49:04"
+  },
+  "09-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 13467,
+    "failed": 0,
+    "updated": "2026-05-21 07:50:00"
+  },
+  "10-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 12266,
+    "failed": 0,
+    "updated": "2026-05-21 07:50:47"
+  },
+  "11-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 14304,
+    "failed": 0,
+    "updated": "2026-05-21 07:52:00"
+  },
+  "12-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 6593,
+    "failed": 0,
+    "updated": "2026-05-21 07:53:28"
+  }
+}

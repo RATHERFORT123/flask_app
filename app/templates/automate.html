@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}GeM Automation{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+    label {
+        font-weight: bold;
+    }
+    input, button {
+        padding: 10px;
+        margin-top: 5px;
+    }
+    button {
+        cursor: pointer;
+    }
+</style>
+
+<h2>GeM Contract Automation</h2>
+
+<label>Start Date (DD-MM-YYYY)</label><br>
+
+<!-- Calendar Picker -->
+<input type="date" id="start_date_picker">
+
+<!-- Hidden formatted value -->
+<input type="hidden" id="start_date">
+
+<br><br>
+
+<button onclick="startAutomation()">Start Automation</button>
+
+<p id="status"></p>
+
+<script>
+/* -------- Set today & disable future dates -------- */
+(function initDatePicker() {
+    const picker = document.getElementById("start_date_picker");
+    const today = new Date();
+
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+
+    const todayISO = `${yyyy}-${mm}-${dd}`;
+
+    // Default = today
+    picker.value = todayISO;
+
+    // Disable future dates
+    picker.max = todayISO;
+
+    // Convert immediately on load
+    convertDate(todayISO);
+})();
+
+/* -------- Convert YYYY-MM-DD → DD-MM-YYYY -------- */
+function convertDate(date) {
+    const parts = date.split("-");
+    const formatted = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    document.getElementById("start_date").value = formatted;
+}
+
+/* -------- On change -------- */
+document.getElementById("start_date_picker").addEventListener("change", function () {
+    if (this.value) {
+        convertDate(this.value);
+    }
+});
+
+/* -------- Start Automation -------- */
+function startAutomation() {
+    const start_date = document.getElementById("start_date").value;
+
+    if (!start_date) {
+        alert("Please select a date");
+        return;
+    }
+
+    fetch("/automate/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ start_date })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("status").innerText =
+            "Automation started successfully. Task ID: " + data.task_id;
+    })
+    .catch(() => {
+        document.getElementById("status").innerText =
+            "Error starting automation";
+    });
+}
+</script>
+{% endblock %}

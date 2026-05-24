@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block title %}Manage Categories{% endblock %}
+
+{% block content %}
+<style>
+  table.dataTable thead th {
+    position: sticky;
+    top: 0;
+    background: #f8f9fa;
+    z-index: 2;
+    font-size: 0.85rem;
+  }
+  table.dataTable tbody td {
+    font-size: 0.85rem;
+  }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Categories Management</h2>
+  <div>
+   
+   <form method="POST" action="{{ url_for('admin_category.admin_upload_categories_from_sellers_exact') }}">
+     {{ form.hidden_tag() }}
+    <button type="submit" class="btn btn-success">
+        Import Categories from Sellers
+    </button>
+</form>
+
+  </div>
+</div>
+<div class="row">
+    <!-- Form for Add/Edit -->
+    <!-- <div class="col-md-12">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4>{{ 'Edit Category' if form.id.data else 'Add New Category' }}</h4>
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    {{ form.id }}
+
+                    <div class="mb-3">
+                        {{ form.value.label(class="form-label") }}
+                        {{ form.value(class="form-control") }}
+                        {% for e in form.value.errors %}
+                        <div class="text-danger small">{{ e }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.text.label(class="form-label") }}
+                        {{ form.text(class="form-control") }}
+                        {% for e in form.text.errors %}
+                        <div class="text-danger small">{{ e }}</div>
+                        {% endfor %}
+                    </div>
+
+                    {{ form.submit(class="btn btn-primary") }}
+                    <a href="{{ url_for('admin_category.admin_category_manage') }}" class="btn btn-secondary ms-2">Clear</a>
+                </form>
+            </div>
+        </div>
+    </div> -->
+
+    <!-- Category Table -->
+
+
+
+
+
+   <div class="col-md-12">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h4>Existing Categories</h4>
+  <table id="categoryTable" class="table table-striped">
+
+    <thead>
+        <tr>
+            <th>Sno</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% if categories %}
+
+            {% for category in categories %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ category.value }}</td>
+            </tr>
+            {% endfor %}
+
+        {% endif %}
+
+    </tbody>
+
+</table>
+
+{% if not categories %}
+<div class="alert alert-info mt-3">
+    No categories found.
+</div>
+{% endif %}
+            <!-- <table id="categoryTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Sno</th>
+                        <th>Value</th>
+                        <th>Text</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ category.value }}</td>
+                        <td>{{ category.text }}</td>
+                        <td>
+                            <a href="{{ url_for('admin_category.admin_category_manage', edit_id=category.id) }}"
+                                class="btn btn-sm btn-warning">Edit</a>
+                            <a href="{{ url_for('admin_category.admin_category_manage', delete_id=category.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4">No categories found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table> -->
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function () {
+
+    const rowCount = $('#categoryTable tbody tr').length;
+
+    console.log("Rows:", rowCount);
+
+    if (rowCount > 0) {
+        $('#categoryTable').DataTable();
+    }
+
+});
+</script>
+<!-- Add DataTables and jQuery if not already present -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css"/>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#categoryTable').DataTable({
+        dom: 'Bfrtip', // Positions buttons on top
+        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+    });
+  });
+</script>
+
+</div>
+{% endblock %}

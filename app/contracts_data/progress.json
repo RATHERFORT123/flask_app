@@ -1,0 +1,181 @@
+{
+  "01-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 200,
+    "failed": 0,
+    "updated": "2026-03-08 17:17:34"
+  },
+  "02-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 275,
+    "failed": 0,
+    "updated": "2026-03-08 17:17:35"
+  },
+  "03-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 245,
+    "failed": 0,
+    "updated": "2026-03-08 17:17:36"
+  },
+  "04-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 247,
+    "failed": 0,
+    "updated": "2026-03-08 17:17:37"
+  },
+  "08-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 239,
+    "failed": 0,
+    "updated": "2026-03-08 17:17:37"
+  },
+  "09-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 199,
+    "failed": 0,
+    "updated": "2026-03-08 17:17:38"
+  },
+  "10-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 305,
+    "failed": 0,
+    "updated": "2026-03-08 17:17:39"
+  },
+  "11-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 256,
+    "failed": 0,
+    "updated": "2026-03-08 17:17:40"
+  },
+  "12-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 129,
+    "failed": 0,
+    "updated": "2026-03-08 17:33:39"
+  },
+  "15-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 203,
+    "failed": 0,
+    "updated": "2026-03-08 17:33:41"
+  },
+  "16-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 263,
+    "failed": 0,
+    "updated": "2026-03-08 17:33:43"
+  },
+  "17-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 241,
+    "failed": 0,
+    "updated": "2026-03-08 17:33:44"
+  },
+  "18-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 18900,
+    "failed": 0,
+    "updated": "2026-03-08 17:17:12"
+  },
+  "19-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 16908,
+    "failed": 0,
+    "updated": "2026-03-08 17:34:33"
+  },
+  "20-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 12171,
+    "failed": 0,
+    "updated": "2026-03-08 17:36:39"
+  },
+  "21-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 2996,
+    "failed": 0,
+    "updated": "2026-03-08 18:17:12"
+  },
+  "22-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 11741,
+    "failed": 0,
+    "updated": "2026-03-08 18:17:52"
+  },
+  "24-09-2025.xlsx": {
+    "status": "completed",
+    "inserted": 9601,
+    "failed": 0,
+    "updated": "2026-03-08 18:20:52"
+  },
+  "_system": {
+    "status": "idle",
+    "message": "No pending contract files",
+    "updated": "2026-05-21 10:45:08"
+  },
+  "01-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 15398,
+    "failed": 0,
+    "updated": "2026-05-14 17:32:46"
+  },
+  "03-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 15147,
+    "failed": 0,
+    "updated": "2026-05-14 17:41:48"
+  },
+  "04-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 15315,
+    "failed": 0,
+    "updated": "2026-05-14 17:48:28"
+  },
+  "07-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 14078,
+    "failed": 0,
+    "updated": "2026-05-15 00:34:38"
+  },
+  "08-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 14093,
+    "failed": 0,
+    "updated": "2026-05-15 04:58:38"
+  },
+  "09-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 13496,
+    "failed": 0,
+    "updated": "2026-05-17 10:16:26"
+  },
+  "10-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 12303,
+    "failed": 0,
+    "updated": "2026-05-17 10:18:54"
+  },
+  "15-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 15071,
+    "failed": 0,
+    "updated": "2026-05-20 09:50:16"
+  },
+  "18-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 13870,
+    "failed": 0,
+    "updated": "2026-05-21 10:13:48"
+  },
+  "28-07-2025.xlsx": {
+    "status": "completed",
+    "inserted": 16359,
+    "failed": 0,
+    "updated": "2026-05-21 10:44:48"
+  },
+  "email-service.xlsx": {
+    "status": "completed",
+    "inserted": 906,
+    "failed": 0,
+    "updated": "2026-05-21 10:45:01"
+  }
+}

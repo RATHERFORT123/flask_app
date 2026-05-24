@@ -1,0 +1,578 @@
+{% extends "base.html" %}
+
+{% block title %}USER CONTRACTS{% endblock %}
+
+{% block content %}
+<style>
+    .box {
+        border-radius: 12px;
+        box-shadow: 0 2px 12px #e9ecef;
+    }
+
+    .box-header {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .filter-label {
+        font-size: .94rem;
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+
+    .pagination {
+        margin-top: 16px;
+    }
+
+    .select2-container .select2-selection--single {
+        height: 38px !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+        border: 1px solid #ced4da !important;
+        border-radius: 0.375rem !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 38px !important;
+        padding-left: 12px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 36px !important;
+    }
+</style>
+
+<div class="container-fluid">
+    <h1 class="fw-bold mb-1">Contract Management</h1>
+    <div class="mb-3 text-muted">Comprehensive contract oversight, history tracking, and analysis</div>
+
+    <form class="box p-4 mb-4 bg-white" method="get">
+        <div class="box-header mb-3"><span class="me-2">🔎</span>Search & Filter Contracts</div>
+        
+        <div class="row g-3 align-items-end">
+            <div class="col-xl-4 col-md-6">
+                <label class="filter-label">Search</label>
+                <input type="text" class="form-control" name="search" value="{{ filters_applied.get('search', '') }}" placeholder="Contract ID">
+            </div>
+            <div class="col-xl-2 col-md-3">
+                <label class="filter-label">From</label>
+                <input type="date" class="form-control" name="date_from" value="{{ filters_applied.get('date_from','') }}">
+            </div>
+            <div class="col-xl-2 col-md-3">
+                <label class="filter-label">To</label>
+                <input type="date" class="form-control" name="date_to" value="{{ filters_applied.get('date_to','') }}">
+            </div>
+            <div class="col-xl-2 col-md-6">
+                <label class="filter-label">Status</label>
+                <select class="form-select" name="status">
+                    <option value="">All Statuses</option>
+                    {% for status in [
+                    "Fullfillment in Progress", "Order Completed", "Order Accepted", "Order Paid",
+                    "Order Cancelled", "Waiting for Seller Confirmation", "Waiting for Seller Payment",
+                    "Cancellation Requested by Buyer", "Waiting For Payment Confirmation", "OrderPlaced",
+                    "WaitingForBuyerAction"
+                    ] %}
+                    <option value="{{status}}" {% if filters_applied.get('status','')==status %}selected{% endif %}>{{status.title()}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-xl-2 col-md-6">
+                <label class="filter-label">Buying Mode</label>
+                <select class="form-select" name="buying_mode">
+                    <option value="">All Types</option>
+                    {% for t in ['Bid/RA', 'Direct'] %}
+                    <option value="{{t}}" {% if filters_applied.get('buying_mode','')==t %}selected{% endif %}>{{t.title()}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="row g-3 align-items-end mt-1">
+            <div class="col-md-4">
+                <label class="filter-label">Ministry</label>
+                <select class="form-control select2" id="ministry" name="ministry">
+                    <option value="">All Ministries</option>
+                    {% for t in [
+                    "Autonomous Body", "Central Government", "Central PSU", "Comptroller and Auditor General (CAG) of India",
+                    "Election Commission of India", "GOA", "Indian Atomic Industiral Forum (IAIF)", "Insurance Regulatory and Development Authority (IRDA)",
+                    "LADAKH", "Law Commission of India", "Lok Sabha Secretariat", "MIZORAM", "Ministry of AYUSH",
+                    "Ministry of Agriculture and Farmers Welfare", "Ministry of Chemicals and Fertilizers", "Ministry of Civil Aviation",
+                    "Ministry of Coal", "Ministry of Commerce and Industry", "Ministry of Communications", "Ministry of Consumer Affairs Food and Public Distribution",
+                    "Ministry of Corporate Affairs", "Ministry of Culture", "Ministry of Development of North Eastern Region",
+                    "Ministry of Drinking Water and Sanitation", "Ministry of Earth Sciences", "Ministry of Education",
+                    "Ministry of Electronics and Information Technology", "Ministry of Environment Forest and Climate Change",
+                    "Ministry of External Affairs", "Ministry of Finance", "Ministry of Food Processing Industries",
+                    "Ministry of Health and Family Welfare", "Ministry of Heavy Industries and Public Enterprises",
+                    "Ministry of Housing & Urban Affairs (MoHUA)", "Ministry of Housing and Urban Poverty Alleviation",
+                    "Ministry of Human Resource Development", "Ministry of Information and Broadcasting", "Ministry of Labour and Employment",
+                    "Ministry of Law and Justice", "Ministry of Micro Small and Medium Enterprises", "Ministry of Mines",
+                    "Ministry of Minority Affairs", "Ministry of New and Renewable Energy", "Ministry of Panchayati Raj",
+                    "Ministry of Parliamentary Affairs", "Ministry of Personnel Public Grievances and Pensions", "Ministry of Petroleum and Natural Gas",
+                    "Ministry of Ports, Shipping and Waterways", "Ministry of Power", "Ministry of Railways", "Ministry of Road Transports and highways",
+                    "Ministry of Rural Development ", "Ministry of Science and Technology", "Ministry of Skill Development and Entrepreneurship",
+                    "Ministry of Social Justice and Empowerment", "Ministry of Statistics and Programme Implementation", "Ministry of Steel",
+                    "Ministry of Textiles", "Ministry of Tourism", "Ministry of Tribal Affairs", "Ministry of Urban Development",
+                    "Ministry of Water Resources River Development and Ganga Rejuvenation", "Ministry of Women and Child Development",
+                    "Ministry of Youth Affairs and Sports", "NITI Aayog - National Institution for Transforming India",
+                    "National Commission for Scheduled Tribes (NCST)", "National Mission for Clean Ganga (NMCG), New Delhi",
+                    "National Rural Livelihoods Mission (NRLM) - Aajeevika", "Office of the Principal Scientific Adviser",
+                    "Organistion Incomplete", "President of India", "Primary User", "Rajya Sabha Secretariat", "SIKKIM",
+                    "Seventh Central Pay Commission, New Delhi", "Staff Selection Commision", "Union Public Service Commission (UPSC)",
+                    "Vice President of India"
+                    ] %}
+                    <option value="{{t}}" {% if filters_applied.get('ministry','')==t %}selected{% endif %}>{{t.title()}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="filter-label">Value Range</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" name="min_total" placeholder="Min" value="{{ filters_applied.get('min_total','') }}">
+                    <input type="number" class="form-control" name="max_total" placeholder="Max" value="{{ filters_applied.get('max_total','') }}">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+            </div>
+            <div class="col-md-2">
+                <a href="{{ url_for('user.user_contracts') }}" class="btn btn-light w-100">Clear All</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+            <span class="fs-5 fw-bold">📄 Contracts Overview ({{pagination.total}})</span>
+        </div>
+        <div>
+            <a href="{{ url_for('user.export_contracts_excel', **filters_applied) }}" class="btn btn-success btn-sm">
+                Export Excel
+            </a>
+        </div>
+    </div>
+
+    <div class="box bg-white p-3">
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle mb-0" style="font-size: 0.9rem;">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Contract ID</th>
+                        <th>Status</th>
+                        <th>Org Type</th>
+                        <th>Ministry</th>
+                        <th>Buying Mode</th>
+                        <th>Contract Date</th>
+                        <th>Brand</th>
+                        <th>Total Value</th>
+                        <th>Line Items</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contract in contracts %}
+                    <tr>
+                        <td>{{ contract.id }}</td>
+                        <td class="fw-bold text-secondary">{{ contract.contract_id }}</td>
+                        <td>
+                            <span class="badge {% if 'Completed' in contract.status or 'Paid' in contract.status %}bg-success{% elif 'Cancel' in contract.status %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+                                {{ contract.status }}
+                            </span>
+                        </td>
+                        <td>{{ contract.organization_type }}</td>
+                        <td>{{ contract.ministry or 'N/A' }}</td>
+                        <td>{{ contract.buying_mode }}</td>
+                        <td class="text-nowrap">{{ contract.contract_date }}</td>
+                        <td>
+                            {% set ns = namespace(unique_brands=[]) %}
+                            {% for item in contract.items %}
+                                {% if item.brand and item.brand not in ns.unique_brands %}
+                                    {% set _ = ns.unique_brands.append(item.brand) %}
+                                  {% endif %}
+                            {% endfor %}
+                            <span class="fw-semibold text-dark">
+                                {{ ns.unique_brands | join(", ") or 'N/A' }}
+                            </span>
+                        </td>
+                        <td class="fw-bold text-primary">{{ contract.total }}</td>
+                        <td>
+                            {% set item_summaries = [] %}
+                            {% for item in contract.items %}
+                                {% set summary = [] %}
+                                {% if item.service %}{% set _ = summary.append("S: " ~ item.service) %}{% endif %}
+                                {% if item.product %}{% set _ = summary.append("P: " ~ item.product) %}{% endif %}
+                                {% if item.brand %}{% set _ = summary.append("B: " ~ item.brand) %}{% endif %}
+                                {% if item.model %}{% set _ = summary.append("M: " ~ item.model) %}{% endif %}
+                                {% set _ = item_summaries.append(summary | join(", ")) %}
+                            {% endfor %}
+                            <small class="text-muted d-inline-block text-truncate" style="max-width: 220px;" title="{{ item_summaries | join(' | ') | e }}">
+                                {{ item_summaries | join(" | ") or 'No items found' }}
+                            </small>
+                        </td>
+                        <td class="text-center text-nowrap">
+                            <button class="btn btn-outline-secondary btn-sm view-contract-btn" 
+                                    data-id="{{ contract.id }}"
+                                    data-contract-id="{{ contract.contract_id | e }}"
+                                    data-status="{{ contract.status | e }}"
+                                    data-org-type="{{ (contract.organization_type or 'N/A') | e }}"
+                                    data-ministry="{{ (contract.ministry or 'N/A') | e }}"
+                                    data-department="{{ (contract.department or 'N/A') | e }}"
+                                    data-org-name="{{ (contract.organization_name or 'N/A') | e }}"
+                                    data-office-zone="{{ (contract.office_zone or 'N/A') | e }}"
+                                    data-location="{{ (contract.location or 'N/A') | e }}"
+                                    data-designation="{{ (contract.buyer_designation or 'N/A') | e }}"
+                                    data-buying-mode="{{ contract.buying_mode | e }}"
+                                    data-bid-number="{{ (contract.bid_number or 'N/A') | e }}"
+                                    data-date="{{ contract.contract_date | e }}"
+                                    data-total="{{ contract.total | e }}"
+                                    data-items="{{ item_summaries | join(' | ') | e }}">
+                                View
+                            </button>
+                            <button class="btn btn-success btn-sm ms-1 download-contract-btn" data-contract-id="{{ contract.contract_id | e }}">
+                                Download
+                            </button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="11" class="text-center py-4 text-muted">No contracts matching those criteria were found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-end mt-3">
+            <nav>
+                <ul class="pagination mb-0">
+                    {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{pagination.prev_num}}{% for k, v in filters_applied.items() %}&{{k}}={{v}}{% endfor %}">&laquo; Prev</a>
+                    </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Page {{pagination.page}} of {{pagination.pages}}</span>
+                    </li>
+                    {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{pagination.next_num}}{% for k, v in filters_applied.items() %}&{{k}}={{v}}{% endfor %}">Next &raquo;</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="contractDetailModal" tabindex="-1" aria-labelledby="contractDetailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold" id="contractDetailLabel">Contract Specifications</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="contractModalBody"></div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modalElement = document.getElementById('contractDetailModal');
+    const contractModal = new bootstrap.Modal(modalElement);
+    const modalBody = document.getElementById('contractModalBody');
+
+    // Muted fallback converter engine to defend against layout breakage on blank fields
+    function safeVal(value, fallback = '<span class="text-muted small">N/A</span>') {
+        if (value === undefined || value === null) return fallback;
+        const str = String(value).trim();
+        return (str === '' || str.toLowerCase() === 'n/a') ? fallback : str;
+    }
+
+    // ---------------------------------------------------------
+    // UNIFIED REAL-TIME MODAL LAYOUT RENDER ENGINE
+    // ---------------------------------------------------------
+    window.renderContractDetails = function(data) {
+        let itemsHtml = '';
+        if (data.items) {
+            let itemsArr = [];
+            if (Array.isArray(data.items)) {
+                data.items.forEach(item => {
+                    let summary = [];
+                    if (item.service) summary.push(`S: ${item.service}`);
+                    if (item.product) summary.push(`P: ${item.product}`);
+                    if (item.brand) summary.push(`B: ${item.brand}`);
+                    if (item.model) summary.push(`M: ${item.model}`);
+                    if (summary.length > 0) itemsArr.push(summary.join(", "));
+                });
+            } else if (typeof data.items === 'string') {
+                itemsArr = data.items.split('|').map(p => p.trim()).filter(p => p.length > 0);
+            }
+
+            if (itemsArr.length > 0) {
+                itemsHtml = '<ul class="list-group mt-2 shadow-sm">';
+                itemsArr.forEach(part => {
+                    itemsHtml += `<li class="list-group-item small bg-light text-dark"><i class="text-secondary me-2">📦</i>${part}</li>`;
+                });
+                itemsHtml += '</ul>';
+            } else {
+                itemsHtml = '<p class="text-muted small my-2">No detailed specific items listed.</p>';
+            }
+        } else {
+            itemsHtml = '<p class="text-muted small my-2">No detailed specific items listed.</p>';
+        }
+
+        modalBody.innerHTML = `
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold text-primary border-bottom pb-2 mb-2">🔍 Contract Specifications</h6>
+                    <table class="table table-sm table-borderless small mb-0">
+                        <tr><td class="text-muted ps-0" style="width:38%;">Contract ID:</td><td class="fw-bold text-secondary font-monospace">${safeVal(data.contractId)}</td></tr>
+                        <tr><td class="text-muted ps-0">Internal ID:</td><td>${safeVal(data.id)}</td></tr>
+                        <tr><td class="text-muted ps-0">Current Status:</td><td><span class="badge bg-dark">${safeVal(data.status)}</span></td></tr>
+                        <tr><td class="text-muted ps-0">Buying Mode:</td><td><span class="badge bg-light text-dark border">${safeVal(data.buyingMode)}</span></td></tr>
+                        <tr><td class="text-muted ps-0">Bid / RA Number:</td><td class="text-wrap font-monospace">${safeVal(data.bidNumber)}</td></tr>
+                        <tr><td class="text-muted ps-0">Generation Date:</td><td class="text-muted">${safeVal(data.date)}</td></tr>
+                        <tr><td class="text-muted ps-0">Grand Total:</td><td><span class="text-success fw-bold fs-6">₹${safeVal(data.total)}</span></td></tr>
+                    </table>
+                </div>
+                
+                <div class="col-md-6 border-start">
+                    <h6 class="fw-bold text-primary border-bottom pb-2 mb-2">🏢 Buyer & Organization Details</h6>
+                    <table class="table table-sm table-borderless small mb-0">
+                        <tr><td class="text-muted ps-0" style="width:38%;">Organization Name:</td><td class="fw-semibold text-dark">${safeVal(data.org)}</td></tr>
+                        <tr><td class="text-muted ps-0">Org Type:</td><td>${safeVal(data.organization_type)}</td></tr>
+                        <tr><td class="text-muted ps-0">Ministry:</td><td>${safeVal(data.ministry)}</td></tr>
+                        <tr><td class="text-muted ps-0">Department:</td><td>${safeVal(data.department)}</td></tr>
+                        <tr><td class="text-muted ps-0">Office Zone:</td><td>${safeVal(data.office_zone)}</td></tr>
+                        <tr><td class="text-muted ps-0">Location Address:</td><td><span class="small">${safeVal(data.location)}</span></td></tr>
+                        <tr><td class="text-muted ps-0">Buyer Authority:</td><td>${safeVal(data.buyer_designation)}</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-12">
+                    <h6 class="fw-bold text-success border-bottom pb-2 mb-2">🤝 Verified Merchant / Seller Profile</h6>
+                    <div class="bg-white p-3 border rounded shadow-sm">
+                        <div class="row g-2 small">
+                            <div class="col-md-6">
+                                <p class="mb-1"><strong>Company Legal Name:</strong> <span class="fw-semibold">${safeVal(data.sellerCompany)}</span></p>
+                                <p class="mb-1"><strong>Seller System ID:</strong> ${safeVal(data.seller_id)}</p>
+                                <p class="mb-1"><strong>Category Status:</strong> ${safeVal(data.seller_category_name)}</p>
+                                <p class="mb-1"><strong>GSTIN Identifier:</strong> <span class="font-monospace text-dark fw-bold">${safeVal(data.sellerGstin)}</span></p>
+                                <p class="mb-1"><strong>MSME Registration:</strong> ${safeVal(data.msmeReg)}</p>
+                            </div>
+                            <div class="col-md-6 border-start ps-3">
+                                <p class="mb-1"><strong>Primary Contact:</strong> ${safeVal(data.sellerContact)}</p>
+                                <p class="mb-1"><strong>Email Link:</strong> ${data.sellerEmail && data.sellerEmail !== 'N/A' && data.sellerEmail !== '' ? `<a href="mailto:${data.sellerEmail}" class="text-decoration-none">${data.sellerEmail}</a>` : '<span class="text-muted">N/A</span>'}</p>
+                                <p class="mb-1"><strong>Physical Address:</strong> <span class="text-muted small">${safeVal(data.seller_address)}</span></p>
+                                <p class="mb-1"><strong>Service Window Start:</strong> ${safeVal(data.service_start_date)}</p>
+                                <p class="mb-1"><strong>Service Window End:</strong> ${safeVal(data.service_end_date)}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <h6 class="fw-bold border-bottom pb-2 text-secondary">📦 Included Structural Line Items Breakdown</h6>
+                ${itemsHtml}
+            </div>
+        `;
+        contractModal.show();
+    };
+
+    // ---------------------------------------------------------
+    // EVENT LISTENER: FRONTEND GRID ROW VIEW TARGET CLICKS
+    // ---------------------------------------------------------
+// ---------------------------------------------------------
+// EVENT LISTENER: FRONTEND GRID ROW VIEW TARGET CLICKS
+// ---------------------------------------------------------
+document.querySelector('body').addEventListener('click', function (e) {
+
+    if (
+        e.target &&
+        e.target.classList.contains('view-contract-btn')
+    ) {
+
+        const btn = e.target;
+
+        const contractId =
+            btn.dataset.contractId;
+
+        // ---------------------------------------------------------
+        // BUTTON LOADING STATE
+        // ---------------------------------------------------------
+        const originalText =
+            btn.innerText;
+
+        btn.disabled = true;
+
+        btn.innerText = "Loading...";
+
+        // ---------------------------------------------------------
+        // FETCH SINGLE CONTRACT API
+        // ---------------------------------------------------------
+        fetch(
+            `/user/api/contracts/${encodeURIComponent(contractId)}`
+        )
+
+        .then(res => {
+
+            if (!res.ok) {
+
+                throw new Error(
+                    `HTTP ${res.status}`
+                );
+            }
+
+            return res.json();
+        })
+
+        .then(data => {
+
+            console.log(
+                "API RESPONSE:",
+                data
+            );
+
+            // ---------------------------------------------------------
+            // RENDER MODAL USING API RESPONSE
+            // ---------------------------------------------------------
+            window.renderContractDetails({
+
+                id: data.id,
+
+                contractId:
+                    data.contract_id,
+
+                status:
+                    data.status,
+
+                org:
+                    data.organization_name,
+
+                organization_type:
+                    data.organization_type,
+
+                ministry:
+                    data.ministry,
+
+                department:
+                    data.department,
+
+                office_zone:
+                    data.office_zone,
+
+                location:
+                    data.location,
+
+                buyer_designation:
+                    data.buyer_designation,
+
+                buyingMode:
+                    data.buying_mode,
+
+                bidNumber:
+                    data.bid_number,
+
+                date:
+                    data.contract_date,
+
+                total:
+                    data.total,
+
+                items:
+                    data.items,
+
+                // ---------------------------------------------------------
+                // SELLER DATA
+                // ---------------------------------------------------------
+                sellerCompany:
+                    data.seller_company_name,
+
+                sellerContact:
+                    data.seller_contact_no,
+
+                sellerEmail:
+                    data.seller_email,
+
+                sellerGstin:
+                    data.seller_gstin,
+
+                msmeReg:
+                    data.seller_msme_reg_no,
+
+                seller_id:
+                    data.seller_id,
+
+                seller_address:
+                    data.seller_address,
+
+                seller_category_name:
+                    data.seller_category_name,
+
+                service_start_date:
+                    data.service_start_date,
+
+                service_end_date:
+                    data.service_end_date
+            });
+        })
+
+        .catch(err => {
+
+            console.error(
+                "AJAX View Processing Error:",
+                err
+            );
+
+            alert(
+                "Failed to load contract details."
+            );
+        })
+
+        .finally(() => {
+
+            btn.disabled = false;
+
+            btn.innerText =
+                originalText;
+        });
+    }
+});
+   
+    // PDF Download Engine Hook
+    document.querySelector('body').addEventListener('click', function(e){
+        if (e.target && e.target.classList.contains('download-contract-btn')) {
+            const contractId = e.target.dataset.contractId;
+            fetch(`/user/contracts/${contractId}/pdf`)
+                .then(res => {
+                    if (!res.ok) throw new Error("Document generation timeout.");
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success && data.pdf_url) {
+                        window.open(data.pdf_url, "_blank");
+                    } else {
+                        alert("PDF asset engine could not locate or build the requested file.");
+                    }
+                })
+                .catch(err => {
+                    console.error("PDF Processing Error:", err);
+                    alert("A communication error occurred with the document generator.");
+                });
+        }
+    });
+});
+
+
+
+
+</script>
+{% endblock %}

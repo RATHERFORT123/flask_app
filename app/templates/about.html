@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - Infinity Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  
+  <!-- Header Section -->
+  <div class="text-center mb-5">
+    <h1 class="display-5 fw-bold text-body-emphasis">About Our Platform</h1>
+    <p class="lead text-muted mx-auto" style="max-width: 700px;">
+      Discover the technology, architecture, and core features powering Infinity—a high-performance MVC engine built for scale, automation, and advanced data operations.
+    </p>
+    <div class="d-flex justify-content-center">
+      <hr class="w-25 border-primary border-2 mt-2">
+    </div>
+  </div>
+
+  <!-- Mission & Overview Section -->
+  <div class="row align-items-center g-5 py-3 mb-5">
+    <div class="col-lg-6">
+      <h2 class="fw-bold text-body-emphasis mb-3">Enterprise Data Ingestion & Management</h2>
+      <p class="text-secondary">
+        Infinity is built on a modular, decoupled Model-View-Controller (MVC) architecture designed to streamline large-scale platform operations. Our primary focus is solving data silos by providing centralized pipelines for complex contract schemas, brand tracking, and vendor metrics.
+      </p>
+      <p class="text-secondary">
+        By utilizing high-speed background batch utilities, asynchronous interface interactions, and granular verification controls, Infinity removes the friction usually associated with large enterprise databases.
+      </p>
+      <div class="mt-4">
+        <a href="{{ url_for('common.home') }}" class="btn btn-outline-primary btn-sm px-4 me-2">Back Home</a>
+        {% if not current_user.is_authenticated %}
+          <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-sm px-4">Access Portal</a>
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- Technical Stack Highlights -->
+    <div class="col-lg-6">
+      <div class="card bg-body-tertiary border-0 rounded-4 p-4 shadow-sm">
+        <h4 class="fw-bold text-body-emphasis mb-4">Our Technology Matrix</h4>
+        
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <span class="fw-medium">Backend Architecture (Python & MVC Frameworks)</span>
+            <span class="text-muted small">Robust & Scalable</span>
+          </div>
+          <div class="progress" style="height: 6px;">
+            <div class="progress-bar bg-primary" style="width: 100%"></div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <span class="fw-medium">Data Ingestion (Bulk Excel Processing Engines)</span>
+            <span class="text-muted small">High Throughput</span>
+          </div>
+          <div class="progress" style="height: 6px;">
+            <div class="progress-bar bg-success" style="width: 100%"></div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="d-flex justify-content-between mb-1">
+            <span class="fw-medium">Frontend Engine (Bootstrap & Responsive UI Layouts)</span>
+            <span class="text-muted small">Fluid UX</span>
+          </div>
+          <div class="progress" style="height: 6px;">
+            <div class="progress-bar bg-info" style="width: 100%"></div>
+          </div>
+        </div>
+
+        <div class="mb-0">
+          <div class="d-flex justify-content-between mb-1">
+            <span class="fw-medium">Interactive Relational Filters & Analytics</span>
+            <span class="text-muted small">Real-Time</span>
+          </div>
+          <div class="progress" style="height: 6px;">
+            <div class="progress-bar bg-warning" style="width: 100%"></div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- Platform Capabilities Grid -->
+  <div class="bg-body-tertiary rounded-4 p-5 mb-5 border">
+    <h3 class="text-center fw-bold text-body-emphasis mb-5">Platform Core Pillars</h3>
+    <div class="row g-4 text-center">
+      
+      <div class="col-md-4">
+        <div class="p-3">
+          <div class="text-primary fs-1 mb-2">📁</div>
+          <h5 class="fw-bold">Dynamic Contract Control</h5>
+          <p class="text-muted small">Comprehensive oversight over seller bindings, lifecycle compliance, operational terms, and automated verification checks.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="p-3">
+          <div class="text-success fs-1 mb-2">🚀</div>
+          <h5 class="fw-bold">Asynchronous Parsing</h5>
+          <p class="text-muted small">Utilizes reactive interface elements to filter through massive category indices and seller logs instantaneously without hard reloads.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="p-3">
+          <div class="text-info fs-1 mb-2">🛡️</div>
+          <h5 class="fw-bold">Role-Based Segregation</h5>
+          <p class="text-muted small">Rigid, built-in security decorators ensuring standard users read safely while administrators manage mutations and bulk data purges.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer Banner / Call to Action -->
+  <div class="card border-0 bg-dark text-white rounded-4 shadow p-5 text-center">
+    <div class="py-2">
+      <h2 class="fw-bold mb-3 text-white">Experience Data Management Without Boundaries</h2>
+      <p class="mx-auto text-white-50 mb-4" style="max-width: 600px;">
+        Deploying workflows has never been simpler. Monitor portfolios, track contract lifecycles, and extract data-driven answers effortlessly.
+      </p>
+      {% if current_user.is_authenticated %}
+        <span class="badge bg-light text-dark px-3 py-2 fs-6">Logged in as: <strong>{{ current_user.username if current_user.username else "Verified User" }}</strong></span>
+      {% else %}
+        <a href="{{ url_for('auth.signup') }}" class="btn btn-light px-4 py-2 fw-medium">Create Free Account</a>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

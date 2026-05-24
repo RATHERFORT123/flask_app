@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+<h3>Excel Bulk Upload</h3>
+
+<select id="file_type" class="form-control mb-3">
+    <option value="contract">Contracts Data</option>
+    <option value="seller">Seller Data</option>
+</select>
+<input type="hidden" id="csrf_token" value="{{ csrf_token() }}">
+<div id="drop-area">
+
+    <p>Drag & Drop Excel Files Here</p>
+    <p>or</p>
+
+    <input type="file" id="fileElem" multiple accept=".xlsx,.xls">
+
+</div>
+
+<div class="progress mt-3" style="height:25px;">
+    <div id="progress-bar" class="progress-bar" style="width:0%">0%</div>
+</div>
+
+<div id="upload-status" class="mt-3"></div>
+
+</div>
+
+
+<style>
+
+#drop-area{
+border:2px dashed #007bff;
+border-radius:10px;
+padding:40px;
+text-align:center;
+cursor:pointer;
+background:#f8f9fa;
+}
+
+#drop-area.highlight{
+background:#e3f2fd;
+}
+
+</style>
+
+<script>
+
+let dropArea = document.getElementById("drop-area")
+let fileInput = document.getElementById("fileElem")
+
+dropArea.addEventListener("click", () => fileInput.click())
+
+fileInput.addEventListener("change", () => {
+    uploadFiles(fileInput.files)
+})
+
+dropArea.addEventListener("dragover", (e)=>{
+    e.preventDefault()
+    dropArea.classList.add("highlight")
+})
+
+dropArea.addEventListener("dragleave", ()=>{
+    dropArea.classList.remove("highlight")
+})
+
+dropArea.addEventListener("drop", (e)=>{
+    e.preventDefault()
+    dropArea.classList.remove("highlight")
+    uploadFiles(e.dataTransfer.files)
+})
+
+
+function uploadFiles(files){
+
+let formData = new FormData()
+
+for(let i=0;i<files.length;i++){
+    formData.append("files", files[i])
+}
+
+formData.append("file_type", document.getElementById("file_type").value)
+
+let csrfToken = document.getElementById("csrf_token").value
+
+let xhr = new XMLHttpRequest()
+
+xhr.open("POST","{{ url_for('upload.upload_excel') }}",true)
+
+// 🔥 SEND CSRF TOKEN HEADER
+xhr.setRequestHeader("X-CSRFToken", csrfToken)
+
+xhr.upload.onprogress = function(e){
+
+if(e.lengthComputable){
+
+let percent = (e.loaded / e.total) * 100
+
+let bar = document.getElementById("progress-bar")
+
+bar.style.width = percent + "%"
+bar.innerText = Math.round(percent) + "%"
+
+}
+
+}
+
+xhr.onload = function(){
+
+if(xhr.status === 200){
+
+let res = JSON.parse(xhr.responseText)
+
+if(res.status === "success"){
+
+document.getElementById("upload-status").innerHTML =
+"<div class='alert alert-success'>Upload Complete</div>"
+
+}
+
+}else{
+
+document.getElementById("upload-status").innerHTML =
+"<div class='alert alert-danger'>Upload Failed</div>"
+
+}
+
+}
+
+xhr.send(formData)
+
+}
+
+</script>
+
+{% endblock %}

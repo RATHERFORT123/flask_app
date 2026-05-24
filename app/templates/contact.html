@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - Infinity Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  
+  <!-- Header Section -->
+  <div class="text-center mb-5">
+    <h1 class="display-5 fw-bold text-body-emphasis">Get In Touch</h1>
+    <p class="lead text-muted mx-auto" style="max-width: 600px;">
+      Have questions about contract workflows, database indexing, or enterprise pipelines? Connect with our support deck instantly.
+    </p>
+    <div class="d-flex justify-content-center">
+      <hr class="w-25 border-primary border-2 mt-2">
+    </div>
+  </div>
+
+  <div class="row g-5 justify-content-center">
+    
+    <!-- Left Column: Direct Redirection Cards -->
+    <div class="col-lg-5 col-xl-4">
+      <div class="d-flex flex-column gap-4">
+        
+        <h4 class="fw-bold text-body-emphasis mb-1">Instant Channels</h4>
+        <p class="text-muted small mt-0 mb-2">Click below to open external applications natively with pre-configured routing.</p>
+
+        <!-- WhatsApp Redirect Card -->
+        <a href="https://wa.me/910000000000?text=Hello%20Infinity%20Support,%20I%20have%20a%20query%20regarding%20the%20platform." 
+           target="_blank" 
+           class="card text-decoration-none border-0 shadow-sm bg-body-tertiary rounded-4 p-4 card-hover transition-all">
+          <div class="d-flex align-items-center">
+            <div class="fs-1 me-3 p-2 rounded-3 bg-success bg-opacity-10 text-success line-height-1">
+              💬
+            </div>
+            <div>
+              <h5 class="fw-bold text-success mb-1">Chat on WhatsApp</h5>
+              <p class="text-secondary small mb-0">Instant communication channel for active support issues.</p>
+            </div>
+          </div>
+        </a>
+
+        <!-- Email Redirect Card -->
+        <a href="mailto:support@infinityplatform.com?subject=Platform%20Inquiry&body=Hello%20Support%20Team," 
+           class="card text-decoration-none border-0 shadow-sm bg-body-tertiary rounded-4 p-4 card-hover transition-all">
+          <div class="d-flex align-items-center">
+            <div class="fs-1 me-3 p-2 rounded-3 bg-primary bg-opacity-10 text-primary line-height-1">
+              ✉️
+            </div>
+            <div>
+              <h5 class="fw-bold text-primary mb-1">Send an Email</h5>
+              <p class="text-secondary small mb-0">Formal ticketing lane for business and system queries.</p>
+            </div>
+          </div>
+        </a>
+
+        <!-- Business Hours Context Block -->
+        <div class="p-4 rounded-4 border border-dashed bg-light mt-2">
+          <h6 class="fw-bold text-body-emphasis mb-2">⏱️ System Core Monitoring Availability</h6>
+          <p class="text-muted small mb-0">Automated integration ingestion pipelines monitor uploads 24/7. Manual admin ticketing reviews operate Mon-Fri: 9:00 AM – 6:00 PM IST.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Column: Interactive Form Core Block -->
+    <div class="col-lg-7 col-xl-6">
+      <div class="card p-4 p-sm-5 border-0 shadow-sm bg-body-tertiary rounded-4">
+        <h4 class="fw-bold text-body-emphasis mb-4">Submit a System Ticket</h4>
+        
+        <!-- Flask Form Mapping -->
+        <form action="#" method="POST">
+          <!-- Mandatory Flask-WTF CSRF Ingestion Layer matching base template meta definitions -->
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+          <div class="row g-3">
+            
+            <!-- User Identity Name Segment -->
+            <div class="col-md-6">
+              <label for="contactName" class="form-label small fw-medium text-secondary">Your Name</label>
+              <input type="text" class="form-control" id="contactName" name="name" 
+                     value="{% if current_user.is_authenticated %}{{ current_user.username }}{% endif %}" 
+                     placeholder="John Doe" required>
+            </div>
+            
+            <!-- Communication Email Address Segment -->
+            <div class="col-md-6">
+              <label for="contactEmail" class="form-label small fw-medium text-secondary">Email Address</label>
+              <input type="email" class="form-control" id="contactEmail" name="email" 
+                     value="{% if current_user.is_authenticated %}{{ current_user.email }}{% endif %}" 
+                     placeholder="name@example.com" required>
+            </div>
+
+            <!-- Context Classification Subject Row -->
+            <div class="col-12">
+              <label for="contactSubject" class="form-label small fw-medium text-secondary">Inquiry Classification</label>
+              <select class="form-select" id="contactSubject" name="subject" required>
+                <option value="" selected disabled>Select an option...</option>
+                <option value="technical">Technical Support / Platform Error</option>
+                <option value="billing">Excel Data Ingestion Pipeline (ECUP/ESUP)</option>
+                <option value="account">Account Verification & Permissions</option>
+                <option value="other">General Structural Consultation</option>
+              </select>
+            </div>
+
+            <!-- Message Detail Description Core Box -->
+            <div class="col-12">
+              <label for="contactMessage" class="form-label small fw-medium text-secondary">Detailed Description</label>
+              <textarea class="form-control" id="contactMessage" name="message" rows="5" 
+                        placeholder="Provide clear log descriptions or procedural questions here..." required></textarea>
+            </div>
+
+            <!-- Interactive Security Declaration Checkbox -->
+            <div class="col-12 my-2">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="dataConsent" required>
+                <label class="form-check-label text-muted small" for="dataConsent">
+                  I consent to sharing these processing coordinates to handle my technical issue.
+                </label>
+              </div>
+            </div>
+
+            <!-- Submit Ticket Trigger Button -->
+            <div class="col-12 mt-4">
+              <button type="submit" class="btn btn-primary w-100 py-2.5 fw-medium">
+                Dispatch System Ticket 🚀
+              </button>
+            </div>
+
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Simple Internal Clean Transition Styling Rule overrides -->
+<style>
+  .card-hover {
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.08)!important;
+  }
+  .line-height-1 {
+    line-height: 1;
+  }
+</style>
+{% endblock %}

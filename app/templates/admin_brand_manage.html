@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% block title %}Brand Management{% endblock %}
+{% block content %}
+
+<style>
+  table.dataTable thead th {
+    position: sticky;
+    top: 0;
+    background: #f8f9fa;
+    z-index: 2;
+    font-size: 0.85rem;
+  }
+  table.dataTable tbody td {
+    font-size: 0.85rem;
+  }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Brand Management</h2>
+  <div>
+    <form method="POST"
+      action="{{ url_for('admin_brand.admin_upload_brands_from_contracts_exact') }}"
+      onsubmit="return confirm('Upload brands from contracts exactly as-is?');"
+      style="display:inline;">
+       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+  <button class="btn btn-warning mb-3">
+    ⬇ Upload Brands from Contracts
+  </button>
+</form>
+    <!-- <a href="{{ url_for('admin_brand.admin_brand_upload_excel') }}"
+       class="btn btn-outline-secondary me-2">
+      Upload Excel
+    </a>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#brandModal">
+      Add Brand
+    </button> -->
+  </div>
+</div>
+
+<!-- BRAND MODAL (ADD / EDIT) -->
+<div class="modal fade" id="brandModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {% if edit_brand %}
+            Edit Brand: {{ edit_brand.name }}
+          {% else %}
+            Add New Brand
+          {% endif %}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="post">
+        <div class="modal-body">
+          {{ form.hidden_tag() }}
+
+          <div class="mb-3">
+            {{ form.code.label(class="form-label fw-semibold") }}
+            {{ form.code(class="form-control") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.product_count.label(class="form-label fw-semibold") }}
+            {{ form.product_count(class="form-control") }}
+          </div>
+
+          <div class="mb-3">
+            {{ form.name.label(class="form-label fw-semibold") }}
+            {{ form.name(class="form-control") }}
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          {{ form.submit(class="btn btn-primary") }}
+          {% if edit_brand %}
+            <a href="{{ url_for('admin_brand.admin_brand_manage') }}"
+               class="btn btn-outline-secondary">
+              Cancel
+            </a>
+          {% else %}
+            <button type="button"
+                    class="btn btn-outline-secondary"
+                    data-bs-dismiss="modal">
+              Close
+            </button>
+          {% endif %}
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<!-- BRAND TABLE -->
+<div class="card shadow-sm">
+  <div class="card-body">
+     <h4>Existing Brand</h4>
+    <div class="table-responsive">
+      <table id="brandTable"
+             class="table table-bordered table-hover align-middle mb-0"
+             style="width:100%">
+        <thead class="table-light">
+          <tr>
+            <th>Sno</th>
+            <!-- <th>Product Count</th> -->
+            <th>Name</th>
+            <!-- <th style="width:160px;">Actions</th> -->
+          </tr>
+        </thead>
+        <tbody>
+        {% for brand in brands %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <!-- <td>{{ brand.code }}</td> -->
+            <!-- <td>{{ brand.product_count }}</td> -->
+            <td>{{ brand.name }}</td>
+            <!-- <td>
+              <a href="{{ url_for('admin_brand.admin_brand_manage', edit_id=brand.id) }}"
+                 class="btn btn-sm btn-outline-warning">
+                Edit
+              </a>
+              <a href="{{ url_for('admin_brand.admin_brand_manage', delete_id=brand.id) }}"
+                 class="btn btn-sm btn-outline-danger"
+                 onclick="return confirm('Delete brand?');">
+                Delete
+              </a>
+            </td> -->
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ CORRECT SCRIPT ORDER -->
+<!-- <script>
+(function () {
+
+  function initBrandTable() {
+
+    // Use the ACTIVE jQuery instance safely
+    if (!window.jQuery || !jQuery.fn || !jQuery.fn.DataTable) {
+      console.warn('DataTables not ready yet, retrying...');
+      setTimeout(initBrandTable, 300);
+      return;
+    }
+
+    // Prevent double initialization
+    if ($.fn.DataTable.isDataTable('#brandTable')) {
+      return;
+    }
+
+    $('#brandTable').DataTable({
+      paging: true,
+      pageLength: 10,
+      lengthChange: true,
+      searching: true,
+      ordering: true,
+      info: true
+    });
+  }
+
+  // Run after full page load
+  window.addEventListener('load', initBrandTable);
+
+})();
+</script> -->
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css"/>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+$(document).ready(function () {
+
+  if (!$.fn.DataTable.isDataTable('#brandTable')) {
+
+    $('#brandTable').DataTable({
+      pageLength: 10,
+      lengthChange: true,
+      searching: true,
+      ordering: true,
+      info: true,
+      dom: 'Bfrtip',
+      buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+    });
+
+  }
+
+});
+</script>
+
+
+<!-- AUTO OPEN MODAL ON EDIT -->
+{% if edit_brand %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  new bootstrap.Modal(document.getElementById("brandModal")).show();
+});
+</script>
+
+
+{% endif %}
+
+{% endblock %}

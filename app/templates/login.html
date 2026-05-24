@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<style>
+  /* Ensure the container takes full height and centers the card */
+.login-container {
+    background-color: #f0f7ff; /* Soft blue background */
+    padding: 20px;
+}
+
+/* Auth Wrapper sizing for Login */
+.auth-wrapper {
+    background: #ffffff;
+    border-radius: 20px;
+    max-width: 900px; /* Login is usually slightly narrower than Signup */
+    width: 100%;
+    min-height: 550px;
+}
+
+/* Same Slider side styling from Signup for consistency */
+.slider-side {
+    background-color: #e9f3ff;
+    border-right: 1px solid #dee2e6;
+}
+
+/* Form refinement */
+.form-control-lg {
+    font-size: 1rem;
+    padding: 12px 15px;
+    border-radius: 10px;
+}
+
+.btn-primary {
+    background-color: #3182ce;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+/* Make "Remember Me" checkbox align nicely */
+.form-check-input:checked {
+    background-color: #3182ce;
+    border-color: #3182ce;
+}
+</style>
+<div class="login-container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="row g-0 auth-wrapper shadow-lg overflow-hidden">
+        
+        <div class="col-lg-6 d-none d-lg-flex flex-column align-items-center justify-content-center slider-side p-5 text-center">
+            <div class="slider-content">
+                <div class="icon-box mb-4">
+                    <img src="https://img.icons8.com/fluency/96/lock-landscape.png" alt="Security Icon">
+                </div>
+                <h2 class="fw-bold mb-3">Welcome Back</h2>
+                <p class="text-muted mb-5">
+                    Log in to access your GeM Portal Order Intelligence dashboard. 
+                    Real-time data and brand insights are just a click away.
+                </p>
+                <div class="pagination-dots">
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-12 bg-white p-5 d-flex flex-column justify-content-center">
+            <div class="form-header mb-4">
+                <h1 class="h3 fw-bold">Login</h1>
+                <p class="text-muted">Enter your credentials to manage your orders.</p>
+            </div>
+
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div class="mb-3">
+                    {{ form.email.label(class="form-label small fw-bold") }}
+                    {{ form.email(class="form-control form-control-lg", placeholder="email@example.com") }}
+                    {% for e in form.email.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        {{ form.password.label(class="form-label small fw-bold") }}
+                        <!-- <a href="#" class="small text-decoration-none">Forgot Password?</a> -->
+                    </div>
+                    {{ form.password(class="form-control form-control-lg") }}
+                    {% for e in form.password.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+                </div>
+
+                <div class="mb-4 form-check">
+                    {{ form.remember(class="form-check-input") }}
+                    {{ form.remember.label(class="form-check-label small text-muted") }}
+                </div>
+
+                {{ form.submit(class="btn btn-primary btn-lg w-100 shadow-sm fw-bold") }}
+                
+                <div class="text-center mt-4">
+                    <p class="text-muted small">
+                        Don't have an account? 
+                        <a href="{{ url_for('auth.signup') }}" class="text-decoration-none fw-bold">Sign up</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

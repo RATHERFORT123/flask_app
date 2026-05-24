@@ -1,0 +1,663 @@
+<!-- user_contract_info.html -->
+
+{% extends "base.html" %}
+{% block title %}USER CONTRACTS{% endblock %}
+{% block content %}
+
+<!-- Bootstrap Icons CDN for administrative elements -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+    .box {
+        border-radius: 12px;
+        box-shadow: 0 2px 12px #e9ecef;
+    }
+
+    .box-header {
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .filter-label {
+        font-size: .94rem;
+        font-weight: 600;
+    }
+
+    .pagination {
+        margin-top: 16px;
+    }
+
+    .select2-container .select2-selection--single {
+        height: 34px !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+        border: 1px solid #ccc !important;
+        border-radius: 4px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 34px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 34px !important;
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Header Title Section -->
+    <div class="mb-4">
+        <h1 class="h3 mb-1 text-gray-800 fw-bold">Contract Management</h1>
+        <div class="text-muted small fw-medium">Comprehensive contract oversight and analysis</div>
+    </div>
+
+    <!-- ===================================== -->
+    <!-- FILTER FORM -->
+    <!-- ===================================== -->
+    <form class="box p-4 mb-4 bg-white border-0 shadow-sm rounded" method="get">
+        <div class="box-header mb-3 text-secondary h6 fw-bold text-uppercase d-flex align-items-center gap-2">
+            <i class="bi bi-search text-primary"></i> Search & Filter Contracts
+        </div>
+        
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="filter-label form-label small fw-semibold text-muted mb-1">Search</label>
+                <input type="text" class="form-control form-control-sm" name="search" value="{{ filters_applied.get('search', '') }}" placeholder="Contract ID">
+            </div>
+
+            <!-- BRAND FILTER ACCESSIBLE ADDITION -->
+            <!-- <div class="col-md-2">
+                <label class="filter-label form-label small fw-semibold text-muted mb-1">Brand</label>
+                <input type="text" class="form-control form-control-sm" name="brand" value="{{ filters_applied.get('brand', '') }}" placeholder="e.g. Dell, Apple">
+            </div> -->
+            <div class="col-md-2">
+
+    <label class="filter-label form-label small fw-semibold text-muted mb-1">
+        Brand
+    </label>
+
+    <select id="brand_search"
+            multiple
+            style="width:100%">
+    </select>
+
+    <input type="hidden"
+           name="brand"
+           id="brand_input"
+           value="{{ filters_applied.get('brand', '') }}">
+
+</div>
+            <div class="col-md-2">
+                <label class="filter-label form-label small fw-semibold text-muted mb-1">From</label>
+                <input type="date" class="form-control form-control-sm" name="date_from" value="{{ filters_applied.get('date_from','') }}">
+            </div>
+            
+            <div class="col-md-2">
+                <label class="filter-label form-label small fw-semibold text-muted mb-1">To</label>
+                <input type="date" class="form-control form-control-sm" name="date_to" value="{{ filters_applied.get('date_to','') }}">
+            </div>
+            
+            <div class="col-md-3">
+                <label class="filter-label form-label small fw-semibold text-muted mb-1">Status</label>
+                <select class="form-select form-select-sm" name="status">
+                    <option value="">All Statuses</option>
+                    {% for status in [
+                        "Fullfillment in Progress",
+                        "Order Completed",
+                        "Order Accepted",
+                        "Order Paid",
+                        "Order Cancelled",
+                        "Waiting for Seller Confirmation",
+                        "Waiting for Seller Payment",
+                        "Cancellation Requested by Buyer",
+                        "Waiting For Payment Confirmation",
+                        "OrderPlaced",
+                        "WaitingForBuyerAction"
+                    ] %}
+                    <option value="{{status}}" {% if filters_applied.get('status','')==status %}selected{% endif %}>{{status.title()}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-md-2">
+                <label class="filter-label form-label small fw-semibold text-muted mb-1">Buying Mode</label>
+                <select class="form-select form-select-sm" name="buying_mode">
+                    <option value="">All Types</option>
+                    {% for t in ['Bid/RA', 'Direct'] %}
+                    <option value="{{t}}" {% if filters_applied.get('buying_mode','')==t %}selected{% endif %}>{{t.title()}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-md-2">
+                <label class="filter-label form-label small fw-semibold text-muted mb-1">Value Range</label>
+                <div class="input-group input-group-sm">
+                    <input type="number" class="form-control" name="min_total" placeholder="Min" value="{{ filters_applied.get('min_total','') }}">
+                    <input type="number" class="form-control" name="max_total" placeholder="Max" value="{{ filters_applied.get('max_total','') }}">
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label class="filter-label form-label small fw-semibold text-muted mb-1">Ministry</label>
+                <select class="form-control form-control-sm select2" id="ministry" name="ministry">
+                    <option value="">--Select--</option>
+                    <option value="">All Types</option>
+                    {% for t in [
+                        "Autonomous Body",
+                        "Central Government",
+                        "Central PSU",
+                        "Comptroller and Auditor General (CAG) of India",
+                        "Election Commission of India",
+                        "GOA",
+                        "Indian Atomic Industiral Forum (IAIF)",
+                        "Insurance Regulatory and Development Authority (IRDA)",
+                        "LADAKH",
+                        "Law Commission of India",
+                        "Lok Sabha Secretariat",
+                        "MIZORAM",
+                        "Ministry of AYUSH",
+                        "Ministry of Agriculture and Farmers Welfare",
+                        "Ministry of Chemicals and Fertilizers",
+                        "Ministry of Civil Aviation",
+                        "Ministry of Coal",
+                        "Ministry of Commerce and Industry",
+                        "Ministry of Communications",
+                        "Ministry of Consumer Affairs Food and Public Distribution",
+                        "Ministry of Corporate Affairs",
+                        "Ministry of Culture",
+                        "Ministry of Development of North Eastern Region",
+                        "Ministry of Drinking Water and Sanitation",
+                        "Ministry of Earth Sciences",
+                        "Ministry of Education",
+                        "Ministry of Electronics and Information Technology",
+                        "Ministry of Environment Forest and Climate Change",
+                        "Ministry of External Affairs",
+                        "Ministry of Finance",
+                        "Ministry of Food Processing Industries",
+                        "Ministry of Health and Family Welfare",
+                        "Ministry of Heavy Industries and Public Enterprises",
+                        "Ministry of Housing & Urban Affairs (MoHUA)",
+                        "Ministry of Housing and Urban Poverty Alleviation",
+                        "Ministry of Human Resource Development",
+                        "Ministry of Information and Broadcasting",
+                        "Ministry of Labour and Employment",
+                        "Ministry of Law and Justice",
+                        "Ministry of Micro Small and Medium Enterprises",
+                        "Ministry of Mines",
+                        "Ministry of Minority Affairs",
+                        "Ministry of New and Renewable Energy",
+                        "Ministry of Panchayati Raj",
+                        "Ministry of Parliamentary Affairs",
+                        "Ministry of Personnel Public Grievances and Pensions",
+                        "Ministry of Petroleum and Natural Gas",
+                        "Ministry of Ports, Shipping and Waterways",
+                        "Ministry of Power",
+                        "Ministry of Railways",
+                        "Ministry of Road Transports and highways",
+                        "Ministry of Rural Development ",
+                        "Ministry of Science and Technology",
+                        "Ministry of Skill Development and Entrepreneurship",
+                        "Ministry of Social Justice and Empowerment",
+                        "Ministry of Statistics and Programme Implementation",
+                        "Ministry of Steel",
+                        "Ministry of Textiles",
+                        "Ministry of Tourism",
+                        "Ministry of Tribal Affairs",
+                        "Ministry of Urban Development",
+                        "Ministry of Water Resources River Development and Ganga Rejuvenation",
+                        "Ministry of Women and Child Development",
+                        "Ministry of Youth Affairs and Sports",
+                        "NITI Aayog - National Institution for Transforming India",
+                        "National Commission for Scheduled Tribes (NCST)",
+                        "National Mission for Clean Ganga (NMCG), New Delhi",
+                        "National Rural Livelihoods Mission (NRLM) - Aajeevika",
+                        "Office of the Principal Scientific Adviser",
+                        "Organistion Incomplete",
+                        "President of India",
+                        "Primary User",
+                        "Rajya Sabha Secretariat",
+                        "SIKKIM",
+                        "Seventh Central Pay Commission, New Delhi",
+                        "Staff Selection Commision",
+                        "Union Public Service Commission (UPSC)",
+                        "Vice President of India"
+                    ] %}
+                    <option value="{{t}}" {% if filters_applied.get('ministry','')==t %}selected{% endif %}>{{t.title()}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-sm w-100 fw-semibold shadow-sm">
+                    <i class="bi bi-search me-1"></i> Search
+                </button>
+            </div>
+            <div class="col-md-2 text-end">
+                <a href="{{ url_for('admin_contract.manage_contracts') }}" class="btn btn-outline-secondary btn-sm w-100 fw-semibold">
+                    <i class="bi bi-x-circle me-1"></i> Clear All
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <!-- Data Summary Heading Row -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="fs-5 fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                <i class="bi bi-file-earmark-text text-secondary"></i> Contracts Overview 
+                <span class="badge bg-secondary rounded-pill font-monospace small fs-7">{{pagination.total}}</span>
+            </h2>
+        </div>
+        <div>
+    <a href="{{ url_for('admin_contract.export_contracts_excel', **filters_applied) }}" class="btn btn-success btn-sm fw-semibold d-inline-flex align-items-center gap-1 shadow-sm">
+        <i class="bi bi-file-earmark-excel"></i> Export Excel
+    </a>
+</div>
+    </div>
+
+    <!-- ===================================== -->
+    <!-- TABLE DATA STRUCTURE -->
+    <!-- ===================================== -->
+    <div class="box bg-white border-0 shadow-sm rounded overflow-hidden mb-4">
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th width="80">ID</th>
+                        <th>Contract ID</th>
+                        <th>Status</th>
+                        <th>Brand Summary</th>
+                        <th>Total Value</th>
+                        <th>Organization Type</th>
+                        <th width="180" class="text-center">Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contract in contracts %}
+                    <tr class="border-bottom">
+                        <td class="text-muted small font-monospace">{{ contract.id }}</td>
+                        <td class="fw-bold text-dark">{{ contract.contract_id }}</td>
+                        <td>
+                            <span class="badge bg-light text-dark border px-2 py-1 small fw-medium">
+                                {{ contract.status }}
+                            </span>
+                        </td>
+                        <!-- BRAND LISTING COLUMN -->
+                        <td class="small text-secondary">
+                            {% set brand_list = [] %}
+                            {% for item in contract.items %}
+                                {% if item.brand and item.brand not in brand_list %}
+                                    {% set _ = brand_list.append(item.brand) %}
+                                  {% endif %}
+                            {% endfor %}
+                            {{ brand_list | join(', ') if brand_list else '-' }}
+                        </td>
+                        <!-- TOTAL VALUE VALUE PLACEHOLDER COLUMN -->
+                        <td class="fw-semibold text-success">
+                            {{ contract.total }}
+                        </td>
+                        <td class="text-secondary small fw-medium">{{ contract.organization_type }}</td>
+                        <td class="text-center">
+                            <div class="d-inline-flex gap-1">
+                              <button 
+    class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1 px-3 view-contract-btn"
+    data-contract-id="{{ contract.contract_id | forceescape }}"
+>
+    <i class="bi bi-eye"></i> View
+</button>
+                                <!-- <button
+                                    class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1 px-3 view-contract-btn"
+                                    data-contract-id="{{ contract.contract_id | forceescape }}"
+                                    data-status="{{ contract.status | forceescape }}"
+                                    data-org="{{ contract.organization_name | forceescape }}"
+                                    data-date="{{ contract.contract_date }}"
+                                    data-total="{{ contract.total }}"
+                                    data-items="{% for item in contract.items %}{% if item.service %}S:{{ item.service | forceescape }} {% endif %}{% if item.product %}P:{{ item.product | forceescape }} {% endif %}{% if item.brand %}B:{{ item.brand | forceescape }} {% endif %}{% if item.model %}M:{{ item.model | forceescape }} {% endif %}|{% endfor %}"
+                                >
+                                    <i class="bi bi-eye"></i> View
+                                </button> -->
+
+                                <button
+                                    class="btn btn-success btn-sm d-inline-flex align-items-center gap-1 px-3 download-contract-btn"
+                                    data-contract-id="{{ contract.contract_id | forceescape }}"
+                                >
+                                    <i class="bi bi-download"></i> Download
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-5">
+                            <i class="bi bi-folder-x display-4 text-light d-block mb-2"></i>
+                            No contracts configurations found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===================================== -->
+        <!-- PAGINATION SECTION -->
+        <!-- ===================================== -->
+        <div class="d-flex justify-content-between align-items-center p-3 bg-light border-top">
+            <div class="text-muted small fw-medium">
+                Showing Page <span class="fw-bold text-dark">{{ pagination.page }}</span> of <span class="fw-bold text-dark">{{ pagination.pages }}</span>
+            </div>
+            
+            <nav aria-label="Contract Navigation">
+                <ul class="pagination pagination-sm mb-0 shadow-sm">
+                    {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{pagination.prev_num}}{% for k, v in filters_applied.items() %}&{{k}}={{v}}{% endfor %}">
+                            Previous
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    <li class="page-item disabled">
+                        <span class="page-link text-dark fw-semibold">
+                            {{ pagination.page }}
+                        </span>
+                    </li>
+                    
+                    {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{pagination.next_num}}{% for k, v in filters_applied.items() %}&{{k}}={{v}}{% endfor %}">
+                            Next
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- ===================================== -->
+<!-- MODAL OVERLAY -->
+<!-- ===================================== -->
+<div class="modal fade" id="contractDetailModal" tabindex="-1" aria-labelledby="contractDetailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded">
+            <div class="modal-header bg-dark text-white py-3">
+                <h5 class="modal-title d-flex align-items-center gap-2" id="contractDetailLabel">
+                    <i class="bi bi-file-earmark-text text-warning"></i> 
+                    <span>Contract Verification Profile</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body p-4" id="contractModalBody">
+                <div class="text-center text-muted py-3">
+                    <div class="spinner-border spinner-border-sm text-secondary me-2" role="status"></div>
+                    Loading profile metrics safely...
+                </div>
+            </div>
+            
+            <div class="modal-footer bg-light py-2">
+                <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">Close View</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script>
+function displayOrNone(value) {
+    return value ?? "None";
+}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = new bootstrap.Modal(document.getElementById('contractDetailModal'));
+    const modalBody = document.getElementById('contractModalBody');
+
+    document.querySelectorAll('.view-contract-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const contractId = this.dataset.contractId;
+            
+            // 1. Render Loading State Inside Modal Body Container
+            modalBody.innerHTML = `
+                <div class="text-center text-muted py-5">
+                    <div class="spinner-border text-primary mb-2" role="status"></div>
+                    <p class="mb-0">Retrieving contract and seller data logs securely...</p>
+                </div>
+            `;
+            modal.show();
+
+            // 2. Fetch the dynamic dataset from your backend blueprint path
+            // Note: Change prefix to /admin/contract/api/ if configured inside your admin blueprint context
+            // Change this line inside your template's script section:
+// Locate this inside your modal opening script and update the string value:
+fetch(`/admin/contracts/contract/modal-api/${contractId}`)
+                .then(res => {
+                    if (!res.ok) throw new Error("Contract verification entry missing");
+                    return res.json();
+                })
+                .then(data => {
+                    const contract = data.contract;
+                    const seller = data.seller;
+
+                    // Parse JSON structural items array safely
+                    let itemsHtml = "No linked items available.";
+                    if (contract.items && contract.items.length > 0) {
+                        itemsHtml = contract.items.map(item => {
+                            let parts = [];
+                            if (item.service) parts.push(`<strong>S:</strong> ${item.service}`);
+                            if (item.product) parts.push(`<strong>P:</strong> ${item.product}`);
+                            if (item.brand)   parts.push(`<strong>B:</strong> ${item.brand}`);
+                            if (item.model)   parts.push(`<strong>M:</strong> ${item.model}`);
+                            return `<div class="p-1 font-monospace border-bottom border-light">${parts.join(' | ')}</div>`;
+                        }).join('');
+                    }
+
+                    // Build Seller Card Sub-Layout Segment
+                    let sellerHtml = `
+                        <div class="alert alert-warning text-center border-0 p-3 mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>No seller record mapped to this contract token ID.
+                        </div>
+                    `;
+                    
+                    if (seller) {
+                        sellerHtml = `
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <small class="text-muted d-block text-uppercase small fw-bold">Company Name</small>
+                                    <span class="fw-bold text-dark">${seller.company_name}</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <small class="text-muted d-block text-uppercase small fw-bold">Seller ID / Code</small>
+                                    <span class="text-dark font-monospace">${seller.seller_id}</span>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <small class="text-muted d-block text-uppercase small fw-bold">Contact Number</small>
+                                    <span class="text-secondary">${seller.contact_no}</span>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <small class="text-muted d-block text-uppercase small fw-bold">Email Address</small>
+                                    <span class="text-secondary">${seller.email}</span>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <small class="text-muted d-block text-uppercase small fw-bold">GSTIN No</small>
+                                    <span class="badge bg-light text-dark border font-monospace fw-medium">${seller.gstin}</span>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <small class="text-muted d-block text-uppercase small fw-bold">MSME Registration</small>
+                                    <span class="badge bg-light text-dark border font-monospace fw-medium">${seller.msme_reg_no}</span>
+                                </div>
+                                <div class="col-12">
+                                    <small class="text-muted d-block text-uppercase small fw-bold">Registered Office Address</small>
+                                    <span class="text-secondary small d-block" style="line-height: 1.4;">${seller.address}</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    // 3. Inject Combined Structural Grid Into Modal Canvas View
+                    modalBody.innerHTML = `
+                        <div class="row g-3 mb-4 p-3 bg-light rounded border">
+                            <div class="col-md-6">
+                                <small class="text-muted d-block text-uppercase small fw-bold">Contract Reference Key</small>
+                                <span class="fs-6 fw-bold text-dark">${contract.contract_id}</span>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <small class="text-muted d-block text-uppercase small fw-bold">Total Valuation</small>
+                                <span class="fs-5 fw-bold text-success">${contract.total}</span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6 col-md-4">
+                                <small class="text-muted d-block text-uppercase small fw-bold">Verification Status</small>
+                                <span class="badge bg-info text-dark mt-1 px-2 py-1">${contract.status}</span>
+                            </div>
+                            <div class="col-sm-6 col-md-4">
+                                <small class="text-muted d-block text-uppercase small fw-bold">Execution Date</small>
+                                <span class="fw-semibold text-secondary d-block mt-1">${contract.contract_date || '-'}</span>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <small class="text-muted d-block text-uppercase small fw-bold">Buying Entity Name</small>
+                                <span class="fw-semibold text-dark d-block mt-1 small">${contract.organization_name}</span>
+                            </div>
+                        </div>
+
+                        <h6 class="fw-bold mb-3 text-secondary text-uppercase d-flex align-items-center gap-2">
+                            <i class="bi bi-shop text-warning"></i> Vendor & Seller Profiles
+                        </h6>
+                        <div class="p-3 bg-white rounded border mb-4">
+                            ${sellerHtml}
+                        </div>
+
+                        <h6 class="fw-bold mb-3 text-secondary text-uppercase d-flex align-items-center gap-2">
+                            <i class="bi bi-box-seam text-primary"></i> Linked Structural Components
+                        </h6>
+                        <div class="p-3 bg-white rounded border" style="max-height: 200px; overflow-y: auto;">
+                            <div class="small text-dark">${itemsHtml}</div>
+                        </div>
+                    `;
+                })
+                .catch(err => {
+                    console.error(err);
+                    modalBody.innerHTML = `
+                        <div class="alert alert-danger text-center border-0 p-4">
+                            <i class="bi bi-x-circle display-6 d-block mb-2"></i>
+                            <strong>System API Sync Defect</strong><br>
+                            Unable to aggregate structural records for token context ID: ${contractId}.
+                        </div>
+                    `;
+                });
+        });
+    });
+});
+document.querySelectorAll('.download-contract-btn').forEach(button => {
+    button.addEventListener('click', function(){
+        const contractId = this.dataset.contractId;
+
+        fetch(`/user/contracts/${contractId}/pdf`)
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                window.open(data.pdf_url, "_blank");
+            } else {
+                alert("PDF not found");
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Server Error");
+        });
+    });
+});
+</script>
+<script>
+
+$(document).ready(function () {
+
+    $('#brand_search').select2({
+
+        placeholder: 'Search brands',
+
+        minimumInputLength: 1,
+
+        ajax: {
+
+            url: "{{ url_for('search.search_brands') }}",
+
+            dataType: 'json',
+
+            delay: 300,
+
+            data: function (params) {
+
+                return {
+                    term: params.term
+                };
+
+            },
+
+            processResults: function (data) {
+
+                return {
+
+                    results: data.map(function (item) {
+
+                        return {
+                            id: item,
+                            text: item
+                        };
+
+                    })
+
+                };
+
+            }
+
+        }
+
+    });
+
+
+    // OLD VALUES
+
+    var brands = "{{ filters_applied.get('brand', '') }}"
+
+        .split(',')
+
+        .map(v => v.trim())
+
+        .filter(Boolean);
+
+
+    brands.forEach(function (brand) {
+
+        $('#brand_search').append(
+            new Option(brand, brand, true, true)
+        );
+
+    });
+
+
+    $('#brand_search').trigger('change');
+
+
+    // UPDATE HIDDEN INPUT
+
+    $('#brand_search').on('change', function () {
+
+        const values = $(this).val();
+
+        $('#brand_input').val(
+            values ? values.join(',') : ''
+        );
+
+    });
+
+});
+
+</script>
+{% endblock %}

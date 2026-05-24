@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+{% block title %}{{ action }} User{% endblock %}
+
+{% block content %}
+
+<style>
+    .container {
+        max-width: 1100px;
+    }
+
+    .form-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        margin-top: 20px;
+    }
+
+    .form-header {
+        font-size: 26px;
+        font-weight: 600;
+        margin-bottom: 25px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, .15);
+    }
+
+    .form-check {
+        padding-left: 28px;
+    }
+
+    .form-check-input {
+        transform: scale(1.2);
+        margin-top: 4px;
+    }
+
+    .btn {
+        border-radius: 8px;
+        padding: 8px 18px;
+        font-weight: 500;
+    }
+
+    .btn-primary {
+        background: #0d6efd;
+        border: none;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        border: none;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    @media(max-width:768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+<div class="container">
+
+    <div class="form-card">
+
+        <div class="form-header">
+            {{ action }} User
+        </div>
+
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="form-grid">
+
+                <div>
+                    {{ form.username.label(class="form-label") }}
+                    {{ form.username(class="form-control") }}
+                </div>
+
+                <div>
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control") }}
+                </div>
+
+                <div>
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control") }}
+                    <small class="text-muted">Leave blank to keep current password</small>
+                </div>
+
+                <div>
+                    {{ form.number.label(class="form-label") }}
+                    {{ form.number(class="form-control") }}
+                </div>
+
+                <div>
+                    {{ form.address.label(class="form-label") }}
+                    {{ form.address(class="form-control") }}
+                </div>
+
+                <div>
+                    {{ form.comment.label(class="form-label") }}
+                    {{ form.comment(class="form-control") }}
+                </div>
+
+                <div class="full-width">
+
+                    <div class="form-check mb-2">
+                        {{ form.is_admin(class="form-check-input") }}
+                        {{ form.is_admin.label(class="form-check-label") }}
+                    </div>
+
+                    <div class="form-check mb-2">
+                        {{ form.is_verified(class="form-check-input") }}
+                        {{ form.is_verified.label(class="form-check-label") }}
+                    </div>
+
+                    <div class="form-check mb-2">
+                        {{ form.is_blocked(class="form-check-input") }}
+                        {{ form.is_blocked.label(class="form-check-label") }}
+                    </div>
+
+                </div>
+
+
+                {% if form.brand_names is defined %}
+                <div class="full-width">
+                    <label for="brand_search" class="form-label">Brands</label>
+                    <select id="brand_search" multiple style="width:100%"></select>
+                    {{ form.brand_names(class="form-control d-none") }}
+                </div>
+                {% endif %}
+
+
+                {% if form.category_names is defined %}
+                <div class="full-width">
+                    <label for="category_search" class="form-label">Categories</label>
+                    <select id="category_search" multiple style="width:100%"></select>
+                    {{ form.category_names(class="form-control d-none") }}
+                </div>
+                {% endif %}
+
+
+                <div>
+                    {{ form.assigned_date_range_start.label(class="form-label") }}
+                    {{ form.assigned_date_range_start(class="form-control") }}
+                </div>
+
+                <div>
+                    {{ form.assigned_date_range_end.label(class="form-label") }}
+                    {{ form.assigned_date_range_end(class="form-control") }}
+                </div>
+
+                <div>
+                    {{ form.subscription_date.label(class="form-label") }}
+                    {{ form.subscription_date(class="form-control") }}
+                </div>
+
+                <div>
+                    {{ form.amount.label(class="form-label") }}
+                    {{ form.amount(class="form-control") }}
+                </div>
+
+                <div>
+                    {{ form.payment_status.label(class="form-label") }}
+                    {{ form.payment_status(class="form-control") }}
+                </div>
+
+                <div>
+                    {{ form.subscription_plan.label(class="form-label") }}
+                    {{ form.subscription_plan(class="form-control") }}
+                </div>
+
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                    {{ action }}
+                </button>
+
+                <a href="{{ url_for('admin_user.admin_dashboard') }}" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<script>
+    $(document).ready(function () {
+
+        {% if form.brand_names is defined %}
+        $('#brand_search').select2({
+            placeholder: 'Search brands',
+            minimumInputLength: 1,
+            ajax: {
+                url: "{{ url_for('search.search_brands') }}",
+                dataType: 'json',
+                delay: 300,
+                data: function (params) {
+                    return { term: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.map(function (item) {
+                            return { id: item, text: item };
+                        })
+                    };
+                }
+            }
+        });
+
+        var brands = "{{ form.brand_names.data or '' }}"
+            .split(',')
+            .map(v => v.trim())
+            .filter(Boolean);
+
+        brands.forEach(function (b) {
+            $('#brand_search').append(new Option(b, b, true, true));
+        });
+
+        $('#brand_search').trigger('change');
+
+        $('#brand_search').on('change', function () {
+            const values = $(this).val();
+            $('#{{ form.brand_names.id }}').val(values ? values.join(',') : '');
+        });
+        {% endif %}
+
+        console.log("Brand URL:", "{{ url_for('search.search_brands') }}");
+
+        {% if form.category_names is defined %}
+        $('#category_search').select2({
+            placeholder: 'Search categories',
+            minimumInputLength: 1,
+            ajax: {
+                url: "{{ url_for('search.search_categories') }}",
+                dataType: 'json',
+                delay: 300,
+                data: function (params) {
+                    return { term: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.map(function (item) {
+                            return { id: item, text: item };
+                        })
+                    };
+                }
+            }
+        });
+
+        var categories = "{{ form.category_names.data or '' }}"
+            .split(',')
+            .map(v => v.trim())
+            .filter(Boolean);
+
+        categories.forEach(function (c) {
+            $('#category_search').append(new Option(c, c, true, true));
+        });
+
+        $('#category_search').trigger('change');
+
+        $('#category_search').on('change', function () {
+            const values = $(this).val();
+            $('#{{ form.category_names.id }}').val(values ? values.join(',') : '');
+        });
+        {% endif %}
+
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Delete Month Data{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<h2 class="text-danger mb-4">Month Wise Data Cleanup</h2>
+
+<div class="row">
+
+<!-- CONTRACT TABLE -->
+<div class="col-md-6">
+
+<h4>Contracts</h4>
+
+<table class="table table-bordered table-sm">
+
+<thead class="table-light">
+<tr>
+<th>Month</th>
+<th>Records</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for c in contract_counts %}
+
+<tr>
+
+<td>{{ "%02d"|format(c.month|int) }}-{{ c.year|int }}</td>
+
+<td>{{ c.count }}</td>
+
+<td>
+
+<a
+class="btn btn-danger btn-sm"
+href="{{ url_for('admin.delete_month',
+data_type='contracts',
+year=c.year,
+month=c.month) }}"
+onclick="return confirm('Delete {{ c.count }} contracts for {{ c.month }}-{{ c.year }} ?')">
+
+Delete
+
+</a>
+
+</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+<td colspan="3" class="text-center">No contract data</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<!-- SELLER TABLE -->
+<div class="col-md-6">
+
+<h4>Sellers</h4>
+
+<table class="table table-bordered table-sm">
+
+<thead class="table-light">
+<tr>
+<th>Month</th>
+<th>Records</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for s in seller_counts %}
+
+<tr>
+
+<td>{{ "%02d"|format(s.month|int) }}-{{ s.year|int }}</td>
+
+<td>{{ s.count }}</td>
+
+<td>
+
+<a
+class="btn btn-danger btn-sm"
+href="{{ url_for('admin.delete_month',
+data_type='sellers',
+year=s.year,
+month=s.month) }}"
+onclick="return confirm('Delete {{ s.count }} sellers for {{ s.month }}-{{ s.year }} ?')">
+
+Delete
+
+</a>
+
+</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+<td colspan="3" class="text-center">No seller data</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
