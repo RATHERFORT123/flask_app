@@ -1961,7 +1961,7 @@ def get_contract_pdf_url(contract_id):
         # Open GeM homepage first
         driver.get("https://gem.gov.in/")
 
-        dt_time.sleep(5)
+        time.sleep(5)
 
         # JS fetch request
         script = f"""
@@ -1984,7 +1984,7 @@ def get_contract_pdf_url(contract_id):
 
         driver.execute_script(script)
 
-        dt_time.sleep(5)
+        time.sleep(5)
 
         # Read response
         body_text = driver.find_element(By.TAG_NAME, "body").text
