@@ -1,97 +1,724 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusHub — Enterprise Analytics Platform</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  
+  <style>
+    :root {
+      --bg-main: #0f172a;
+      --surface-main: #111827;
+      --brand-primary: #6366f1;
+      --brand-accent: #8b5cf6;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --glass-bg: rgba(17, 24, 39, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --brand-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+      --panel-shadow: 0 20px 50px rgba(0, 4, 28, 0.3), 0 10px 20px rgba(0, 0, 0, 0.2);
+      --overlap-shadow: 0 30px 60px rgba(0, 0, 0, 0.45), 0 10px 25px rgba(99, 102, 241, 0.15);
+    }
 
-{% block title %}Home - Infinity Platform{% endblock %}
+    /* Core Layout Configurations */
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      font-size: 14px;
+    }
+    @media (min-width: 768px) { html { font-size: 15px; } }
+    @media (min-width: 1200px) { html { font-size: 16px; } }
+    @media (min-width: 1920px) { html { font-size: 18px; } } /* Ultra-wide scaling */
 
-{% block content %}
-<div class="container py-5">
-  <!-- Hero Section -->
-  <div class="row align-items-center g-5 py-4 mb-5">
-    <div class="col-10 col-sm-8 col-lg-6">
-      <!-- Embedded dynamic Infinity logo system matching your navbar branding -->
-      <div class="d-flex justify-content-center p-4 rounded-4 shadow-sm bg-body-tertiary">
-        <svg class="img-fluid" style="max-height: 280px;" viewBox="94.42 88.728 507.896 502.486" xmlns="http://www.w3.org/2000/svg">
-          <linearGradient id="a"><stop offset="5" stop-color="#9d3adf" /><stop offset=".206" stop-color="#8542d8" /><stop offset=".638" stop-color="#4857c6" /><stop offset="1" stop-color="#106ab6" /></linearGradient>
-          <linearGradient id="b" gradientTransform="matrix(0 -1 1 0 -1035.907 1714.169)" gradientUnits="userSpaceOnUse" x1="1179.791" x2="1625.441" xlink:href="#a" y1="1385.009" y2="1385.009" />
-          <linearGradient id="c" gradientTransform="matrix(0 -1 1 0 -1035.907 1714.169)" gradientUnits="userSpaceOnUse" x1="1295.223" x2="1512.527" xlink:href="#a" y1="1560.773" y2="1560.773" />
-          <linearGradient id="d" gradientTransform="matrix(0 -1 1 0 -1035.907 1714.169)" gradientUnits="userSpaceOnUse" x1="1295.183" x2="1512.563" xlink:href="#a" y1="1208.438" y2="1208.438" />
-          <linearGradient id="e"><stop offset="0" stop-color="#00ff10" /><stop offset="0" stop-color="#00c9ff" /><stop offset="1" stop-color="#1e1cb0" /></linearGradient>
-          <linearGradient id="f" gradientTransform="matrix(0 -1 1 0 -1035.907 1714.169)" gradientUnits="userSpaceOnUse" x1="1404.902" x2="1526.941" xlink:href="#e" y1="1477.855" y2="1477.855" />
-          <linearGradient id="g" gradientTransform="matrix(0 -1 1 0 -1035.907 1714.169)" gradientUnits="userSpaceOnUse" x1="1280.805" x2="1402.851" xlink:href="#e" y1="1290.874" y2="1290.874" />
-          <linearGradient id="h" gradientTransform="matrix(0 -1 1 0 -1035.907 1714.169)" gradientUnits="userSpaceOnUse" x1="1280.841" x2="1526.905" xlink:href="#e" y1="1384.213" y2="1384.213" />
-          <linearGradient id="i" gradientTransform="matrix(0 -1 -1 0 1880.615 2037.482)" gradientUnits="userSpaceOnUse" x1="1498.712" x2="1617.24" y1="1507.082" y2="1507.082"><stop offset="0" stop-color="#547cff" /><stop offset="0" stop-color="#5d63dc" /><stop offset="1" stop-color="#4767ec" /></linearGradient>
-          <linearGradient id="j" gradientTransform="matrix(0 -1 -1 0 1880.615 2037.482)" gradientUnits="userSpaceOnUse" x1="1498.712" x2="1617.24" xlink:href="#e" y1="1558.02" y2="1558.02" />
-          <path d="m514.758 173.513-128.899 100.641 117.868-110.291 6.206-52.388-109.418 80.65v21.371l-49.815 35.843-52.386-37.224-.688-19.3-106.846-80.651 5.514 51.009 121.322 111.672-131.663-101.332-8.959-45.495-57.903-39.29v90.299l185.353 132.009h-1.747l-186.807 133.036v90.305l57.902-39.292 8.961-45.497 131.664-101.328-121.324 111.668-5.514 51.01 106.844-80.652.693-19.298 52.388-37.224 49.808 35.845v21.369l109.424 80.651-6.206-52.389-117.874-110.295 128.907 100.643 8.96 45.497 58.591 39.292v-90.305l-183.675-132.005h1.766l185.111-133.04v-90.299l-58.589 39.29z" fill="url(#b)" />
-          <path d="m450.85 253.699c-.911.464-1.808.973-2.705 1.52 18.286-31.125 50.4-51.031 86.443-53.419l2.355-.158c10.704 5.71 20.611 13.071 29.416 21.936 23.274 23.44 35.957 54.542 35.73 87.583-.327 46.635-26.825 87.205-65.438 107.786l-2.335-.167c-36.342-2.507-68.541-22.731-86.677-54.262 3.274 2.007 6.684 3.657 10.15 4.904 6.733 2.424 13.828 3.657 21.088 3.676h.165c34.405 0 62.568-27.941 62.818-62.358.121-16.872-6.363-32.754-18.242-44.721-11.879-11.968-27.716-18.56-44.576-18.56-10.847-.001-20.079 2.043-28.192 6.24z" fill="url(#c)" />
-          <path d="m94.649 311.195c-.229-33.039 12.456-64.143 35.73-87.583 8.834-8.9 18.787-16.277 29.542-22.007l2.389.143c36.819 2.217 69.385 22.474 87.697 54.396a46.157 46.157 0 0 0 -4.114-2.411c-8.116-4.192-17.345-6.237-28.194-6.237-16.863 0-32.696 6.591-44.575 18.557-11.883 11.968-18.365 27.848-18.245 44.721.246 34.417 28.41 62.36 62.82 62.36h.165c7.256-.021 14.349-1.254 21.087-3.679 3.936-1.414 7.795-3.349 11.466-5.736-17.999 31.837-51.44 52.868-87.944 55.116l-2.388.151c-38.611-20.585-65.105-61.146-65.436-107.791z" fill="url(#d)" />
-          <path d="m392.017 309.267-42.612-42.611 18.37-18.37 11.758-11.767.028.026 15.914-15.911c8.399-8.404 17.73-15.278 27.717-20.447 16.647-8.598 35.438-12.959 55.852-12.959 19.594 0 38.477 4.54 55.451 13.137-38.349 2.545-71.345 24.728-89.004 56.589-2.569 1.792-5.054 3.892-7.438 6.274l-28.172 28.172z" fill="url(#f)" />
-          <path d="m162.559 420.27c39.287-2.422 73.008-25.424 90.495-58.365a63.995 63.995 0 0 0 7.559-6.466l20.664-20.667 23.453-23.452 42.646 42.591-24.696 24.644-19.481 19.475c-12.592 12.598-27.765 22.312-43.869 28.107-13.246 4.761-27.141 7.192-41.306 7.228h-.325c-19.798-.001-38.533-4.72-55.14-13.095z" fill="url(#g)" />
-          <path d="m162.396 200.316c1.9-.954 3.82-1.865 5.765-2.718h.006a118.56 118.56 0 0 1 3.349-1.414c14.47-5.849 30.087-8.92 46.184-8.92 20.413 0 39.206 4.362 55.849 12.959 9.989 5.168 19.317 12.044 27.723 20.448l15.872 15.874.068-.064 118.921 118.919a62.924 62.924 0 0 0 8.926 7.441c16.811 30.941 48.021 52.92 84.642 56.961.576.066 1.152.13 1.736.182.926.083 1.85.165 2.783.229-1.872.947-3.78 1.842-5.709 2.694a107.952 107.952 0 0 1 -4.021 1.694c-14.163 5.664-29.616 8.767-45.766 8.726-14.171-.038-28.071-2.47-41.31-7.228-16.107-5.796-31.274-15.509-43.873-28.107l-19.444-19.439-.007.007-83.595-83.492-31.808-31.806a56.938 56.938 0 0 0 -5.958-5.191l-.009-.007c-16.849-31.254-48.361-53.435-85.325-57.333a112.743 112.743 0 0 0 -4.999-.415z" fill="url(#h)" />
-          <path d="m348.785 420.243v85.001l49.495 33.527v-85.001z" fill="url(#i)" />
-          <path d="m346.628 505.244-48.063 33.527-.002-85 48.065-33.528" fill="url(#j)" />
-        </svg>
-      </div>
-    </div>
-    <div class="col-lg-6">
-      <h1 class="display-4 fw-bold lh-1 text-body-emphasis mb-3">Enterprise Contract & Seller Operations Engine</h1>
-      <p class="lead">Optimize workflows with centralized management structures. Real-time brand telemetry data parsing, bulk-processing uploads, automated validation metrics, and cross-relational analytical views tailored to modern administrative scale.</p>
-      <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-4">
-        {% if current_user.is_authenticated %}
-          {% if current_user.is_admin %}
-            <a href="{{ url_for('common.dashboard2') }}" class="btn btn-primary btn-lg px-4 me-md-2">Go to Admin Dashboard</a>
-          {% else %}
-            <a href="{{ url_for('common.user_dashboard') }}" class="btn btn-primary btn-lg px-4 me-md-2">Go to Dashboard</a>
-          {% endif %}
-          <a href="{{ url_for('common.about') }}" class="btn btn-outline-secondary btn-lg px-4">Learn More</a>
-        {% else %}
-          <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg px-4 me-md-2">Secure Login</a>
-          <a href="{{ url_for('auth.signup') }}" class="btn btn-outline-primary btn-lg px-4">Register Workspace</a>
-        {% endif %}
-      </div>
-    </div>
-  </div>
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      letter-spacing: -0.01em;
+      line-height: 1.6;
+    }
 
-  <hr class="my-5">
+    /* Ambient Lighting System */
+    .glow-emitter {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(120px);
+      opacity: 0.12;
+    }
+    .glow-1 { width: 40vw; height: 40vw; background: var(--brand-primary); top: -10vw; left: -10vw; }
+    .glow-2 { width: 50vw; height: 50vw; background: var(--brand-accent); top: 35%; right: -15vw; }
+    .glow-3 { width: 35vw; height: 35vw; background: #d946ef; bottom: 10%; left: 10vw; }
 
-  <!-- Core Core Features Grid Section -->
-  <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
-    <div class="feature col">
-      <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3 rounded-3 px-3 py-2">
-        📊
-      </div>
-      <h3 class="fs-4 text-body-emphasis">Advanced Analytics</h3>
-      <p>Evaluate platform data with dynamic metrics. Visualize trends across brand portfolios, track operational status variations, and make sense of performance charts seamlessly inside clean workspaces.</p>
-    </div>
-    <div class="feature col">
-      <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3 rounded-3 px-3 py-2">
-        ⚡
-      </div>
-      <h3 class="fs-4 text-body-emphasis">High-Speed Excel Pipeline</h3>
-      <p>Eliminate line-by-line creation errors. Our ingestion layer lets administrators safely inject whole vendor profiles and massive structural contract definitions using automated batch tools (ECUP & ESUP).</p>
-    </div>
-    <div class="feature col">
-      <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3 rounded-3 px-3 py-2">
-        🛡️
-      </div>
-      <h3 class="fs-4 text-body-emphasis">Granular Role Validation</h3>
-      <p>Secure system workflows out of the box. Strict role segregations ensure that administrative settings, batch purges, and cross-brand comparisons are strictly handled by authorized credentials.</p>
-    </div>
-  </div>
+    /* Component Framework Tokens */
+    .glass-surface {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-surface:hover {
+      border-color: rgba(99, 102, 241, 0.25);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+    }
 
-  <!-- Summary Informational Block -->
-  <div class="bg-body-tertiary p-5 rounded-4 border">
-    <div class="row align-items-center">
-      <div class="col-md-8">
-        <h2 class="fw-semibold">Ready to streamline platform processing?</h2>
-        <p class="text-muted mb-md-0">Authenticate into your verified organizational account or review system parameters using the secure portal access protocols.</p>
-      </div>
-      <div class="col-md-4 text-md-end">
-        {% if not current_user.is_authenticated %}
-          <a href="{{ url_for('auth.signup') }}" class="btn btn-primary px-4 py-2">Create Workspace</a>
-        {% else %}
-          <span class="badge text-bg-success p-2 px-3 fs-6">System Connection Online</span>
-        {% endif %}
+    .text-gradient {
+      background: var(--brand-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Buttons Typography & States */
+    .btn-premium-primary {
+      background: var(--brand-gradient);
+      color: #ffffff;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 1.75rem;
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+      transition: all 0.3s ease;
+    }
+    .btn-premium-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(99, 102, 241, 0.4);
+      color: #ffffff;
+    }
+
+    .btn-premium-secondary {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+      font-weight: 600;
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 0.75rem 1.75rem;
+      transition: all 0.3s ease;
+    }
+    .btn-premium-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--text-main);
+    }
+
+    /* Premium Sticky Navigation Bar */
+    .custom-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1050;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .nav-link {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+    }
+
+    /* Mobile Menu Overrides */
+    @media (max-width: 991px) {
+      .navbar-collapse {
+        background: var(--surface-main);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        box-shadow: var(--panel-shadow);
+      }
+    }
+
+    /* --- RESPONSIVE INTERSECTING GRAPHIC CONTAINER --- */
+    .overlap-scene-viewport {
+      perspective: 1800px;
+      perspective-origin: 50% 50%;
+      transform-style: preserve-3d;
+      position: relative;
+      width: 100%;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+    .overlap-grid-box {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      align-items: center;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+    .chassis-layer-base {
+      grid-column: 1 / span 10;
+      transform: rotateX(10deg) rotateY(-14deg) rotateZ(2deg);
+      box-shadow: var(--panel-shadow);
+      transform-style: preserve-3d;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .chassis-layer-satellite {
+      grid-column: 7 / span 6;
+      position: absolute;
+      right: -10px;
+      bottom: -30px;
+      z-index: 3;
+      transform: rotateX(10deg) rotateY(-14deg) rotateZ(2deg) translateZ(60px);
+      box-shadow: var(--overlap-shadow);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .chassis-layer-base.left-flow {
+      grid-column: 3 / span 10;
+      transform: rotateX(10deg) rotateY(14deg) rotateZ(-2deg);
+    }
+    .chassis-layer-satellite.left-flow {
+      grid-column: 1 / span 6;
+      left: -10px;
+      right: auto;
+      transform: rotateX(10deg) rotateY(14deg) rotateZ(-2deg) translateZ(60px);
+    }
+
+    /* Interaction Rules */
+    .overlap-grid-box:hover .chassis-layer-base {
+      transform: rotateX(4deg) rotateY(-6deg) translateZ(-10px);
+      opacity: 0.6;
+    }
+    .overlap-grid-box:hover .chassis-layer-base.left-flow {
+      transform: rotateX(4deg) rotateY(6deg) translateZ(-10px);
+    }
+    .overlap-grid-box:hover .chassis-layer-satellite {
+      transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateZ(100px) scale(1.02);
+    }
+
+    @media (max-width: 991px) {
+      .overlap-scene-viewport { perspective: none; transform-style: flat; max-width: 100%; }
+      .overlap-grid-box { display: flex; flex-direction: column; gap: 1rem; }
+      .chassis-layer-base, .chassis-layer-satellite {
+        transform: none !important;
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        grid-column: auto !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+      }
+      .overlap-grid-box:hover .chassis-layer-base { opacity: 1; transform: translateY(-4px) !important; }
+      .overlap-grid-box:hover .chassis-layer-satellite { transform: translateY(-4px) !important; }
+    }
+
+    /* Accordion Custom Token Override */
+    .accordion-premium-node {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px !important;
+      margin-bottom: 0.85rem;
+      overflow: hidden;
+    }
+    .accordion-premium-trigger {
+      padding: 1.25rem 1.5rem;
+      color: var(--text-main);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .accordion-premium-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 0 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .accordion-premium-node.is-open .accordion-premium-panel {
+      padding-bottom: 1.25rem;
+    }
+
+    /* Pricing Custom UI Configuration */
+    .card-premium-price {
+      padding: 2.5rem 2rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-premium-price.tier-popular {
+      background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.12), rgba(17, 24, 39, 0.9));
+      border-color: var(--brand-primary);
+    }
+
+    /* Brand Logo Treatments */
+    .matrix-logo-item {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      opacity: 0.4;
+      transition: opacity 0.3s ease, color 0.3s ease;
+    }
+    .matrix-logo-item:hover {
+      opacity: 0.9;
+      color: var(--text-main);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-emitter glow-1"></div>
+  <div class="glow-emitter glow-2"></div>
+  <div class="glow-emitter glow-3"></div>
+
+  <nav class="navbar navbar-expand-lg custom-nav py-3">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2 text-white fw-bold fs-4" href="#">
+        <div class="rounded-3 d-flex align-items-center justify-content-center" style="width:32px; height:32px; background: var(--brand-gradient);">
+          <i class="bi bi-layers-half text-white fs-6"></i>
+        </div>
+        NexusHub
+      </a>
+      <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <i class="bi bi-list fs-2"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1 gap-lg-4">
+          <li class="nav-item"><a class="nav-link" href="#features">Platform Engines</a></li>
+          <li class="nav-item"><a class="nav-link" href="#showcase">Product Showcase</a></li>
+          <li class="nav-item"><a class="nav-link" href="#process">Architecture</a></li>
+          <li class="nav-item"><a class="nav-link" href="#pricing">Resource Pricing</a></li>
+          <li class="nav-item"><a class="nav-link" href="#faq">System FAQ</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-3">
+          <a href="#" class="nav-link fw-semibold px-2">Console Login</a>
+          <a href="#" class="btn btn-premium-primary">Initialize Node</a>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-{% endblock %}
+  </nav>
+
+  <section class="py-5 position-relative z-1">
+    <div class="container py-3 py-lg-5">
+      <div class="row align-items-center g-5">
+        <div class="col-lg-6 text-center text-lg-start">
+          <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-dark border border-secondary border-opacity-25 mb-4 text-secondary small">
+            <span class="d-inline-block rounded-circle bg-success" style="width:6px; height:6px;"></span> Core Telemetry Stable
+          </div>
+          <h1 class="display-4 fw-bolder text-white mb-3 tracking-tight" style="font-weight:900; line-height:1.15;">
+            Next-Gen <span class="text-gradient">Contract Analytics</span> Hub
+          </h1>
+          <p class="lead text-secondary fs-5 mb-4 col-xl-11" style="color: var(--text-muted) !important;">
+            Unify deep multi-tier procurement infrastructure inside an elite, automated intelligence workspace. Extract relational matrices, evaluate operational risks, and visualize financial telemetry instantly.
+          </p>
+          <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-lg-start gap-3">
+            <a href="#" class="btn btn-premium-primary btn-lg px-4">Deploy Free Instance</a>
+            <a href="#" class="btn btn-premium-secondary btn-lg px-4"><i class="bi bi-play-circle me-2"></i>Observe Sandbox</a>
+          </div>
+        </div>
+        
+        <div class="col-lg-6 overlap-scene-viewport mt-5 mt-lg-0">
+          <div class="overlap-grid-box">
+            <div class="glass-surface chassis-layer-base">
+              <img src="/static/css/images/i1.png" class="w-100 d-block" alt="NexusHub Deep Analytics Framework View">
+            </div>
+            <div class="glass-surface chassis-layer-satellite">
+              <img src="/static/css/images/i4.png" class="w-100 d-block" alt="Analytical Ministry Visualization Component">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-4 border-top border-bottom border-secondary border-opacity-10 bg-dark bg-opacity-20 position-relative z-1">
+    <div class="container">
+      <p class="text-center text-uppercase tracking-widest small mb-4" style="color: var(--text-muted); font-size: 0.7rem; font-weight:700;">Empowering Systems Integration Across Modern Sectors</p>
+      <div class="row row-cols-2 row-cols-md-4 g-4 justify-content-center align-items-center text-center">
+        <div class="col"><span class="matrix-logo-item">PETROLEUM CORP</span></div>
+        <div class="col"><span class="matrix-logo-item">ENERGY MATRIX</span></div>
+        <div class="col"><span class="matrix-logo-item">COAL LOGISTICS</span></div>
+        <div class="col"><span class="matrix-logo-item">POWER GRID</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="py-5 position-relative z-1">
+    <div class="container py-5">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold tracking-tight text-white mb-2 fs-1">Engineered for Massive Scale Analytics</h2>
+        <p class="text-secondary mx-auto fs-6 col-md-8 col-lg-6" style="color: var(--text-muted) !important;">Ditch manual ingestion workflows. Activate six specialized processing engines inside your system node.</p>
+      </div>
+      
+      <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
+        <div class="col">
+          <div class="glass-surface p-4 h-100">
+            <div class="rounded-3 d-flex align-items-center justify-content-center text-primary mb-4" style="width:44px; height:44px; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2);">
+              <i class="bi bi-cpu-fill fs-4"></i>
+            </div>
+            <h4 class="h5 fw-bold text-white mb-2">Automated Normalization Engine</h4>
+            <p class="small mb-0" style="color: var(--text-muted);">Ingest chaotic multi-format contract arrays and convert them into structured database logs instantaneously.</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="glass-surface p-4 h-100">
+            <div class="rounded-3 d-flex align-items-center justify-content-center text-accent mb-4" style="width:44px; height:44px; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2);">
+              <i class="bi bi-diagram-3-fill fs-4"></i>
+            </div>
+            <h4 class="h5 fw-bold text-white mb-2">Relational Risk Matrix Mapping</h4>
+            <p class="small mb-0" style="color: var(--text-muted);">Map operational clusters and evaluate entity interdependencies inside full-fidelity networks automatically.</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="glass-surface p-4 h-100">
+            <div class="rounded-3 d-flex align-items-center justify-content-center text-info mb-4" style="width:44px; height:44px; background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.2);">
+              <i class="bi bi-lightning-charge-fill fs-4"></i>
+            </div>
+            <h4 class="h5 fw-bold text-white mb-2">High-Density Telemetry Queries</h4>
+            <p class="small mb-0" style="color: var(--text-muted);">Query extensive record arrays using high-performance search indices without experiencing transaction delays.</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="glass-surface p-4 h-100">
+            <div class="rounded-3 d-flex align-items-center justify-content-center text-warning mb-4" style="width:44px; height:44px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2);">
+              <i class="bi bi-shield-lock-fill fs-4"></i>
+            </div>
+            <h4 class="h5 fw-bold text-white mb-2">Enterprise Security Layers</h4>
+            <p class="small mb-0" style="color: var(--text-muted);">Enforce advanced workspace layer security using audited, enterprise-grade access protocols.</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="glass-surface p-4 h-100">
+            <div class="rounded-3 d-flex align-items-center justify-content-center text-danger mb-4" style="width:44px; height:44px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);">
+              <i class="bi bi-arrow-repeat fs-4"></i>
+            </div>
+            <h4 class="h5 fw-bold text-white mb-2">Real-Time Synchronization</h4>
+            <p class="small mb-0" style="color: var(--text-muted);">Synchronize data streams with active procurement portals continuously to ensure real-time intelligence updates.</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="glass-surface p-4 h-100">
+            <div class="rounded-3 d-flex align-items-center justify-content-center text-success mb-4" style="width:44px; height:44px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);">
+              <i class="bi bi-file-earmark-bar-graph-fill fs-4"></i>
+            </div>
+            <h4 class="h5 fw-bold text-white mb-2">One-Click Document Exporting</h4>
+            <p class="small mb-0" style="color: var(--text-muted);">Export fully normalized data metrics seamlessly into production-ready Excel or PDF structures.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="showcase" class="py-5 bg-dark bg-opacity-30 position-relative z-1">
+    <div class="container py-5">
+      
+      <div class="row align-items-center g-5 mb-5 pb-lg-5">
+        <div class="col-lg-5 text-center text-lg-start">
+          <span class="text-gradient fw-bold small text-uppercase tracking-widest mb-2 d-inline-block">System Component 01</span>
+          <h3 class="fw-bold text-white mb-3 fs-2 tracking-tight">Granular High-Density Ledgers</h3>
+          <p class="text-secondary mb-4" style="color: var(--text-muted) !important;">
+            Track and monitor detailed transactional lifecycles across centralized data tables. Perform precise dynamic filtering by fulfillment state, verify merchant channels, and parse administrative data records smoothly.
+          </p>
+          <div class="row g-3">
+            <div class="col-6"><h5 class="text-white fw-bold h6 mb-1">✔ Interactive Sorting</h5><p class="small text-muted mb-0">Filter fields instantly.</p></div>
+            <div class="col-6"><h5 class="text-white fw-bold h6 mb-1">✔ Deep Integrity</h5><p class="small text-muted mb-0">Tamper-proof record tracking.</p></div>
+          </div>
+        </div>
+        <div class="col-lg-7 overlap-scene-viewport mt-5 mt-lg-0">
+          <div class="overlap-grid-box">
+            <div class="glass-surface chassis-layer-base">
+              <img src="/static/css/images/i3.png" class="w-100 d-block" alt="NexusHub Management Grid Component View">
+            </div>
+            <div class="glass-surface chassis-layer-satellite">
+              <img src="/static/css/images/i1.png" class="w-100 d-block" alt="Ecosystem Curve Component Interface">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row align-items-center g-5 pt-lg-5">
+        <div class="col-lg-5 order-lg-2 text-center text-lg-start">
+          <span class="text-gradient fw-bold small text-uppercase tracking-widest mb-2 d-inline-block">System Component 02</span>
+          <h3 class="fw-bold text-white mb-3 fs-2 tracking-tight">Side-by-Side Brand Intel Matrix</h3>
+          <p class="text-secondary mb-4" style="color: var(--text-muted) !important;">
+            Compare merchant behaviors and market profiles simultaneously. Isolate revenue allocations, track maximum capacity thresholds, and analyze historical engagement pipelines within a clean, side-by-side visualization view.
+          </p>
+        </div>
+        <div class="col-lg-7 order-lg-1 overlap-scene-viewport mt-5 mt-lg-0">
+          <div class="overlap-grid-box">
+            <div class="glass-surface chassis-layer-satellite left-flow">
+              <img src="/static/css/images/i4.png" class="w-100 d-block" alt="Micro Telemetry Panel View">
+            </div>
+            <div class="glass-surface chassis-layer-base left-flow">
+              <img src="/static/css/images/i7.png" class="w-100 d-block" alt="NexusHub Competitor Matrix View">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="py-5 position-relative z-1">
+    <div class="container">
+      <div class="glass-surface p-4 p-md-5" style="background: linear-gradient(135deg, #111827 0%, #070a12 100%);">
+        <div class="row g-4 text-center">
+          <div class="col-6 col-lg-3 border-end border-secondary border-opacity-10">
+            <h2 class="display-5 fw-black text-gradient mb-1" style="font-weight:900;">1,100+</h2>
+            <p class="small text-uppercase tracking-widest mb-0" style="color: var(--text-muted); font-size: 0.65rem;">Audited Vendors</p>
+          </div>
+          <div class="col-6 col-lg-3 border-end-lg border-secondary border-opacity-10">
+            <h2 class="display-5 fw-black text-gradient mb-1" style="font-weight:900;">3.4K+</h2>
+            <p class="small text-uppercase tracking-widest mb-0" style="color: var(--text-muted); font-size: 0.65rem;">Aggregated Logs</p>
+          </div>
+          <div class="col-6 col-lg-3 border-end border-secondary border-opacity-10">
+            <h2 class="display-5 fw-black text-success mb-1" style="font-weight:900;">79K+ Cr</h2>
+            <p class="small text-uppercase tracking-widest mb-0" style="color: var(--text-muted); font-size: 0.65rem;">Tracked Value Matrix</p>
+          </div>
+          <div class="col-6 col-lg-3">
+            <h2 class="display-5 fw-black text-info mb-1" style="font-weight:900;">100%</h2>
+            <p class="small text-uppercase tracking-widest mb-0" style="color: var(--text-muted); font-size: 0.65rem;">Normalization</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="process" class="py-5 position-relative z-1">
+    <div class="container py-5">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold tracking-tight text-white mb-2 fs-1">3-Step Integration Architecture</h2>
+        <p class="text-secondary mx-auto col-md-8 col-lg-5" style="color: var(--text-muted) !important;">Initialize deep telemetry analysis tracks across your company structures in minutes.</p>
+      </div>
+      
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="text-center p-4">
+            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 fs-4 fw-bold" style="width:54px; height:54px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);">01</div>
+            <h4 class="h5 fw-bold text-white mb-2">Connect Workspace Nodes</h4>
+            <p class="small text-muted mb-0">Securely bridge your enterprise data nodes or raw transaction formats with NexusHub's ingestion network layer.</p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="text-center p-4">
+            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 fs-4 fw-bold" style="width:54px; height:54px; background: rgba(99, 102, 241, 0.1); border: 1px solid var(--brand-primary);">02</div>
+            <h4 class="h5 fw-bold text-white mb-2">Automate Normalization</h4>
+            <p class="small text-muted mb-0">NexusHub processes and cleans incoming datasets, resolving entity tracking values and structural mapping rules automatically.</p>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="text-center p-4">
+            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 fs-4 fw-bold" style="width:54px; height:54px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);">03</div>
+            <h4 class="h5 fw-bold text-white mb-2">Extract Analytical Insights</h4>
+            <p class="small text-muted mb-0">Access full-fidelity dashboard systems, run dynamic queries, and instantly generate verified compliance reports.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5 bg-dark bg-opacity-20 position-relative z-1">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold text-white mb-2 fs-1">Validated by Operations Engineers</h2>
+        <p class="text-gradient small text-uppercase tracking-widest fw-bold">Trusted Infrastructure Performance Feedback</p>
+      </div>
+      
+      <div class="row g-4 row-cols-1 row-cols-md-3">
+        <div class="col">
+          <div class="glass-surface p-4">
+            <div class="text-warning mb-3"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+            <p class="text-secondary small mb-4">"Integrating NexusHub completely automated our procurement data mapping tasks. Ingesting huge tracking tables now completes in seconds instead of taking days."</p>
+            <div class="d-flex align-items-center gap-3">
+              <div class="rounded-circle" style="width:36px; height:36px; background: var(--brand-gradient);"></div>
+              <div><h6 class="text-white fw-bold mb-0 small">Rajesh K.</h6><p class="small text-muted mb-0" style="font-size:0.75rem;">Director of Analytics</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="glass-surface p-4">
+            <div class="text-warning mb-3"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+            <p class="text-secondary small mb-4">"The 3D interactive comparison layers and multi-variable analytics matrices provide unparalleled visibility into our historical corporate data pipelines."</p>
+            <div class="d-flex align-items-center gap-3">
+              <div class="rounded-circle" style="width:36px; height:36px; background: var(--brand-gradient);"></div>
+              <div><h6 class="text-white fw-bold mb-0 small">Amit M.</h6><p class="small text-muted mb-0" style="font-size:0.75rem;">Principal Systems Auditor</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="glass-surface p-4">
+            <div class="text-warning mb-3"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
+            <p class="text-secondary small mb-4">"One-click reports generation and robust access security layer configurations make this platform an essential asset for managing large-scale operations."</p>
+            <div class="d-flex align-items-center gap-3">
+              <div class="rounded-circle" style="width:36px; height:36px; background: var(--brand-gradient);"></div>
+              <div><h6 class="text-white fw-bold mb-0 small">Sanjay R.</h6><p class="small text-muted mb-0" style="font-size:0.75rem;">Lead Data Engineer</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="py-5 position-relative z-1">
+    <div class="container py-5">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold tracking-tight text-white mb-2 fs-1">Transparent Resource Plans</h2>
+        <p class="text-secondary mx-auto col-md-8 col-lg-5" style="color: var(--text-muted) !important;">Choose the target data capability layer sized exactly to your operation demands.</p>
+      </div>
+      
+      <div class="row g-4 align-items-stretch justify-content-center">
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-surface card-premium-price">
+            <h4 class="h5 fw-bold text-white mb-1">Sandbox Node</h4>
+            <p class="small text-muted mb-4">Ideal for small exploratory teams.</p>
+            <h2 class="text-white fw-bold mb-4">₹0 <span class="fs-6 text-muted fw-normal">/ month</span></h2>
+            <hr class="border-secondary opacity-25 mb-4">
+            <ul class="list-unstyled d-flex flex-column gap-3 small text-secondary mb-5 flex-grow-1">
+              <li><i class="bi bi-check2 text-primary me-2"></i> Access to Up to 100 Logs</li>
+              <li><i class="bi bi-check2 text-primary me-2"></i> Standard Analytical Ledger</li>
+              <li><i class="bi bi-check2 text-primary me-2"></i> Basic Table Sorting Modules</li>
+              <li class="text-muted"><i class="bi bi-x text-danger me-2"></i> Advanced Cross-Brand Matrix</li>
+            </ul>
+            <a href="#" class="btn btn-premium-secondary w-100 mt-auto">Initialize Sandbox</a>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-surface card-premium-price tier-popular position-relative">
+            <span class="position-absolute badge rounded-pill bg-primary top-0 end-0 m-4 small px-3 py-2" style="background: var(--brand-gradient) !important; font-size: 0.65rem;">MOST DEPLOYED</span>
+            <h4 class="h5 fw-bold text-white mb-1">Production Core</h4>
+            <p class="small text-muted mb-4">Optimized for active data pipelines.</p>
+            <h2 class="text-white fw-bold mb-4">Custom Pricing <span class="fs-6 text-muted fw-normal">/ tier</span></h2>
+            <hr class="border-secondary opacity-25 mb-4">
+            <ul class="list-unstyled d-flex flex-column gap-3 small text-secondary mb-5 flex-grow-1">
+              <li><i class="bi bi-check2 text-primary me-2"></i> Infinite Ingestion Architecture Logs</li>
+              <li><i class="bi bi-check2 text-primary me-2"></i> Real-Time Synchronized Streams</li>
+              <li><i class="bi bi-check2 text-primary me-2"></i> Advanced Cross-Brand Analysis Matrix</li>
+              <li><i class="bi bi-check2 text-primary me-2"></i> Instant Excel Export Options</li>
+            </ul>
+            <a href="#" class="btn btn-premium-primary w-100 mt-auto">Deploy Core Node</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="py-5 bg-dark bg-opacity-20 position-relative z-1">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold text-white mb-2 fs-1">Frequently Asked Queries</h2>
+        <p class="text-secondary mx-auto col-md-8 col-lg-5" style="color: var(--text-muted) !important;">Clear answers to core architecture and setup details.</p>
+      </div>
+      
+      <div class="mx-auto" style="max-width: 740px;">
+        <div class="accordion-premium-node">
+          <div class="accordion-premium-trigger" onclick="toggleFaq(this)">
+            How secure is our underlying transaction data?
+            <i class="bi bi-plus-lg fs-5"></i>
+          </div>
+          <div class="accordion-premium-panel">
+            All transaction pipelines run through robust enterprise cryptographic layers. NexusHub enforces granular role management access to ensure absolute data isolation within your system node.
+          </div>
+        </div>
+        <div class="accordion-premium-node">
+          <div class="accordion-premium-trigger" onclick="toggleFaq(this)">
+            Can we execute custom database format reports?
+            <i class="bi bi-plus-lg fs-5"></i>
+          </div>
+          <div class="accordion-premium-panel">
+            Yes. The system's high-density export engine lets you customize, structure, and convert filtered records directly into clean, analytical Excel worksheets or PDF documents with a single click.
+          </div>
+        </div>
+        <div class="accordion-premium-node">
+          <div class="accordion-premium-trigger" onclick="toggleFaq(this)">
+            What is the latency rate of active portal synchronization streams?
+            <i class="bi bi-plus-lg fs-5"></i>
+          </div>
+          <div class="accordion-premium-panel">
+            Production core tiers utilize dedicated polling worker structures that continuously track external portal data updates, refreshing your local visualization metrics within seconds of change detection.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5 position-relative z-1">
+    <div class="container">
+      <div class="glass-surface p-4 p-md-5 text-center position-relative overflow-hidden" style="background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.15), #111827);">
+        <h2 class="display-5 fw-bold text-white mb-3" style="font-weight:800;">Deploy Your Intelligence Environment Today</h2>
+        <p class="text-secondary mx-auto mb-4 fs-5 col-lg-7" style="color: var(--text-muted) !important;">Initialize deep analytics pipelines and manage dense transaction sets through elite 3D console views seamlessly.</p>
+        <a href="#" class="btn btn-premium-primary btn-lg px-5">Initialize New Node</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-5 border-top border-secondary border-opacity-10 bg-dark bg-opacity-40 position-relative z-1">
+    <div class="container">
+      <div class="row g-4 mb-5">
+        <div class="col-lg-4">
+          <a class="d-flex align-items-center gap-2 text-white fw-bold fs-4 mb-3" href="#">
+            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width:28px; height:28px; background: var(--brand-gradient);">
+              <i class="bi bi-layers-half text-white fs-6"></i>
+            </div>
+            NexusHub
+          </a>
+          <p class="small text-muted col-md-9 col-lg-12">Next-generation data processing and contract analytics workspaces built for secure enterprise scaling environments.</p>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2 offset-lg-2">
+          <h6 class="text-white fw-bold mb-3 small tracking-wider text-uppercase">Platform</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small"><li class="text-muted">Engines Suite</li><li class="text-muted">Telemetry Views</li><li class="text-muted">Security Layer</li></ul>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+          <h6 class="text-white fw-bold mb-3 small tracking-wider text-uppercase">Company</h6>
+          <ul class="list-unstyled d-flex flex-column gap-2 small"><li class="text-muted">Infrastructure</li><li class="text-muted">System Log</li><li class="text-muted">Contact Node</li></ul>
+        </div>
+        <div class="col-md-4 col-lg-2">
+          <h6 class="text-white fw-bold mb-3 small tracking-wider text-uppercase">Ecosystem</h6>
+          <div class="d-flex gap-3 fs-5"><i class="bi bi-twitter-x text-muted"></i><i class="bi bi-github text-muted"></i><i class="bi bi-linkedin text-muted"></i></div>
+        </div>
+      </div>
+      <hr class="border-secondary opacity-10 my-4">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 small text-muted text-center text-md-start">
+        <div>&copy; 2026 NexusHub Inc. All cryptographic parameters and operational domains reserved securely.</div>
+        <div class="d-flex gap-4"><span>Terms of Service</span><span>Privacy Protocol</span></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    function toggleFaq(element) {
+      const item = element.parentElement;
+      const panel = item.querySelector('.accordion-premium-panel');
+      const icon = element.querySelector('i');
+      
+      if(item.classList.contains('is-open')) {
+        panel.style.maxHeight = null;
+        item.classList.remove('is-open');
+        icon.className = 'bi bi-plus-lg fs-5';
+      } else {
+        document.querySelectorAll('.accordion-premium-node.is-open').forEach(node => {
+          node.querySelector('.accordion-premium-panel').style.maxHeight = null;
+          node.querySelector('i').className = 'bi bi-plus-lg fs-5';
+          node.classList.remove('is-open');
+        });
+        
+        panel.style.maxHeight = panel.scrollHeight + "px";
+        item.classList.add('is-open');
+        icon.className = 'bi bi-dash-lg fs-5';
+      }
+    }
+  </script>
+</body>
+</html>

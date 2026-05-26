@@ -99,7 +99,10 @@ user_bp = Blueprint("user", __name__, url_prefix="/user")
 #     if not current_user.subscription_date or current_user.subscription_date < datetime.utcnow().date():
 #         abort(403)
 
-#     brand_set = parse_list_csv(current_user.brand_names)
+#     brand_set = {
+#     b.strip().lower()
+#     for b in parse_list_csv(current_user.brand_names)
+# }
 #     assigned_start = current_user.assigned_date_range_start
 #     assigned_end = current_user.assigned_date_range_end
 
@@ -386,16 +389,20 @@ def user_contracts():
     ):
         abort(403)
 
-    brand_set = parse_list_csv(current_user.brand_names)
+    brand_set = {
+    b.strip().lower()
+    for b in parse_list_csv(current_user.brand_names)
+    }
 
     assigned_start = current_user.assigned_date_range_start
     assigned_end = current_user.assigned_date_range_end
 
     page = request.args.get("page", 1, type=int)
     per_page = 10
-
+    print("USER BRANDS =", brand_set)
     filters = parse_dynamic_filters(request.args)
     print("FILTERS =", filters)
+   
 
     # If user has no brand assigned
     if not brand_set:
@@ -448,9 +455,19 @@ def user_contracts():
     query = apply_contract_filters(query, filters)
 
     # Brand filter using indexed column
+    from sqlalchemy import text
+
     query = query.filter(
-           Contract.brands.op("&&")(list(brand_set))
-          )
+        text("""
+            EXISTS (
+                SELECT 1
+                FROM unnest(contracts.brands) AS b
+                WHERE lower(b) = ANY(:brands)
+            )
+        """)
+    ).params(
+        brands=[b.lower() for b in brand_set]
+    )
 
     # Order
     query = query.order_by(Contract.contract_date.desc())
@@ -1044,7 +1061,10 @@ def get_contracts_by_contract_nos():
     if not contract_nos or not isinstance(contract_nos, list):
         abort(400, "Invalid contract numbers")
 
-    brand_set = parse_list_csv(current_user.brand_names)
+    brand_set = {
+    b.strip().lower()
+    for b in parse_list_csv(current_user.brand_names)
+}
     assigned_start = current_user.assigned_date_range_start
     assigned_end = current_user.assigned_date_range_end
 
@@ -2505,7 +2525,10 @@ def export_contracts_excel():
     # -----------------------------------
     # USER ASSIGNED BRANDS
     # -----------------------------------
-    brand_set = parse_list_csv(current_user.brand_names)
+    brand_set = {
+    b.strip().lower()
+    for b in parse_list_csv(current_user.brand_names)
+}
 
     if not brand_set:
         abort(403)
@@ -2569,8 +2592,20 @@ def export_contracts_excel():
     # -----------------------------------
     # ASSIGNED BRAND SECURITY
     # -----------------------------------
-    query = query.filter(Contract.brands.op("&&")(list(brand_set)))
+    # query = query.filter(Contract.brands.op("&&")(list(brand_set)))
+    from sqlalchemy import text
 
+    query = query.filter(
+        text("""
+            EXISTS (
+                SELECT 1
+                FROM unnest(contracts.brands) AS b
+                WHERE lower(b) = ANY(:brands)
+            )
+        """)
+    ).params(
+        brands=[b.lower() for b in brand_set]
+    )
     # -----------------------------------
     # ORDERING
     # -----------------------------------
