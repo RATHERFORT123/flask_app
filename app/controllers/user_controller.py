@@ -306,74 +306,271 @@ def parse_dynamic_filters(args):
 
 
 
+# def apply_contract_filters(query, filters):
+
+#     for field, value in filters.items():
+
+#         # -----------------------------
+#         # SEARCH -> bid_number
+#         # -----------------------------
+#         print("SEARCH VALUE =", value)
+#         print("COLUMN =", Contract.contract_id)
+#         if field == "search":
+
+#             query = query.filter(
+#                Contract.contract_id == value.strip()
+#             )
+#             print("SEARCH FILTER APPLIED")
+#             continue
+
+#         # -----------------------------
+#         # Exact Contract Date
+#         # -----------------------------
+#         elif field == "contract_date":
+
+#             try:
+
+#                 date_val = datetime.strptime(
+#                     value,
+#                     "%Y-%m-%d"
+#                 ).date()
+
+#                 query = query.filter(
+#                     Contract.contract_date == date_val
+#                 )
+
+#             except Exception:
+#                 continue
+
+#         # -----------------------------
+#         # Min Total
+#         # -----------------------------
+#         elif field == "min_total":
+
+#             query = query.filter(
+#                 Contract.total >= value
+#             )
+
+#         # -----------------------------
+#         # Max Total
+#         # -----------------------------
+#         elif field == "max_total":
+
+#             query = query.filter(
+#                 Contract.total <= value
+#             )
+
+#         # -----------------------------
+#         # Generic Filters
+#         # -----------------------------
+#         else:
+
+#             column = getattr(Contract, field, None)
+
+#             if column is not None:
+
+#                 query = query.filter(
+#                     column.ilike(f"%{value}%")
+#                 )
+
+#     return query
+
+
+
 def apply_contract_filters(query, filters):
-
     for field, value in filters.items():
-
-        # -----------------------------
-        # SEARCH -> bid_number
-        # -----------------------------
-        print("SEARCH VALUE =", value)
-        print("COLUMN =", Contract.contract_id)
-        if field == "search":
-
-            query = query.filter(
-               Contract.contract_id == value.strip()
-            )
-            print("SEARCH FILTER APPLIED")
+        if not value:  # Skip empty strings or None values early
             continue
 
         # -----------------------------
-        # Exact Contract Date
+        # SEARCH -> contract_id
+        # -----------------------------
+        if field == "search":
+            query = query.filter(
+                Contract.contract_id == str(value).strip()
+            )
+            continue
+
+        # -----------------------------
+        # Date Range: From
+        # -----------------------------
+        elif field == "date_from":
+            try:
+                date_val = datetime.strptime(str(value).strip(), "%Y-%m-%d").date()
+                query = query.filter(Contract.contract_date >= date_val)
+            except Exception as e:
+                print(f"Error parsing date_from: {e}")
+            continue
+
+        # -----------------------------
+        # Date Range: To
+        # -----------------------------
+        elif field == "date_to":
+            try:
+                date_val = datetime.strptime(str(value).strip(), "%Y-%m-%d").date()
+                query = query.filter(Contract.contract_date <= date_val)
+            except Exception as e:
+                print(f"Error parsing date_to: {e}")
+            continue
+
+        # -----------------------------
+        # Exact Contract Date (Legacy Fallback)
         # -----------------------------
         elif field == "contract_date":
-
             try:
-
-                date_val = datetime.strptime(
-                    value,
-                    "%Y-%m-%d"
-                ).date()
-
-                query = query.filter(
-                    Contract.contract_date == date_val
-                )
-
-            except Exception:
-                continue
+                date_val = datetime.strptime(str(value).strip(), "%Y-%m-%d").date()
+                query = query.filter(Contract.contract_date == date_val)
+            except Exception as e:
+                print(f"Error parsing contract_date: {e}")
+            continue
 
         # -----------------------------
         # Min Total
         # -----------------------------
         elif field == "min_total":
-
-            query = query.filter(
-                Contract.total >= value
-            )
+            try:
+                query = query.filter(Contract.total >= float(value))
+            except ValueError:
+                pass
+            continue
 
         # -----------------------------
         # Max Total
         # -----------------------------
         elif field == "max_total":
-
-            query = query.filter(
-                Contract.total <= value
-            )
+            try:
+                query = query.filter(Contract.total <= float(value))
+            except ValueError:
+                pass
+            continue
 
         # -----------------------------
-        # Generic Filters
+        # Generic Filters (status, buying_mode, ministry)
         # -----------------------------
         else:
-
             column = getattr(Contract, field, None)
-
             if column is not None:
-
                 query = query.filter(
                     column.ilike(f"%{value}%")
                 )
 
     return query
+
+# @user_bp.route("/contracts")
+# @login_required
+# def user_contracts():
+
+#     if not current_user.is_verified or current_user.is_blocked:
+#         abort(403)
+
+#     if (
+#         not current_user.subscription_date
+#         or current_user.subscription_date < datetime.utcnow().date()
+#     ):
+#         abort(403)
+
+#     brand_set = {
+#     b.strip().lower()
+#     for b in parse_list_csv(current_user.brand_names)
+#     }
+
+#     assigned_start = current_user.assigned_date_range_start
+#     assigned_end = current_user.assigned_date_range_end
+
+#     page = request.args.get("page", 1, type=int)
+#     per_page = 10
+#     print("USER BRANDS =", brand_set)
+#     filters = parse_dynamic_filters(request.args)
+#     print("FILTERS =", filters)
+   
+
+#     # If user has no brand assigned
+#     if not brand_set:
+
+#         return render_template(
+#             "user_contract_info.html",
+#             contracts=[],
+#             pagination=None,
+#             user_brands=[],
+#             assigned_start_date=assigned_start,
+#             assigned_end_date=assigned_end,
+#             filters_applied=filters,
+#         )
+
+#     # Base query
+#     query = Contract.query
+
+#     # Date range restriction
+#     contract_date_param = request.args.get("contract_date", None, type=str)
+
+#     contract_date = None
+
+#     if contract_date_param:
+#         try:
+#             date_obj = datetime.strptime(contract_date_param, "%Y-%m-%d").date()
+
+#             if (
+#                 assigned_start
+#                 and assigned_end
+#                 and assigned_start <= date_obj <= assigned_end
+#             ):
+#                 contract_date = date_obj
+#                 filters["contract_date"] = contract_date_param
+
+#         except Exception:
+#             contract_date = None
+
+#     if not contract_date:
+
+#         if assigned_start and assigned_end:
+
+#             query = query.filter(
+#                 and_(
+#                     Contract.contract_date >= assigned_start,
+#                     Contract.contract_date <= assigned_end,
+#                 )
+#             )
+
+#     # Apply dynamic filters
+#     query = apply_contract_filters(query, filters)
+
+#     # Brand filter using indexed column
+#     from sqlalchemy import text
+
+#     query = query.filter(
+#         text("""
+#             EXISTS (
+#                 SELECT 1
+#                 FROM unnest(contracts.brands) AS b
+#                 WHERE lower(b) = ANY(:brands)
+#             )
+#         """)
+#     ).params(
+#         brands=[b.lower() for b in brand_set]
+#     )
+
+#     # Order
+#     query = query.order_by(Contract.contract_date.desc())
+
+#     # Database pagination
+#     pagination = query.paginate(
+#         page=page,
+#         per_page=per_page,
+#         error_out=False,
+#     )
+
+#     contracts = pagination.items
+
+#     return render_template(
+#         "user_contract_info.html",
+#         contracts=contracts,
+#         pagination=pagination,
+#         user_brands=list(brand_set),
+#         assigned_start_date=assigned_start,
+#         assigned_end_date=assigned_end,
+#         filters_applied=filters,
+#     )
+
 
 
 @user_bp.route("/contracts")
@@ -390,8 +587,8 @@ def user_contracts():
         abort(403)
 
     brand_set = {
-    b.strip().lower()
-    for b in parse_list_csv(current_user.brand_names)
+        b.strip().lower()
+        for b in parse_list_csv(current_user.brand_names)
     }
 
     assigned_start = current_user.assigned_date_range_start
@@ -402,11 +599,9 @@ def user_contracts():
     print("USER BRANDS =", brand_set)
     filters = parse_dynamic_filters(request.args)
     print("FILTERS =", filters)
-   
 
     # If user has no brand assigned
     if not brand_set:
-
         return render_template(
             "user_contract_info.html",
             contracts=[],
@@ -420,30 +615,22 @@ def user_contracts():
     # Base query
     query = Contract.query
 
-    # Date range restriction
-    contract_date_param = request.args.get("contract_date", None, type=str)
+    # ---------------------------------------------------------
+    # FIXED: Capture range parameters so they stay in 'filters_applied'
+    # ---------------------------------------------------------
+    date_from_param = request.args.get("date_from", "", type=str)
+    date_to_param = request.args.get("date_to", "", type=str)
 
-    contract_date = None
+    if date_from_param:
+        filters["date_from"] = date_from_param
+    if date_to_param:
+        filters["date_to"] = date_to_param
+    # ---------------------------------------------------------
 
-    if contract_date_param:
-        try:
-            date_obj = datetime.strptime(contract_date_param, "%Y-%m-%d").date()
-
-            if (
-                assigned_start
-                and assigned_end
-                and assigned_start <= date_obj <= assigned_end
-            ):
-                contract_date = date_obj
-                filters["contract_date"] = contract_date_param
-
-        except Exception:
-            contract_date = None
-
-    if not contract_date:
-
+    # Default fallback protection logic for strict user date bounding
+    # Only applies if the user didn't specify a custom dynamic date range search
+    if not date_from_param and not date_to_param:
         if assigned_start and assigned_end:
-
             query = query.filter(
                 and_(
                     Contract.contract_date >= assigned_start,
@@ -451,7 +638,7 @@ def user_contracts():
                 )
             )
 
-    # Apply dynamic filters
+    # Apply dynamic filters (processes your date_from and date_to parameters)
     query = apply_contract_filters(query, filters)
 
     # Brand filter using indexed column
@@ -2499,6 +2686,226 @@ from flask_login import (
 #     )
 
 #     return response
+# @user_bp.route("/contracts/export/excel")
+# @login_required
+# def export_contracts_excel():
+
+#     # -----------------------------------
+#     # IMPORTS
+#     # -----------------------------------
+#     from io import BytesIO
+#     import pandas as pd
+#     from sqlalchemy import and_
+
+#     # -----------------------------------
+#     # SECURITY CHECKS
+#     # -----------------------------------
+#     if not current_user.is_verified or current_user.is_blocked:
+#         abort(403)
+
+#     if (
+#         not current_user.subscription_date
+#         or current_user.subscription_date < datetime.utcnow().date()
+#     ):
+#         abort(403)
+
+#     # -----------------------------------
+#     # USER ASSIGNED BRANDS
+#     # -----------------------------------
+#     brand_set = {
+#     b.strip().lower()
+#     for b in parse_list_csv(current_user.brand_names)
+# }
+
+#     if not brand_set:
+#         abort(403)
+
+#     # -----------------------------------
+#     # USER ASSIGNED DATE RANGE
+#     # -----------------------------------
+#     assigned_start = current_user.assigned_date_range_start
+#     assigned_end = current_user.assigned_date_range_end
+
+#     # -----------------------------------
+#     # FILTERS
+#     # -----------------------------------
+#     filters = parse_dynamic_filters(request.args)
+
+#     # -----------------------------------
+#     # BASE QUERY + JOIN
+#     # -----------------------------------
+#     query = db.session.query(Contract, Seller).outerjoin(
+#         Seller, Contract.contract_id == Seller.contract_no
+#     )
+
+#     # -----------------------------------
+#     # DATE RANGE SECURITY
+#     # -----------------------------------
+#     contract_date_param = request.args.get("contract_date", None, type=str)
+#     contract_date = None
+
+#     if contract_date_param:
+#         try:
+#             date_obj = datetime.strptime(contract_date_param, "%Y-%m-%d").date()
+
+#             if (
+#                 assigned_start
+#                 and assigned_end
+#                 and assigned_start <= date_obj <= assigned_end
+#             ):
+#                 contract_date = date_obj
+#                 filters["contract_date"] = contract_date_param
+
+#         except Exception:
+#             contract_date = None
+
+#     # -----------------------------------
+#     # ASSIGNED DATE RANGE FILTER
+#     # -----------------------------------
+#     if not contract_date:
+#         if assigned_start and assigned_end:
+#             query = query.filter(
+#                 and_(
+#                     Contract.contract_date >= assigned_start,
+#                     Contract.contract_date <= assigned_end,
+#                 )
+#             )
+
+#     # -----------------------------------
+#     # APPLY USER FILTERS
+#     # -----------------------------------
+#     query = apply_contract_filters(query, filters)
+
+#     # -----------------------------------
+#     # ASSIGNED BRAND SECURITY
+#     # -----------------------------------
+#     # query = query.filter(Contract.brands.op("&&")(list(brand_set)))
+#     from sqlalchemy import text
+
+#     query = query.filter(
+#         text("""
+#             EXISTS (
+#                 SELECT 1
+#                 FROM unnest(contracts.brands) AS b
+#                 WHERE lower(b) = ANY(:brands)
+#             )
+#         """)
+#     ).params(
+#         brands=[b.lower() for b in brand_set]
+#     )
+#     # -----------------------------------
+#     # ORDERING
+#     # -----------------------------------
+#     query = query.order_by(Contract.contract_date.desc())
+
+#     # -----------------------------------
+#     # FETCH DATA
+#     # -----------------------------------
+#     results = query.all()
+
+#     # -----------------------------------
+#     # EXCEL DATA
+#     # -----------------------------------
+#     data = []
+
+#     for contract, seller in results:
+        
+#         # Pull item arrays from the contract row
+#         items = []
+#         if contract and contract.items:
+#             items = contract.items
+
+#         # If a contract has no sub-items, we still want to export it once
+#         if not items:
+#             items = [None]
+
+#         # Loop through each individual item inside the contract
+#         for item in items:
+#             data.append(
+#                 {
+#                     # -----------------------------------
+#                     # CONTRACT DETAILS
+#                     # -----------------------------------
+#                     "ID": contract.id,
+#                     "Contract ID": contract.contract_id,
+#                     "Status": contract.status,
+#                     "Organization Type": contract.organization_type,
+#                     "Ministry": contract.ministry,
+#                     "Department": contract.department,
+#                     "Organization Name": contract.organization_name,
+#                     "Buying Mode": contract.buying_mode,
+#                     "Contract Date": contract.contract_date,
+#                     "Total": contract.total,
+                    
+#                     # -----------------------------------
+#                     # SELLER DETAILS
+#                     # -----------------------------------
+#                     "Seller ID": seller.id if seller else "",
+#                     "Company Name": seller.company_name if seller else "",
+#                     "Seller Category": seller.category_name if seller else "",
+#                     "Seller Email": seller.email if seller else "",
+#                     "GSTIN": seller.gstin if seller else "",
+#                     "MSME Reg No": seller.msme_reg_no if seller else "",
+#                     "Contact No": seller.contact_no if seller else "",
+
+#                     # -----------------------------------
+#                     # ITEM DETAILS (Added Here)
+#                     # -----------------------------------
+#                     "Brand": item.get("brand") if item else "",
+#                     "Product": item.get("product") if item else "",
+#                     "Model": item.get("model") if item else "",
+#                     "Ordered Quantity": item.get("ordered_quantity") if item else "",
+#                     "Price": item.get("price") if item else "",
+#                     "HSN Code": item.get("hsn_code") if item else "",
+#                     "Service": item.get("service") if item else "",
+#                     "Item Category": item.get("category_name") if item else ""
+#                 }
+#             )
+
+#     # -----------------------------------
+#     # DATAFRAME
+#     # -----------------------------------
+#     df = pd.DataFrame(data)
+
+#     # -----------------------------------
+#     # EXCEL FILE GENERATION
+#     # -----------------------------------
+#     output = BytesIO()
+
+#     with pd.ExcelWriter(output, engine="openpyxl") as writer:
+#         df.to_excel(writer, index=False, sheet_name="Contracts")
+
+#         # -----------------------------------
+#         # AUTO COLUMN WIDTH
+#         # -----------------------------------
+#         worksheet = writer.sheets["Contracts"]
+
+#         for column_cells in worksheet.columns:
+#             length = max(
+#                 len(str(cell.value or "")) for cell in column_cells
+#             )
+#             worksheet.column_dimensions[
+#                 column_cells[0].column_letter
+#             ].width = min(length + 5, 50)
+
+#     output.seek(0)
+
+#     # -----------------------------------
+#     # RESPONSE
+#     # -----------------------------------
+#     response = make_response(output.getvalue())
+#     response.headers["Content-Disposition"] = (
+#         "attachment; filename=contracts.xlsx"
+#     )
+#     response.headers["Content-Type"] = (
+#         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+#     )
+
+#     return response
+
+
+
+
 @user_bp.route("/contracts/export/excel")
 @login_required
 def export_contracts_excel():
@@ -2509,6 +2916,7 @@ def export_contracts_excel():
     from io import BytesIO
     import pandas as pd
     from sqlalchemy import and_
+    from datetime import datetime
 
     # -----------------------------------
     # SECURITY CHECKS
@@ -2526,9 +2934,9 @@ def export_contracts_excel():
     # USER ASSIGNED BRANDS
     # -----------------------------------
     brand_set = {
-    b.strip().lower()
-    for b in parse_list_csv(current_user.brand_names)
-}
+        b.strip().lower()
+        for b in parse_list_csv(current_user.brand_names)
+    }
 
     if not brand_set:
         abort(403)
@@ -2552,30 +2960,18 @@ def export_contracts_excel():
     )
 
     # -----------------------------------
-    # DATE RANGE SECURITY
+    # FIXED: Capture range parameters from UI for Excel Export
     # -----------------------------------
-    contract_date_param = request.args.get("contract_date", None, type=str)
-    contract_date = None
+    date_from_param = request.args.get("date_from", "", type=str)
+    date_to_param = request.args.get("date_to", "", type=str)
 
-    if contract_date_param:
-        try:
-            date_obj = datetime.strptime(contract_date_param, "%Y-%m-%d").date()
+    if date_from_param:
+        filters["date_from"] = date_from_param
+    if date_to_param:
+        filters["date_to"] = date_to_param
 
-            if (
-                assigned_start
-                and assigned_end
-                and assigned_start <= date_obj <= assigned_end
-            ):
-                contract_date = date_obj
-                filters["contract_date"] = contract_date_param
-
-        except Exception:
-            contract_date = None
-
-    # -----------------------------------
-    # ASSIGNED DATE RANGE FILTER
-    # -----------------------------------
-    if not contract_date:
+    # Global Profile Fallback Restriction: Only applies if user DID NOT provide search dates
+    if not date_from_param and not date_to_param:
         if assigned_start and assigned_end:
             query = query.filter(
                 and_(
@@ -2585,14 +2981,13 @@ def export_contracts_excel():
             )
 
     # -----------------------------------
-    # APPLY USER FILTERS
+    # APPLY USER FILTERS (Processes your date ranges via updated filter helper)
     # -----------------------------------
     query = apply_contract_filters(query, filters)
 
     # -----------------------------------
     # ASSIGNED BRAND SECURITY
     # -----------------------------------
-    # query = query.filter(Contract.brands.op("&&")(list(brand_set)))
     from sqlalchemy import text
 
     query = query.filter(
@@ -2606,6 +3001,7 @@ def export_contracts_excel():
     ).params(
         brands=[b.lower() for b in brand_set]
     )
+
     # -----------------------------------
     # ORDERING
     # -----------------------------------
@@ -2662,7 +3058,7 @@ def export_contracts_excel():
                     "Contact No": seller.contact_no if seller else "",
 
                     # -----------------------------------
-                    # ITEM DETAILS (Added Here)
+                    # ITEM DETAILS
                     # -----------------------------------
                     "Brand": item.get("brand") if item else "",
                     "Product": item.get("product") if item else "",
@@ -2676,13 +3072,20 @@ def export_contracts_excel():
             )
 
     # -----------------------------------
-    # DATAFRAME
+    # DATAFRAME & EXCEL FILE GENERATION
     # -----------------------------------
-    df = pd.DataFrame(data)
+    if not data:
+        # Create an empty DataFrame with headers if no records match to prevent download errors
+        df = pd.DataFrame(columns=[
+            "ID", "Contract ID", "Status", "Organization Type", "Ministry", "Department",
+            "Organization Name", "Buying Mode", "Contract Date", "Total", "Seller ID",
+            "Company Name", "Seller Category", "Seller Email", "GSTIN", "MSME Reg No",
+            "Contact No", "Brand", "Product", "Model", "Ordered Quantity", "Price",
+            "HSN Code", "Service", "Item Category"
+        ])
+    else:
+        df = pd.DataFrame(data)
 
-    # -----------------------------------
-    # EXCEL FILE GENERATION
-    # -----------------------------------
     output = BytesIO()
 
     with pd.ExcelWriter(output, engine="openpyxl") as writer:

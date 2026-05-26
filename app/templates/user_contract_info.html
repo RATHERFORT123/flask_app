@@ -56,13 +56,13 @@
                 <input type="text" class="form-control" name="search" value="{{ filters_applied.get('search', '') }}" placeholder="Contract ID">
             </div>
             <div class="col-xl-2 col-md-3">
-                <label class="filter-label">From</label>
-                <input type="date" class="form-control" name="date_from" value="{{ filters_applied.get('date_from','') }}">
-            </div>
-            <div class="col-xl-2 col-md-3">
-                <label class="filter-label">To</label>
-                <input type="date" class="form-control" name="date_to" value="{{ filters_applied.get('date_to','') }}">
-            </div>
+    <label class="filter-label">From</label>
+    <input type="date" class="form-control" name="date_from" value="{{ filters_applied.get('date_from', '') }}">
+</div>
+<div class="col-xl-2 col-md-3">
+    <label class="filter-label">To</label>
+    <input type="date" class="form-control" name="date_to" value="{{ filters_applied.get('date_to', '') }}">
+</div>
             <div class="col-xl-2 col-md-6">
                 <label class="filter-label">Status</label>
                 <select class="form-select" name="status">
@@ -245,21 +245,23 @@
 
         <div class="d-flex justify-content-end mt-3">
             <nav>
-                <ul class="pagination mb-0">
-                    {% if pagination.has_prev %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{pagination.prev_num}}{% for k, v in filters_applied.items() %}&{{k}}={{v}}{% endfor %}">&laquo; Prev</a>
-                    </li>
-                    {% endif %}
-                    <li class="page-item disabled">
-                        <span class="page-link">Page {{pagination.page}} of {{pagination.pages}}</span>
-                    </li>
-                    {% if pagination.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{pagination.next_num}}{% for k, v in filters_applied.items() %}&{{k}}={{v}}{% endfor %}">Next &raquo;</a>
-                    </li>
-                    {% endif %}
-                </ul>
+               <ul class="pagination mb-0">
+    {% if pagination.has_prev %}
+    <li class="page-item">
+        <a class="page-link" href="{{ url_for('user.user_contracts', page=pagination.prev_num, search=filters_applied.get('search',''), date_from=filters_applied.get('date_from',''), date_to=filters_applied.get('date_to',''), status=filters_applied.get('status',''), buying_mode=filters_applied.get('buying_mode',''), ministry=filters_applied.get('ministry',''), min_total=filters_applied.get('min_total',''), max_total=filters_applied.get('max_total','')) }}">&laquo; Prev</a>
+    </li>
+    {% endif %}
+    
+    <li class="page-item disabled">
+        <span class="page-link">Page {{pagination.page}} of {{pagination.pages}}</span>
+    </li>
+    
+    {% if pagination.has_next %}
+    <li class="page-item">
+        <a class="page-link" href="{{ url_for('user.user_contracts', page=pagination.next_num, search=filters_applied.get('search',''), date_from=filters_applied.get('date_from',''), date_to=filters_applied.get('date_to',''), status=filters_applied.get('status',''), buying_mode=filters_applied.get('buying_mode',''), ministry=filters_applied.get('ministry',''), min_total=filters_applied.get('min_total',''), max_total=filters_applied.get('max_total','')) }}">Next &raquo;</a>
+    </li>
+    {% endif %}
+</ul>
             </nav>
         </div>
     </div>
