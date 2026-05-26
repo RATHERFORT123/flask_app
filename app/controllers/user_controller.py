@@ -1929,7 +1929,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import re
-# import dt_time
+import time
 import traceback
 
 
