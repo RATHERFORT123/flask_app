@@ -1923,107 +1923,88 @@ def brand_compare():
 #         }), 500
 
 
-
 from flask import jsonify
 from flask_login import login_required
-import requests
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 import re
-import json
+import time
 import traceback
-
-# Disable SSL warnings
-requests.packages.urllib3.disable_warnings()
 
 
 @user_bp.route("/contracts/<contract_id>/pdf")
 @login_required
 def get_contract_pdf_url(contract_id):
 
+    driver = None
+
     try:
-        session = requests.Session()
 
-        headers = {
-            "User-Agent": (
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/137.0.0.0 Safari/537.36"
-            ),
-            "Referer": "https://gem.gov.in/",
-            "Origin": "https://gem.gov.in",
-            "Accept": "application/json, text/javascript, */*; q=0.01",
-            "X-Requested-With": "XMLHttpRequest"
-        }
+        chrome_options = Options()
 
-        # API URL
-        url = "https://gem.gov.in/view_contracts/sbtCaptcha"
+        chrome_options.add_argument("--headless=new")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--window-size=1920,1080")
 
-        payload = {
-            "oid": contract_id
-        }
-
-        # Request
-        r = session.post(
-            url,
-            data=payload,
-            headers=headers,
-            timeout=30,
-            verify=False
+        chrome_options.add_argument(
+            "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/137.0.0.0 Safari/537.36"
         )
 
-        print("STATUS CODE:", r.status_code)
-        print("CONTENT TYPE:", r.headers.get("Content-Type"))
+        # Create browser
+        driver = webdriver.Chrome(options=chrome_options)
 
-        # Response debug
-        raw_response = r.content.decode("utf-8-sig")
+        # Open GeM homepage first
+        driver.get("https://gem.gov.in/")
 
-        print("RAW RESPONSE:")
-        print(raw_response[:1000])
+        time.sleep(5)
 
-        # Status check
-        if r.status_code != 200:
-            return jsonify({
-                "success": False,
-                "message": f"GeM returned status {r.status_code}"
-            }), 500
+        # JS fetch request
+        script = f"""
+        fetch("https://gem.gov.in/view_contracts/sbtCaptcha", {{
+            method: "POST",
+            headers: {{
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-Requested-With": "XMLHttpRequest"
+            }},
+            body: "oid={contract_id}"
+        }})
+        .then(response => response.text())
+        .then(data => {{
+            document.body.innerHTML = "<pre>" + data + "</pre>";
+        }})
+        .catch(error => {{
+            document.body.innerHTML = "<pre>" + error + "</pre>";
+        }});
+        """
 
-        # JSON parse
-        try:
-            data = json.loads(raw_response)
+        driver.execute_script(script)
 
-        except Exception as json_error:
+        time.sleep(5)
 
-            return jsonify({
-                "success": False,
-                "message": "Invalid JSON response from GeM",
-                "error": str(json_error),
-                "raw_response": raw_response[:500]
-            }), 500
+        # Read response
+        body_text = driver.find_element(By.TAG_NAME, "body").text
 
-        # Extract HTML code field
-        code_html = data.get("code", "")
-
-        if not code_html:
-
-            return jsonify({
-                "success": False,
-                "message": "No code field found in response",
-                "response": data
-            }), 404
+        print("BODY RESPONSE:")
+        print(body_text)
 
         # Extract orderId
-        match = re.search(r'orderId=([^"&]+)', code_html)
+        match = re.search(r'orderId=([^"&]+)', body_text)
 
         if not match:
 
             return jsonify({
                 "success": False,
-                "message": "Order ID not found",
-                "code_html": code_html
+                "message": "PDF orderId not found",
+                "response": body_text[:1000]
             }), 404
 
         order_id = match.group(1)
 
-        # Final PDF URL
         pdf_url = (
             f"https://fulfilment.gem.gov.in/contract/fds?orderId={order_id}"
         )
@@ -2042,6 +2023,10 @@ def get_contract_pdf_url(contract_id):
             "error": str(e)
         }), 500
 
+    finally:
+
+        if driver:
+            driver.quit()
 
 # import re
 # import requests
