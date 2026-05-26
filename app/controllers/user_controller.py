@@ -1874,9 +1874,66 @@ def brand_compare():
 # --------------------------------------------------------------PDF DOWNLOD------------------------------------
 
 
+# from flask import jsonify
+# import re
+# import requests
+
+# @user_bp.route("/contracts/<contract_id>/pdf")
+# @login_required
+# def get_contract_pdf_url(contract_id):
+
+#     try:
+#         session = requests.Session()
+
+#         headers = {
+#             "User-Agent": "Mozilla/5.0",
+#             "Referer": "https://gem.gov.in/"
+#         }
+
+#         r = session.post(
+#             "https://gem.gov.in/view_contracts/sbtCaptcha",
+#             data={"oid": contract_id},
+#             headers=headers,
+#             timeout=10
+#         )
+
+#         data = r.json()
+
+#         m = re.search(r"orderId=([^\"&]+)", data.get("code", ""))
+
+#         if not m:
+#             return jsonify({
+#                 "success": False,
+#                 "message": "PDF not found"
+#             }), 404
+
+#         order_id = m.group(1)
+
+#         pdf_url = f"https://fulfilment.gem.gov.in/contract/fds?orderId={order_id}"
+
+#         return jsonify({
+#             "success": True,
+#             "pdf_url": pdf_url
+#         })
+
+#     except Exception as e:
+#         return jsonify({
+#             "success": False,
+#             "error": str(e)
+#         }), 500
+
+
+
 from flask import jsonify
-import re
+from flask_login import login_required
 import requests
+import re
+import json
+import traceback
+
+# Disable SSL warnings
+requests.packages.urllib3.disable_warnings()
+
 
 @user_bp.route("/contracts/<contract_id>/pdf")
 @login_required
@@ -1886,30 +1943,90 @@ def get_contract_pdf_url(contract_id):
         session = requests.Session()
 
         headers = {
-            "User-Agent": "Mozilla/5.0",
-            "Referer": "https://gem.gov.in/"
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/137.0.0.0 Safari/537.36"
+            ),
+            "Referer": "https://gem.gov.in/",
+            "Origin": "https://gem.gov.in",
+            "Accept": "application/json, text/javascript, */*; q=0.01",
+            "X-Requested-With": "XMLHttpRequest"
         }
 
+        # API URL
+        url = "https://gem.gov.in/view_contracts/sbtCaptcha"
+
+        payload = {
+            "oid": contract_id
+        }
+
+        # Request
         r = session.post(
-            "https://gem.gov.in/view_contracts/sbtCaptcha",
-            data={"oid": contract_id},
+            url,
+            data=payload,
             headers=headers,
-            timeout=10
+            timeout=30,
+            verify=False
         )
 
-        data = r.json()
+        print("STATUS CODE:", r.status_code)
+        print("CONTENT TYPE:", r.headers.get("Content-Type"))
 
-        m = re.search(r"orderId=([^\"&]+)", data.get("code", ""))
+        # Response debug
+        raw_response = r.content.decode("utf-8-sig")
 
-        if not m:
+        print("RAW RESPONSE:")
+        print(raw_response[:1000])
+
+        # Status check
+        if r.status_code != 200:
             return jsonify({
                 "success": False,
-                "message": "PDF not found"
+                "message": f"GeM returned status {r.status_code}"
+            }), 500
+
+        # JSON parse
+        try:
+            data = json.loads(raw_response)
+
+        except Exception as json_error:
+
+            return jsonify({
+                "success": False,
+                "message": "Invalid JSON response from GeM",
+                "error": str(json_error),
+                "raw_response": raw_response[:500]
+            }), 500
+
+        # Extract HTML code field
+        code_html = data.get("code", "")
+
+        if not code_html:
+
+            return jsonify({
+                "success": False,
+                "message": "No code field found in response",
+                "response": data
             }), 404
 
-        order_id = m.group(1)
+        # Extract orderId
+        match = re.search(r'orderId=([^"&]+)', code_html)
 
-        pdf_url = f"https://fulfilment.gem.gov.in/contract/fds?orderId={order_id}"
+        if not match:
+
+            return jsonify({
+                "success": False,
+                "message": "Order ID not found",
+                "code_html": code_html
+            }), 404
+
+        order_id = match.group(1)
+
+        # Final PDF URL
+        pdf_url = (
+            f"https://fulfilment.gem.gov.in/contract/fds?orderId={order_id}"
+        )
 
         return jsonify({
             "success": True,
@@ -1917,10 +2034,15 @@ def get_contract_pdf_url(contract_id):
         })
 
     except Exception as e:
+
+        traceback.print_exc()
+
         return jsonify({
             "success": False,
             "error": str(e)
         }), 500
+
+
 # import re
 # import requests
 # from flask import send_file, abort
