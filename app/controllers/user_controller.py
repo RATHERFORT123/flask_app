@@ -1887,7 +1887,7 @@ def get_contract_pdf_url(contract_id):
 
     try:
 
-        LOCAL_API = "http://10.64.169.36:5000"
+        LOCAL_API = "http://100.124.5.78:5000"
 
         r = requests.get(
             f"{LOCAL_API}/contracts/{contract_id}/pdf",
