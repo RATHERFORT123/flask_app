@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, abort
 from flask_login import login_required, current_user
-from datetime import datetime
+# from datetime import datetime
 from sqlalchemy import and_
 from ..models.seller import Seller
 from ..models.brand import Brand
@@ -1925,9 +1925,12 @@ def brand_compare():
 
 from flask import jsonify
 from flask_login import login_required
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+
 import re
 import time
 import traceback
