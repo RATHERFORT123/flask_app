@@ -760,7 +760,7 @@ def parse_list_csv(csv_string):
 #     return query
 
 
-from datetime import datetime, time
+from datetime import datetime, time as dt_time
 from sqlalchemy import func
 from flask import abort, render_template, request
 
@@ -893,8 +893,8 @@ def user_sellers():
         )
 
     # Normalize dates to handle a full-day window smoothly (00:00:00 to 23:59:59)
-    start_dt = datetime.combine(assigned_start, time.min)
-    end_dt = datetime.combine(assigned_end, time.max)
+    start_dt = datetime.combine(assigned_start, dt_time.min)
+    end_dt = datetime.combine(assigned_end, dt_time.max)
 
     # -----------------------------
     # 📌 APPLY FILTERS & CONSTRAINTS
@@ -1063,7 +1063,7 @@ def user_sellers():
 #         self.prev_num = page - 1
 #         self.next_num = page + 1
 
-# from datetime import datetime, time
+# from datetime import datetime, dt_time
 # from collections import Counter
 # from sqlalchemy import func
 
@@ -1122,8 +1122,8 @@ def user_sellers():
 #         )
 
 #     # Normalize to full-day window
-#     start_dt = datetime.combine(assigned_start, time.min)
-#     end_dt = datetime.combine(assigned_end, time.max)
+#     start_dt = datetime.combine(assigned_start, dt_time.min)
+#     end_dt = datetime.combine(assigned_end, dt_time.max)
 
 #     # -----------------------------
 #     # 📌 APPLY FILTERS
@@ -1925,14 +1925,11 @@ def brand_compare():
 
 from flask import jsonify
 from flask_login import login_required
-
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-
 import re
-import time
+# import dt_time
 import traceback
 
 
@@ -1964,7 +1961,7 @@ def get_contract_pdf_url(contract_id):
         # Open GeM homepage first
         driver.get("https://gem.gov.in/")
 
-        time.sleep(5)
+        dt_time.sleep(5)
 
         # JS fetch request
         script = f"""
@@ -1987,7 +1984,7 @@ def get_contract_pdf_url(contract_id):
 
         driver.execute_script(script)
 
-        time.sleep(5)
+        dt_time.sleep(5)
 
         # Read response
         body_text = driver.find_element(By.TAG_NAME, "body").text
@@ -2084,7 +2081,7 @@ def get_contract_pdf_url(contract_id):
         from flask import send_file
 from openpyxl import Workbook
 from io import BytesIO
-from datetime import datetime, time
+from datetime import datetime
 from sqlalchemy import func
 
 # @user_bp.route("/sellers/export")
@@ -2117,8 +2114,8 @@ from sqlalchemy import func
 #     if not assigned_start or not assigned_end:
 #         abort(403)
 
-#     start_dt = datetime.combine(assigned_start, time.min)
-#     end_dt = datetime.combine(assigned_end, time.max)
+#     start_dt = datetime.combine(assigned_start, dt_time.min)
+#     end_dt = datetime.combine(assigned_end, dt_time.max)
 
 #     # -----------------------------
 #     # 📌 FILTERS
@@ -2260,12 +2257,12 @@ def export_sellers_excel():
 
     start_dt = datetime.combine(
         assigned_start,
-        time.min
+        dt_time.min
     )
 
     end_dt = datetime.combine(
         assigned_end,
-        time.max
+        dt_time.max
     )
 
     # -----------------------------------
