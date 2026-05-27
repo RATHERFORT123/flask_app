@@ -840,7 +840,10 @@ class Pagination:
 @user_bp.route("/sellers")
 @login_required
 def user_sellers():
-
+    print("VERIFIED:", current_user.is_verified)
+    print("BLOCKED:", current_user.is_blocked)
+    print("SUB DATE:", current_user.subscription_date)
+    print("TODAY:", datetime.utcnow().date())
     # -----------------------------
     # 🔐 USER ACCESS CHECKS
     # -----------------------------
@@ -1873,8 +1876,6 @@ def brand_compare():
 
 # --------------------------------------------------------------PDF DOWNLOD------------------------------------
 
-
-
 from flask import jsonify
 from flask_login import login_required
 
@@ -1887,16 +1888,14 @@ def get_contract_pdf_url(contract_id):
 
     try:
 
-        LOCAL_API = "http://100.124.5.78:5000"
+        LOCAL_API = "http://100.81.139.20:5001"
 
         r = requests.get(
             f"{LOCAL_API}/contracts/{contract_id}/pdf",
             timeout=60
         )
 
-        data = r.json()
-
-        return jsonify(data)
+        return jsonify(r.json())
 
     except Exception as e:
 
@@ -1904,6 +1903,36 @@ def get_contract_pdf_url(contract_id):
             "success": False,
             "error": str(e)
         }), 500
+
+# from flask import jsonify
+# from flask_login import login_required
+
+# import requests
+
+
+# @user_bp.route("/contracts/<contract_id>/pdf")
+# @login_required
+# def get_contract_pdf_url(contract_id):
+
+#     try:
+
+#         LOCAL_API = "http://100.124.5.78:5000"
+
+#         r = requests.get(
+#             f"{LOCAL_API}/contracts/{contract_id}/pdf",
+#             timeout=60
+#         )
+
+#         data = r.json()
+
+#         return jsonify(data)
+
+#     except Exception as e:
+
+#         return jsonify({
+#             "success": False,
+#             "error": str(e)
+#         }), 500
 
 # from flask import jsonify
 # import re
