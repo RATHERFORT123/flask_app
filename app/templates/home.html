@@ -1,724 +1,834 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}Home - Infinity Platform{% endblock %}
+
+{% block content %}
+
+
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NexusHub — Enterprise Analytics Platform</title>
+  <title>Smart Procurement Intelligence | Infinity GeM Analytics</title> -->
   
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Google Fonts & Bootstrap Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  
-  <style>
-    :root {
-      --bg-main: #0f172a;
-      --surface-main: #111827;
-      --brand-primary: #6366f1;
-      --brand-accent: #8b5cf6;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --glass-bg: rgba(17, 24, 39, 0.7);
-      --glass-border: rgba(255, 255, 255, 0.08);
-      --brand-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
-      --panel-shadow: 0 20px 50px rgba(0, 4, 28, 0.3), 0 10px 20px rgba(0, 0, 0, 0.2);
-      --overlap-shadow: 0 30px 60px rgba(0, 0, 0, 0.45), 0 10px 25px rgba(99, 102, 241, 0.15);
-    }
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
-    /* Core Layout Configurations */
-    html {
-      scroll-behavior: smooth;
-      overflow-x: hidden;
-      font-size: 14px;
+  <style>
+    /* Design System Token Architecture */
+    :root {
+      --bg-dark: #0f172a;
+      --surface: #111827;
+      --surface-card: rgba(17, 24, 39, 0.7);
+      --primary: #0d6efd;
+      --accent: #00bfff;
+      --text-gray: #94a3b8;
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --glow-blue: radial-gradient(circle, rgba(13, 110, 253, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+      --glow-cyan: radial-gradient(circle, rgba(0, 191, 255, 0.12) 0%, rgba(15, 23, 42, 0) 70%);
     }
-    @media (min-width: 768px) { html { font-size: 15px; } }
-    @media (min-width: 1200px) { html { font-size: 16px; } }
-    @media (min-width: 1920px) { html { font-size: 18px; } } /* Ultra-wide scaling */
 
     body {
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
       overflow-x: hidden;
-      letter-spacing: -0.01em;
-      line-height: 1.6;
+      scroll-behavior: smooth;
     }
 
-    /* Ambient Lighting System */
-    .glow-emitter {
-      position: absolute;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-      filter: blur(120px);
-      opacity: 0.12;
-    }
-    .glow-1 { width: 40vw; height: 40vw; background: var(--brand-primary); top: -10vw; left: -10vw; }
-    .glow-2 { width: 50vw; height: 50vw; background: var(--brand-accent); top: 35%; right: -15vw; }
-    .glow-3 { width: 35vw; height: 35vw; background: #d946ef; bottom: 10%; left: 10vw; }
-
-    /* Component Framework Tokens */
-    .glass-surface {
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .glass-surface:hover {
-      border-color: rgba(99, 102, 241, 0.25);
-      box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+    /* Scannability & Typography Overrides */
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 700;
+      letter-spacing: -0.02em;
     }
 
-    .text-gradient {
-      background: var(--brand-gradient);
+    .text-muted-custom {
+      color: var(--text-gray);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    /* Buttons Typography & States */
-    .btn-premium-primary {
-      background: var(--brand-gradient);
-      color: #ffffff;
-      font-weight: 600;
-      border: none;
-      border-radius: 12px;
-      padding: 0.75rem 1.75rem;
-      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
-      transition: all 0.3s ease;
-    }
-    .btn-premium-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 28px rgba(99, 102, 241, 0.4);
-      color: #ffffff;
+    /* Ambient Lighting Layouts */
+    .glow-container {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      z-index: -1;
+      pointer-events: none;
     }
 
-    .btn-premium-secondary {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-main);
-      font-weight: 600;
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 0.75rem 1.75rem;
-      transition: all 0.3s ease;
-    }
-    .btn-premium-secondary:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.2);
-      color: var(--text-main);
+    /* Glassmorphism Structural Cards */
+    .glass-card {
+      background: var(--surface-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* Premium Sticky Navigation Bar */
-    .custom-nav {
-      position: sticky;
-      top: 0;
-      z-index: 1050;
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--glass-border);
+    .glass-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 191, 255, 0.3);
+      box-shadow: 0 0 30px rgba(13, 110, 253, 0.2);
     }
-    .nav-link {
-      color: var(--text-muted);
-      font-size: 0.9rem;
+
+    /* Sticky Enterprise Header Menu */
+    .navbar-glass {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    .navbar-glass .nav-link {
+      color: var(--text-gray) !important;
       font-weight: 500;
+      font-size: 0.95rem;
       transition: color 0.2s ease;
     }
-    .nav-link:hover, .nav-link.active {
-      color: var(--text-main);
+
+    .navbar-glass .nav-link:hover,
+    .navbar-glass .nav-link.active {
+      color: #ffffff !important;
     }
 
-    /* Mobile Menu Overrides */
-    @media (max-width: 991px) {
-      .navbar-collapse {
-        background: var(--surface-main);
-        border: 1px solid var(--glass-border);
-        border-radius: 16px;
-        padding: 1.5rem;
-        margin-top: 1rem;
-        box-shadow: var(--panel-shadow);
-      }
-    }
-
-    /* --- RESPONSIVE INTERSECTING GRAPHIC CONTAINER --- */
-    .overlap-scene-viewport {
-      perspective: 1800px;
-      perspective-origin: 50% 50%;
-      transform-style: preserve-3d;
-      position: relative;
-      width: 100%;
-      max-width: 580px;
-      margin: 0 auto;
-    }
-    .overlap-grid-box {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      align-items: center;
-      transform-style: preserve-3d;
-      position: relative;
-    }
-    .chassis-layer-base {
-      grid-column: 1 / span 10;
-      transform: rotateX(10deg) rotateY(-14deg) rotateZ(2deg);
-      box-shadow: var(--panel-shadow);
-      transform-style: preserve-3d;
-      border-radius: 16px;
-      overflow: hidden;
-    }
-    .chassis-layer-satellite {
-      grid-column: 7 / span 6;
-      position: absolute;
-      right: -10px;
-      bottom: -30px;
-      z-index: 3;
-      transform: rotateX(10deg) rotateY(-14deg) rotateZ(2deg) translateZ(60px);
-      box-shadow: var(--overlap-shadow);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .chassis-layer-base.left-flow {
-      grid-column: 3 / span 10;
-      transform: rotateX(10deg) rotateY(14deg) rotateZ(-2deg);
-    }
-    .chassis-layer-satellite.left-flow {
-      grid-column: 1 / span 6;
-      left: -10px;
-      right: auto;
-      transform: rotateX(10deg) rotateY(14deg) rotateZ(-2deg) translateZ(60px);
-    }
-
-    /* Interaction Rules */
-    .overlap-grid-box:hover .chassis-layer-base {
-      transform: rotateX(4deg) rotateY(-6deg) translateZ(-10px);
-      opacity: 0.6;
-    }
-    .overlap-grid-box:hover .chassis-layer-base.left-flow {
-      transform: rotateX(4deg) rotateY(6deg) translateZ(-10px);
-    }
-    .overlap-grid-box:hover .chassis-layer-satellite {
-      transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) translateZ(100px) scale(1.02);
-    }
-
-    @media (max-width: 991px) {
-      .overlap-scene-viewport { perspective: none; transform-style: flat; max-width: 100%; }
-      .overlap-grid-box { display: flex; flex-direction: column; gap: 1rem; }
-      .chassis-layer-base, .chassis-layer-satellite {
-        transform: none !important;
-        position: relative !important;
-        left: auto !important;
-        right: auto !important;
-        bottom: auto !important;
-        grid-column: auto !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
-      }
-      .overlap-grid-box:hover .chassis-layer-base { opacity: 1; transform: translateY(-4px) !important; }
-      .overlap-grid-box:hover .chassis-layer-satellite { transform: translateY(-4px) !important; }
-    }
-
-    /* Accordion Custom Token Override */
-    .accordion-premium-node {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--glass-border);
-      border-radius: 14px !important;
-      margin-bottom: 0.85rem;
-      overflow: hidden;
-    }
-    .accordion-premium-trigger {
-      padding: 1.25rem 1.5rem;
-      color: var(--text-main);
+    /* Premium Component Buttons */
+    .btn-glow-primary {
+      background: linear-gradient(135deg, var(--primary), #0b5ed7);
+      color: #ffffff;
+      border: none;
       font-weight: 600;
-      cursor: pointer;
+      padding: 0.75rem 1.75rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(13, 110, 253, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .btn-glow-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(13, 110, 253, 0.6);
+      color: #ffffff;
+    }
+
+    .btn-outline-glass {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-glass);
+      color: #ffffff;
+      font-weight: 600;
+      padding: 0.75rem 1.75rem;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline-glass:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+
+    /* Infinite Marquee Loop Style */
+    .marquee-container {
+      overflow: hidden;
+      white-space: nowrap;
+      display: flex;
+      gap: 3rem;
+      padding: 1.5rem 0;
+      border-top: 1px solid var(--border-glass);
+      border-bottom: 1px solid var(--border-glass);
+      background: rgba(17, 24, 39, 0.3);
+    }
+
+    .marquee-content {
+      display: inline-flex;
+      gap: 4rem;
+      animation: marquee-scroll 25s linear infinite;
+    }
+
+    @keyframes marquee-scroll {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .marquee-logo {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text-gray);
+      opacity: 0.6;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Dynamic Framework UI Components */
+    .section-spacing {
+      padding: 100px 0;
+    }
+
+    .icon-wrapper {
+      width: 48px;
+      height: 48px;
+      background: rgba(13, 110, 253, 0.12);
+      border: 1px solid rgba(13, 110, 253, 0.25);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Process Flow Metrics CSS */
+    .process-line {
+      position: relative;
+    }
+    @media (min-width: 768px) {
+      .process-line::after {
+        content: '';
+        position: absolute;
+        top: 30px;
+        left: 15%;
+        width: 70%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+        z-index: -1;
+        opacity: 0.3;
+      }
+    }
+
+    /* Accordion Custom Styling */
+    .accordion-item-custom {
+      background: var(--surface-card);
+      border: 1px solid var(--border-glass);
+      border-radius: 12px !important;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .accordion-trigger {
+      background: transparent;
+      color: #ffffff;
+      font-weight: 600;
+      padding: 1.25rem;
+      border: none;
+      width: 100%;
+      text-align: left;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      user-select: none;
-    }
-    .accordion-premium-panel {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      padding: 0 1.5rem;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-    .accordion-premium-node.is-open .accordion-premium-panel {
-      padding-bottom: 1.25rem;
     }
 
-    /* Pricing Custom UI Configuration */
-    .card-premium-price {
-      padding: 2.5rem 2rem;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-    .card-premium-price.tier-popular {
-      background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.12), rgba(17, 24, 39, 0.9));
-      border-color: var(--brand-primary);
+    .accordion-trigger:not(.collapsed) {
+      color: var(--accent);
+      background: rgba(13, 110, 253, 0.05);
     }
 
-    /* Brand Logo Treatments */
-    .matrix-logo-item {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      opacity: 0.4;
-      transition: opacity 0.3s ease, color 0.3s ease;
+    /* Mock Analytics UI Widget CSS */
+    .widget-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
     }
-    .matrix-logo-item:hover {
-      opacity: 0.9;
-      color: var(--text-main);
-    }
+    .widget-fill-1 { width: 75%; background: var(--primary); }
+    .widget-fill-2 { width: 45%; background: var(--accent); }
+    .widget-fill-3 { width: 90%; background: #10b981; }
   </style>
 </head>
 <body>
-
-  <div class="glow-emitter glow-1"></div>
-  <div class="glow-emitter glow-2"></div>
-  <div class="glow-emitter glow-3"></div>
-
-  <nav class="navbar navbar-expand-lg custom-nav py-3">
+  <!-- Interactive Hero Layout -->
+  <header class="section-spacing position-relative min-vh-100 d-flex align-items-center">
+    <div class="glow-container style-orb" style="background: var(--glow-blue); top: -10%; left: -10%;"></div>
+    <div class="glow-container style-orb" style="background: var(--glow-cyan); bottom: 10%; right: -10%;"></div>
+    
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center gap-2 text-white fw-bold fs-4" href="#">
-        <div class="rounded-3 d-flex align-items-center justify-content-center" style="width:32px; height:32px; background: var(--brand-gradient);">
-          <i class="bi bi-layers-half text-white fs-6"></i>
-        </div>
-        NexusHub
-      </a>
-      <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-        <i class="bi bi-list fs-2"></i>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarContent">
-        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-1 gap-lg-4">
-          <li class="nav-item"><a class="nav-link" href="#features">Platform Engines</a></li>
-          <li class="nav-item"><a class="nav-link" href="#showcase">Product Showcase</a></li>
-          <li class="nav-item"><a class="nav-link" href="#process">Architecture</a></li>
-          <li class="nav-item"><a class="nav-link" href="#pricing">Resource Pricing</a></li>
-          <li class="nav-item"><a class="nav-link" href="#faq">System FAQ</a></li>
-        </ul>
-        <div class="d-flex align-items-center gap-3">
-          <a href="#" class="nav-link fw-semibold px-2">Console Login</a>
-          <a href="#" class="btn btn-premium-primary">Initialize Node</a>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <section class="py-5 position-relative z-1">
-    <div class="container py-3 py-lg-5">
-      <div class="row align-items-center g-5">
-        <div class="col-lg-6 text-center text-lg-start">
-          <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-dark border border-secondary border-opacity-25 mb-4 text-secondary small">
-            <span class="d-inline-block rounded-circle bg-success" style="width:6px; height:6px;"></span> Core Telemetry Stable
-          </div>
-          <h1 class="display-4 fw-bolder text-white mb-3 tracking-tight" style="font-weight:900; line-height:1.15;">
-            Next-Gen <span class="text-gradient">Contract Analytics</span> Hub
+      <div class="row align-items-center gy-5">
+        <div class="col-lg-6">
+          <span class="badge bg-primary bg-opacity-10 text-accent border border-primary border-opacity-20 mb-3 px-3 py-2 rounded-pill">
+            <i class="bi bi-cpu me-2"></i>Next-Gen GeM Intelligence Pipeline
+          </span>
+          <h1 class="display-4 fw-bold mb-3 gradient-text">
+            Smart Procurement Intelligence for GeM Contracts
           </h1>
-          <p class="lead text-secondary fs-5 mb-4 col-xl-11" style="color: var(--text-muted) !important;">
-            Unify deep multi-tier procurement infrastructure inside an elite, automated intelligence workspace. Extract relational matrices, evaluate operational risks, and visualize financial telemetry instantly.
+          <p class="lead text-muted-custom mb-4 fs-5">
+            Analyze government procurement data, monitor contracts, track seller performance, and generate powerful insights through an advanced GeM analytics platform.
           </p>
-          <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-lg-start gap-3">
-            <a href="#" class="btn btn-premium-primary btn-lg px-4">Deploy Free Instance</a>
-            <a href="#" class="btn btn-premium-secondary btn-lg px-4"><i class="bi bi-play-circle me-2"></i>Observe Sandbox</a>
+          <div class="d-flex flex-wrap gap-3 mb-5">
+            <a href="#" class="btn btn-glow-primary">Launch Dashboard</a>
+            <a href="#analytics" class="btn btn-outline-glass">View Analytics</a>
+          </div>
+          <div class="row g-3">
+            <div class="col-6 col-md-4"><i class="bi bi-patch-check text-accent me-2"></i>Real-Time GeM Data</div>
+            <div class="col-6 col-md-4"><i class="bi bi-patch-check text-accent me-2"></i>Contract Intelligence</div>
+            <div class="col-6 col-md-4"><i class="bi bi-patch-check text-accent me-2"></i>Seller Monitoring</div>
+            <div class="col-6 col-md-4"><i class="bi bi-patch-check text-accent me-2"></i>Procurement Insights</div>
+            <div class="col-6 col-md-4"><i class="bi bi-patch-check text-accent me-2"></i>Export Reports</div>
+            <div class="col-6 col-md-4"><i class="bi bi-patch-check text-accent me-2"></i>Smart Search</div>
           </div>
         </div>
         
-        <div class="col-lg-6 overlap-scene-viewport mt-5 mt-lg-0">
-          <div class="overlap-grid-box">
-            <div class="glass-surface chassis-layer-base">
-              <img src="/static/css/images/i1.png" class="w-100 d-block" alt="NexusHub Deep Analytics Framework View">
+        <div class="col-lg-6">
+          <div class="position-relative ps-lg-4">
+            <!-- Mock Interactive Dashboard Preview Core -->
+            <div class="glass-card p-4 border border-secondary border-opacity-20">
+              <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary border-opacity-20 pb-3">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="bg-danger d-inline-block rounded-circle" style="width:10px; height:10px;"></span>
+                  <span class="bg-warning d-inline-block rounded-circle" style="width:10px; height:10px;"></span>
+                  <span class="bg-success d-inline-block rounded-circle" style="width:10px; height:10px;"></span>
+                  <span class="text-muted-custom ms-2 small">gem_analytics_matrix.sys</span>
+                </div>
+                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20 small">Live Monitoring</span>
+              </div>
+              <div class="row g-3 mb-4">
+                <div class="col-6">
+                  <div class="p-3 bg-black bg-opacity-20 rounded-3 border border-secondary border-opacity-10">
+                    <span class="small text-muted-custom d-block">System Load Metric</span>
+                    <span class="h5 fw-bold text-white mb-0">942.8 Cr</span>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="p-3 bg-black bg-opacity-20 rounded-3 border border-secondary border-opacity-10">
+                    <span class="small text-muted-custom d-block">Active Allocations</span>
+                    <span class="h5 fw-bold text-accent mb-0">12,482 Contracts</span>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-3">
+                <div class="mb-2"><span class="small text-muted-custom">Ministry of Defence allocation index</span><div class="widget-bar mt-1"><div class="widget-bar widget-fill-1"></div></div></div>
+                <div class="mb-2"><span class="small text-muted-custom">Ministry of Finance monitoring track</span><div class="widget-bar mt-1"><div class="widget-bar widget-fill-2"></div></div></div>
+                <div><span class="small text-muted-custom">Data extraction index parameters</span><div class="widget-bar mt-1"><div class="widget-bar widget-fill-3"></div></div></div>
+              </div>
             </div>
-            <div class="glass-surface chassis-layer-satellite">
-              <img src="/static/css/images/i4.png" class="w-100 d-block" alt="Analytical Ministry Visualization Component">
+            <!-- Floating Overlay Card Element -->
+            <div class="glass-card p-3 position-absolute bottom-0 start-0 translate-middle-y d-none d-sm-flex align-items-center gap-3 ms-4 border border-accent border-opacity-30 shadow-lg" style="max-width: 240px; transform: translateY(20px);">
+              <div class="bg-success bg-opacity-20 text-success p-2 rounded-3 fs-4"><i class="bi bi-shield-check"></i></div>
+              <div>
+                <h6 class="mb-0 text-white">99.9% Verified</h6>
+                <p class="small text-muted-custom mb-0">Contract Data Indexing</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </header>
 
-  <section class="py-4 border-top border-bottom border-secondary border-opacity-10 bg-dark bg-opacity-20 position-relative z-1">
+  <!-- Animated Statistics Metric Elements Layout -->
+  <section id="about" class="py-4 border-top border-bottom border-secondary border-opacity-10 bg-black bg-opacity-20">
     <div class="container">
-      <p class="text-center text-uppercase tracking-widest small mb-4" style="color: var(--text-muted); font-size: 0.7rem; font-weight:700;">Empowering Systems Integration Across Modern Sectors</p>
-      <div class="row row-cols-2 row-cols-md-4 g-4 justify-content-center align-items-center text-center">
-        <div class="col"><span class="matrix-logo-item">PETROLEUM CORP</span></div>
-        <div class="col"><span class="matrix-logo-item">ENERGY MATRIX</span></div>
-        <div class="col"><span class="matrix-logo-item">COAL LOGISTICS</span></div>
-        <div class="col"><span class="matrix-logo-item">POWER GRID</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="features" class="py-5 position-relative z-1">
-    <div class="container py-5">
-      <div class="text-center mb-5">
-        <h2 class="fw-bold tracking-tight text-white mb-2 fs-1">Engineered for Massive Scale Analytics</h2>
-        <p class="text-secondary mx-auto fs-6 col-md-8 col-lg-6" style="color: var(--text-muted) !important;">Ditch manual ingestion workflows. Activate six specialized processing engines inside your system node.</p>
-      </div>
-      
-      <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
-        <div class="col">
-          <div class="glass-surface p-4 h-100">
-            <div class="rounded-3 d-flex align-items-center justify-content-center text-primary mb-4" style="width:44px; height:44px; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2);">
-              <i class="bi bi-cpu-fill fs-4"></i>
-            </div>
-            <h4 class="h5 fw-bold text-white mb-2">Automated Normalization Engine</h4>
-            <p class="small mb-0" style="color: var(--text-muted);">Ingest chaotic multi-format contract arrays and convert them into structured database logs instantaneously.</p>
-          </div>
+      <div class="row g-4 text-center">
+        <div class="col-6 col-md-3">
+          <h2 class="display-6 fw-bold mb-1 text-white">1M+</h2>
+          <div class="small text-muted-custom text-uppercase tracking-wider">Contracts Processed</div>
         </div>
-        <div class="col">
-          <div class="glass-surface p-4 h-100">
-            <div class="rounded-3 d-flex align-items-center justify-content-center text-accent mb-4" style="width:44px; height:44px; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2);">
-              <i class="bi bi-diagram-3-fill fs-4"></i>
-            </div>
-            <h4 class="h5 fw-bold text-white mb-2">Relational Risk Matrix Mapping</h4>
-            <p class="small mb-0" style="color: var(--text-muted);">Map operational clusters and evaluate entity interdependencies inside full-fidelity networks automatically.</p>
-          </div>
+        <div class="col-6 col-md-3">
+          <h2 class="display-6 fw-bold mb-1 text-accent">50K+</h2>
+          <div class="small text-muted-custom text-uppercase tracking-wider">Sellers Tracked</div>
         </div>
-        <div class="col">
-          <div class="glass-surface p-4 h-100">
-            <div class="rounded-3 d-flex align-items-center justify-content-center text-info mb-4" style="width:44px; height:44px; background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.2);">
-              <i class="bi bi-lightning-charge-fill fs-4"></i>
-            </div>
-            <h4 class="h5 fw-bold text-white mb-2">High-Density Telemetry Queries</h4>
-            <p class="small mb-0" style="color: var(--text-muted);">Query extensive record arrays using high-performance search indices without experiencing transaction delays.</p>
-          </div>
+        <div class="col-6 col-md-3">
+          <h2 class="display-6 fw-bold mb-1 text-white">₹100K+ Cr</h2>
+          <div class="small text-muted-custom text-uppercase tracking-wider">Procurement Value</div>
         </div>
-        <div class="col">
-          <div class="glass-surface p-4 h-100">
-            <div class="rounded-3 d-flex align-items-center justify-content-center text-warning mb-4" style="width:44px; height:44px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2);">
-              <i class="bi bi-shield-lock-fill fs-4"></i>
-            </div>
-            <h4 class="h5 fw-bold text-white mb-2">Enterprise Security Layers</h4>
-            <p class="small mb-0" style="color: var(--text-muted);">Enforce advanced workspace layer security using audited, enterprise-grade access protocols.</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="glass-surface p-4 h-100">
-            <div class="rounded-3 d-flex align-items-center justify-content-center text-danger mb-4" style="width:44px; height:44px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);">
-              <i class="bi bi-arrow-repeat fs-4"></i>
-            </div>
-            <h4 class="h5 fw-bold text-white mb-2">Real-Time Synchronization</h4>
-            <p class="small mb-0" style="color: var(--text-muted);">Synchronize data streams with active procurement portals continuously to ensure real-time intelligence updates.</p>
-          </div>
-        </div>
-        <div class="col">
-          <div class="glass-surface p-4 h-100">
-            <div class="rounded-3 d-flex align-items-center justify-content-center text-success mb-4" style="width:44px; height:44px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);">
-              <i class="bi bi-file-earmark-bar-graph-fill fs-4"></i>
-            </div>
-            <h4 class="h5 fw-bold text-white mb-2">One-Click Document Exporting</h4>
-            <p class="small mb-0" style="color: var(--text-muted);">Export fully normalized data metrics seamlessly into production-ready Excel or PDF structures.</p>
-          </div>
+        <div class="col-6 col-md-3">
+          <h2 class="display-6 fw-bold mb-1 text-accent">99.9%</h2>
+          <div class="small text-muted-custom text-uppercase tracking-wider">Data Accuracy</div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="showcase" class="py-5 bg-dark bg-opacity-30 position-relative z-1">
-    <div class="container py-5">
-      
-      <div class="row align-items-center g-5 mb-5 pb-lg-5">
-        <div class="col-lg-5 text-center text-lg-start">
-          <span class="text-gradient fw-bold small text-uppercase tracking-widest mb-2 d-inline-block">System Component 01</span>
-          <h3 class="fw-bold text-white mb-3 fs-2 tracking-tight">Granular High-Density Ledgers</h3>
-          <p class="text-secondary mb-4" style="color: var(--text-muted) !important;">
-            Track and monitor detailed transactional lifecycles across centralized data tables. Perform precise dynamic filtering by fulfillment state, verify merchant channels, and parse administrative data records smoothly.
-          </p>
-          <div class="row g-3">
-            <div class="col-6"><h5 class="text-white fw-bold h6 mb-1">✔ Interactive Sorting</h5><p class="small text-muted mb-0">Filter fields instantly.</p></div>
-            <div class="col-6"><h5 class="text-white fw-bold h6 mb-1">✔ Deep Integrity</h5><p class="small text-muted mb-0">Tamper-proof record tracking.</p></div>
-          </div>
-        </div>
-        <div class="col-lg-7 overlap-scene-viewport mt-5 mt-lg-0">
-          <div class="overlap-grid-box">
-            <div class="glass-surface chassis-layer-base">
-              <img src="/static/css/images/i3.png" class="w-100 d-block" alt="NexusHub Management Grid Component View">
-            </div>
-            <div class="glass-surface chassis-layer-satellite">
-              <img src="/static/css/images/i1.png" class="w-100 d-block" alt="Ecosystem Curve Component Interface">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row align-items-center g-5 pt-lg-5">
-        <div class="col-lg-5 order-lg-2 text-center text-lg-start">
-          <span class="text-gradient fw-bold small text-uppercase tracking-widest mb-2 d-inline-block">System Component 02</span>
-          <h3 class="fw-bold text-white mb-3 fs-2 tracking-tight">Side-by-Side Brand Intel Matrix</h3>
-          <p class="text-secondary mb-4" style="color: var(--text-muted) !important;">
-            Compare merchant behaviors and market profiles simultaneously. Isolate revenue allocations, track maximum capacity thresholds, and analyze historical engagement pipelines within a clean, side-by-side visualization view.
-          </p>
-        </div>
-        <div class="col-lg-7 order-lg-1 overlap-scene-viewport mt-5 mt-lg-0">
-          <div class="overlap-grid-box">
-            <div class="glass-surface chassis-layer-satellite left-flow">
-              <img src="/static/css/images/i4.png" class="w-100 d-block" alt="Micro Telemetry Panel View">
-            </div>
-            <div class="glass-surface chassis-layer-base left-flow">
-              <img src="/static/css/images/i7.png" class="w-100 d-block" alt="NexusHub Competitor Matrix View">
-            </div>
-          </div>
-        </div>
-      </div>
-
+  <!-- Marquee Scroll Enterprise Branding Segment -->
+  <section class="marquee-container">
+    <div class="marquee-content">
+      <div class="marquee-logo"><i class="bi bi-bank"></i> Ministry of Defence</div>
+      <div class="marquee-logo"><i class="bi bi-building-gear"></i> Ministry of Finance</div>
+      <div class="marquee-logo"><i class="bi bi-lightning-charge"></i> Ministry of Power</div>
+      <div class="marquee-logo"><i class="bi bi-train-front"></i> Ministry of Railways</div>
+      <div class="marquee-logo"><i class="bi bi-heart-pulse"></i> Ministry of Health</div>
+    </div>
+    <!-- Duplicated Content to ensure infinite seamless looping animation -->
+    <div class="marquee-content" aria-hidden="true">
+      <div class="marquee-logo"><i class="bi bi-bank"></i> Ministry of Defence</div>
+      <div class="marquee-logo"><i class="bi bi-building-gear"></i> Ministry of Finance</div>
+      <div class="marquee-logo"><i class="bi bi-lightning-charge"></i> Ministry of Power</div>
+      <div class="marquee-logo"><i class="bi bi-train-front"></i> Ministry of Railways</div>
+      <div class="marquee-logo"><i class="bi bi-heart-pulse"></i> Ministry of Health</div>
     </div>
   </section>
 
-  <section class="py-5 position-relative z-1">
+  <!-- Functional Core Capabilities Features Layout -->
+  <section id="features" class="section-spacing position-relative">
+    <div class="glow-container style-orb" style="background: var(--glow-blue); top: 20%; right: 5%;"></div>
     <div class="container">
-      <div class="glass-surface p-4 p-md-5" style="background: linear-gradient(135deg, #111827 0%, #070a12 100%);">
-        <div class="row g-4 text-center">
-          <div class="col-6 col-lg-3 border-end border-secondary border-opacity-10">
-            <h2 class="display-5 fw-black text-gradient mb-1" style="font-weight:900;">1,100+</h2>
-            <p class="small text-uppercase tracking-widest mb-0" style="color: var(--text-muted); font-size: 0.65rem;">Audited Vendors</p>
-          </div>
-          <div class="col-6 col-lg-3 border-end-lg border-secondary border-opacity-10">
-            <h2 class="display-5 fw-black text-gradient mb-1" style="font-weight:900;">3.4K+</h2>
-            <p class="small text-uppercase tracking-widest mb-0" style="color: var(--text-muted); font-size: 0.65rem;">Aggregated Logs</p>
-          </div>
-          <div class="col-6 col-lg-3 border-end border-secondary border-opacity-10">
-            <h2 class="display-5 fw-black text-success mb-1" style="font-weight:900;">79K+ Cr</h2>
-            <p class="small text-uppercase tracking-widest mb-0" style="color: var(--text-muted); font-size: 0.65rem;">Tracked Value Matrix</p>
-          </div>
-          <div class="col-6 col-lg-3">
-            <h2 class="display-5 fw-black text-info mb-1" style="font-weight:900;">100%</h2>
-            <p class="small text-uppercase tracking-widest mb-0" style="color: var(--text-muted); font-size: 0.65rem;">Normalization</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="process" class="py-5 position-relative z-1">
-    <div class="container py-5">
       <div class="text-center mb-5">
-        <h2 class="fw-bold tracking-tight text-white mb-2 fs-1">3-Step Integration Architecture</h2>
-        <p class="text-secondary mx-auto col-md-8 col-lg-5" style="color: var(--text-muted) !important;">Initialize deep telemetry analysis tracks across your company structures in minutes.</p>
+        <h2 class="h1">Powerful Features Built for Procurement Intelligence</h2>
+        <p class="text-muted-custom max-width-md mx-auto">Access robust analytical micro-systems engineered specifically for dynamic contract analysis tracking parameters.</p>
       </div>
       
       <div class="row g-4">
-        <div class="col-lg-4">
-          <div class="text-center p-4">
-            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 fs-4 fw-bold" style="width:54px; height:54px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);">01</div>
-            <h4 class="h5 fw-bold text-white mb-2">Connect Workspace Nodes</h4>
-            <p class="small text-muted mb-0">Securely bridge your enterprise data nodes or raw transaction formats with NexusHub's ingestion network layer.</p>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="text-center p-4">
-            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 fs-4 fw-bold" style="width:54px; height:54px; background: rgba(99, 102, 241, 0.1); border: 1px solid var(--brand-primary);">02</div>
-            <h4 class="h5 fw-bold text-white mb-2">Automate Normalization</h4>
-            <p class="small text-muted mb-0">NexusHub processes and cleans incoming datasets, resolving entity tracking values and structural mapping rules automatically.</p>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <div class="text-center p-4">
-            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center text-white mb-4 fs-4 fw-bold" style="width:54px; height:54px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);">03</div>
-            <h4 class="h5 fw-bold text-white mb-2">Extract Analytical Insights</h4>
-            <p class="small text-muted mb-0">Access full-fidelity dashboard systems, run dynamic queries, and instantly generate verified compliance reports.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-5 bg-dark bg-opacity-20 position-relative z-1">
-    <div class="container py-4">
-      <div class="text-center mb-5">
-        <h2 class="fw-bold text-white mb-2 fs-1">Validated by Operations Engineers</h2>
-        <p class="text-gradient small text-uppercase tracking-widest fw-bold">Trusted Infrastructure Performance Feedback</p>
-      </div>
-      
-      <div class="row g-4 row-cols-1 row-cols-md-3">
-        <div class="col">
-          <div class="glass-surface p-4">
-            <div class="text-warning mb-3"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
-            <p class="text-secondary small mb-4">"Integrating NexusHub completely automated our procurement data mapping tasks. Ingesting huge tracking tables now completes in seconds instead of taking days."</p>
-            <div class="d-flex align-items-center gap-3">
-              <div class="rounded-circle" style="width:36px; height:36px; background: var(--brand-gradient);"></div>
-              <div><h6 class="text-white fw-bold mb-0 small">Rajesh K.</h6><p class="small text-muted mb-0" style="font-size:0.75rem;">Director of Analytics</p></div>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="glass-surface p-4">
-            <div class="text-warning mb-3"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
-            <p class="text-secondary small mb-4">"The 3D interactive comparison layers and multi-variable analytics matrices provide unparalleled visibility into our historical corporate data pipelines."</p>
-            <div class="d-flex align-items-center gap-3">
-              <div class="rounded-circle" style="width:36px; height:36px; background: var(--brand-gradient);"></div>
-              <div><h6 class="text-white fw-bold mb-0 small">Amit M.</h6><p class="small text-muted mb-0" style="font-size:0.75rem;">Principal Systems Auditor</p></div>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="glass-surface p-4">
-            <div class="text-warning mb-3"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
-            <p class="text-secondary small mb-4">"One-click reports generation and robust access security layer configurations make this platform an essential asset for managing large-scale operations."</p>
-            <div class="d-flex align-items-center gap-3">
-              <div class="rounded-circle" style="width:36px; height:36px; background: var(--brand-gradient);"></div>
-              <div><h6 class="text-white fw-bold mb-0 small">Sanjay R.</h6><p class="small text-muted mb-0" style="font-size:0.75rem;">Lead Data Engineer</p></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="pricing" class="py-5 position-relative z-1">
-    <div class="container py-5">
-      <div class="text-center mb-5">
-        <h2 class="fw-bold tracking-tight text-white mb-2 fs-1">Transparent Resource Plans</h2>
-        <p class="text-secondary mx-auto col-md-8 col-lg-5" style="color: var(--text-muted) !important;">Choose the target data capability layer sized exactly to your operation demands.</p>
-      </div>
-      
-      <div class="row g-4 align-items-stretch justify-content-center">
         <div class="col-md-6 col-lg-4">
-          <div class="glass-surface card-premium-price">
-            <h4 class="h5 fw-bold text-white mb-1">Sandbox Node</h4>
-            <p class="small text-muted mb-4">Ideal for small exploratory teams.</p>
-            <h2 class="text-white fw-bold mb-4">₹0 <span class="fs-6 text-muted fw-normal">/ month</span></h2>
-            <hr class="border-secondary opacity-25 mb-4">
-            <ul class="list-unstyled d-flex flex-column gap-3 small text-secondary mb-5 flex-grow-1">
-              <li><i class="bi bi-check2 text-primary me-2"></i> Access to Up to 100 Logs</li>
-              <li><i class="bi bi-check2 text-primary me-2"></i> Standard Analytical Ledger</li>
-              <li><i class="bi bi-check2 text-primary me-2"></i> Basic Table Sorting Modules</li>
-              <li class="text-muted"><i class="bi bi-x text-danger me-2"></i> Advanced Cross-Brand Matrix</li>
-            </ul>
-            <a href="#" class="btn btn-premium-secondary w-100 mt-auto">Initialize Sandbox</a>
+          <div class="glass-card p-4 h-100">
+            <div class="icon-wrapper"><i class="bi bi-file-earmark-bar-graph"></i></div>
+            <h4>Contract Analytics</h4>
+            <p class="text-muted-custom mb-0">Track and analyze GeM contracts with advanced procurement insights.</p>
           </div>
         </div>
         <div class="col-md-6 col-lg-4">
-          <div class="glass-surface card-premium-price tier-popular position-relative">
-            <span class="position-absolute badge rounded-pill bg-primary top-0 end-0 m-4 small px-3 py-2" style="background: var(--brand-gradient) !important; font-size: 0.65rem;">MOST DEPLOYED</span>
-            <h4 class="h5 fw-bold text-white mb-1">Production Core</h4>
-            <p class="small text-muted mb-4">Optimized for active data pipelines.</p>
-            <h2 class="text-white fw-bold mb-4">Custom Pricing <span class="fs-6 text-muted fw-normal">/ tier</span></h2>
-            <hr class="border-secondary opacity-25 mb-4">
-            <ul class="list-unstyled d-flex flex-column gap-3 small text-secondary mb-5 flex-grow-1">
-              <li><i class="bi bi-check2 text-primary me-2"></i> Infinite Ingestion Architecture Logs</li>
-              <li><i class="bi bi-check2 text-primary me-2"></i> Real-Time Synchronized Streams</li>
-              <li><i class="bi bi-check2 text-primary me-2"></i> Advanced Cross-Brand Analysis Matrix</li>
-              <li><i class="bi bi-check2 text-primary me-2"></i> Instant Excel Export Options</li>
-            </ul>
-            <a href="#" class="btn btn-premium-primary w-100 mt-auto">Deploy Core Node</a>
+          <div class="glass-card p-4 h-100">
+            <div class="icon-wrapper"><i class="bi bi-person-bounding-box"></i></div>
+            <h4>Seller Intelligence</h4>
+            <p class="text-muted-custom mb-0">Monitor seller participation, performance history, and procurement activities.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-4 h-100">
+            <div class="icon-wrapper"><i class="bi bi-diagram-3"></i></div>
+            <h4>Department Insights</h4>
+            <p class="text-muted-custom mb-0">Analyze procurement patterns across ministries and departments.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-4 h-100">
+            <div class="icon-wrapper"><i class="bi bi-search"></i></div>
+            <h4>Advanced Search</h4>
+            <p class="text-muted-custom mb-0">Search contracts instantly using smart filters and high-speed indexing.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-4 h-100">
+            <div class="icon-wrapper"><i class="bi bi-file-earmark-arrow-down"></i></div>
+            <h4>Export Reports</h4>
+            <p class="text-muted-custom mb-0">Generate professional PDF and Excel reports with one click.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-4 h-100">
+            <div class="icon-wrapper"><i class="bi bi-activity"></i></div>
+            <h4>Live Data Monitoring</h4>
+            <p class="text-muted-custom mb-0">Access continuously updated procurement and tender information.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="faq" class="py-5 bg-dark bg-opacity-20 position-relative z-1">
-    <div class="container py-4">
-      <div class="text-center mb-5">
-        <h2 class="fw-bold text-white mb-2 fs-1">Frequently Asked Queries</h2>
-        <p class="text-secondary mx-auto col-md-8 col-lg-5" style="color: var(--text-muted) !important;">Clear answers to core architecture and setup details.</p>
-      </div>
-      
-      <div class="mx-auto" style="max-width: 740px;">
-        <div class="accordion-premium-node">
-          <div class="accordion-premium-trigger" onclick="toggleFaq(this)">
-            How secure is our underlying transaction data?
-            <i class="bi bi-plus-lg fs-5"></i>
-          </div>
-          <div class="accordion-premium-panel">
-            All transaction pipelines run through robust enterprise cryptographic layers. NexusHub enforces granular role management access to ensure absolute data isolation within your system node.
-          </div>
-        </div>
-        <div class="accordion-premium-node">
-          <div class="accordion-premium-trigger" onclick="toggleFaq(this)">
-            Can we execute custom database format reports?
-            <i class="bi bi-plus-lg fs-5"></i>
-          </div>
-          <div class="accordion-premium-panel">
-            Yes. The system's high-density export engine lets you customize, structure, and convert filtered records directly into clean, analytical Excel worksheets or PDF documents with a single click.
-          </div>
-        </div>
-        <div class="accordion-premium-node">
-          <div class="accordion-premium-trigger" onclick="toggleFaq(this)">
-            What is the latency rate of active portal synchronization streams?
-            <i class="bi bi-plus-lg fs-5"></i>
-          </div>
-          <div class="accordion-premium-panel">
-            Production core tiers utilize dedicated polling worker structures that continuously track external portal data updates, refreshing your local visualization metrics within seconds of change detection.
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-5 position-relative z-1">
+  <!-- Premium Interactive Mock Analytics Dashboard Showcase -->
+  <section id="analytics" class="section-spacing bg-black bg-opacity-20 border-top border-bottom border-secondary border-opacity-10">
     <div class="container">
-      <div class="glass-surface p-4 p-md-5 text-center position-relative overflow-hidden" style="background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.15), #111827);">
-        <h2 class="display-5 fw-bold text-white mb-3" style="font-weight:800;">Deploy Your Intelligence Environment Today</h2>
-        <p class="text-secondary mx-auto mb-4 fs-5 col-lg-7" style="color: var(--text-muted) !important;">Initialize deep analytics pipelines and manage dense transaction sets through elite 3D console views seamlessly.</p>
-        <a href="#" class="btn btn-premium-primary btn-lg px-5">Initialize New Node</a>
-      </div>
-    </div>
-  </section>
-
-  <footer class="py-5 border-top border-secondary border-opacity-10 bg-dark bg-opacity-40 position-relative z-1">
-    <div class="container">
-      <div class="row g-4 mb-5">
-        <div class="col-lg-4">
-          <a class="d-flex align-items-center gap-2 text-white fw-bold fs-4 mb-3" href="#">
-            <div class="rounded-3 d-flex align-items-center justify-content-center" style="width:28px; height:28px; background: var(--brand-gradient);">
-              <i class="bi bi-layers-half text-white fs-6"></i>
+      <div class="row align-items-center gy-5">
+        <div class="col-lg-5">
+          <h2 class="h1 mb-4">Modern GeM Analytics Dashboard</h2>
+          <p class="text-muted-custom fs-5">
+            Visualize procurement trends, seller performance, contract values, and departmental analytics through interactive charts and enterprise dashboards.
+          </p>
+          <div class="mt-4">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="text-accent fs-4"><i class="bi bi-check2-square"></i></div>
+              <div><h6 class="mb-0 text-white">Dynamic Interactive Flow Charts</h6></div>
             </div>
-            NexusHub
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="text-accent fs-4"><i class="bi bi-check2-square"></i></div>
+              <div><h6 class="mb-0 text-white">Enterprise Procurement Tracking Tables</h6></div>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+              <div class="text-accent fs-4"><i class="bi bi-check2-square"></i></div>
+              <div><h6 class="mb-0 text-white">Real-time Micro-interaction Matrices</h6></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-7">
+          <!-- Mock Interactive Interface Showcase Layer -->
+          <div class="glass-card p-4 border border-secondary border-opacity-30 shadow-2xl">
+            <div class="d-flex justify-content-between flex-wrap align-items-center gap-2 mb-4">
+              <div>
+                <h5 class="mb-0 text-white">Department Procurement Stream</h5>
+                <span class="small text-muted-custom">Operational data pipeline validation profiles</span>
+              </div>
+              <div class="btn-group btn-group-sm bg-black p-1 rounded">
+                <button class="btn btn-dark btn-sm border-0 active text-white">Value Matrix</button>
+                <button class="btn btn-dark btn-sm border-0 text-muted-custom">Volume Index</button>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-dark table-borderless align-middle mb-0 small">
+                <thead>
+                  <tr class="border-bottom border-secondary border-opacity-20 text-muted-custom">
+                    <th>Contract ID</th>
+                    <th>Buyer Ministry</th>
+                    <th>Financial Value</th>
+                    <th>Status Flag</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="font-monospace text-accent">#GEM-2026-8812</td>
+                    <td>Ministry of Defence</td>
+                    <td>₹412.50 Cr</td>
+                    <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20">Settled</span></td>
+                  </tr>
+                  <tr>
+                    <td class="font-monospace text-accent">#GEM-2026-4401</td>
+                    <td>Ministry of Railways</td>
+                    <td>₹184.20 Cr</td>
+                    <td><span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-20">Processing</span></td>
+                  </tr>
+                  <tr>
+                    <td class="font-monospace text-accent">#GEM-2026-1192</td>
+                    <td>Ministry of Health</td>
+                    <td>₹89.45 Cr</td>
+                    <td><span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-20">Settled</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture Value Proposition Section -->
+  <section class="section-spacing">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="h1">Why Organizations Trust Our Architecture</h2>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="d-flex gap-3">
+            <div class="text-accent fs-3"><i class="bi bi-building-check"></i></div>
+            <div>
+              <h5>Enterprise-grade analytics</h5>
+              <p class="text-muted-custom">Calibrated tracking elements designed to manage security verification frameworks.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex gap-3">
+            <div class="text-accent fs-3"><i class="bi bi-lightning"></i></div>
+            <div>
+              <h5>Fast data processing</h5>
+              <p class="text-muted-custom">High-speed system logic capable of sorting complex metrics instantly.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex gap-3">
+            <div class="text-accent fs-3"><i class="bi bi-shield-lock"></i></div>
+            <div>
+              <h5>Secure platform</h5>
+              <p class="text-muted-custom">Advanced protective engineering maintaining systemic asset validation parameters safely.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex gap-3">
+            <div class="text-accent fs-3"><i class="bi bi-clock-history"></i></div>
+            <div>
+              <h5>Real-time procurement insights</h5>
+              <p class="text-muted-custom">Continuous monitoring systems capturing dynamic infrastructure trends instantly.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex gap-3">
+            <div class="text-accent fs-3"><i class="bi bi-filetype-pdf"></i></div>
+            <div>
+              <h5>Smart reporting system</h5>
+              <p class="text-muted-custom">Export multi-format structural updates optimized for internal operations.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex gap-3">
+            <div class="text-accent fs-3"><i class="bi bi-database-gear"></i></div>
+            <div>
+              <h5>Scalable architecture</h5>
+              <p class="text-muted-custom">Configured explicitly to process millions of live records smoothly and securely.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sequential Step Execution Flow Section -->
+  <section class="section-spacing bg-black bg-opacity-20 border-top border-bottom border-secondary border-opacity-10">
+    <div class="container text-center">
+      <h2 class="h1 mb-5">How It Works</h2>
+      <div class="row g-4 process-line">
+        <div class="col-md-4 position-relative">
+          <div class="glass-card p-4 mx-auto" style="max-width: 320px;">
+            <div class="icon-wrapper mx-auto mb-3"><span class="fw-bold fs-5">01</span></div>
+            <h5>Import Procurement Data</h5>
+            <p class="small text-muted-custom mb-0">System algorithms pull targeted GeM transaction indices directly through standard parsing tools.</p>
+          </div>
+        </div>
+        <div class="col-md-4 position-relative">
+          <div class="glass-card p-4 mx-auto" style="max-width: 320px;">
+            <div class="icon-wrapper mx-auto mb-3"><span class="fw-bold fs-5">02</span></div>
+            <h5>Analyze Contracts & Sellers</h5>
+            <p class="small text-muted-custom mb-0">Deep evaluation layers format transactional variables and calculate risk metric positions.</p>
+          </div>
+        </div>
+        <div class="col-md-4 position-relative">
+          <div class="glass-card p-4 mx-auto" style="max-width: 320px;">
+            <div class="icon-wrapper mx-auto mb-3"><span class="fw-bold fs-5">03</span></div>
+            <h5>Generate Insights & Reports</h5>
+            <p class="small text-muted-custom mb-0">Instantly generate high-fidelity dynamic files optimized for presentation delivery.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- User Feedback Elements Presentation Layout -->
+  <section class="section-spacing">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="h1">What Our Users Say</h2>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="glass-card p-4 d-flex flex-column h-100 justify-content-between">
+            <p class="text-white italic mb-4">"This platform transformed our procurement analysis workflow."</p>
+            <h6 class="text-accent mb-0">— Procurement Analyst</h6>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card p-4 d-flex flex-column h-100 justify-content-between">
+            <p class="text-white italic mb-4">"Excellent dashboard and reporting capabilities."</p>
+            <h6 class="text-accent mb-0">— Business Consultant</h6>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card p-4 d-flex flex-column h-100 justify-content-between">
+            <p class="text-white italic mb-4">"Modern UI with powerful GeM analytics features."</p>
+            <h6 class="text-accent mb-0">— Data Analyst</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Enterprise Tier Pricing Tiers Grid System -->
+  <section class="section-spacing bg-black bg-opacity-20 border-top border-bottom border-secondary border-opacity-10">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="h1">Platform Pricing Tier Matrix</h2>
+        <p class="text-muted-custom">Deploy the accurate analytic monitoring framework built to align with your team size.</p>
+      </div>
+      <div class="row g-4 align-items-center justify-content-center">
+        <!-- Plan 1 -->
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-4">
+            <h5 class="text-white">Starter</h5>
+            <div class="my-3"><span class="display-5 fw-bold text-white">Custom</span></div>
+            <p class="small text-muted-custom mb-4">Essential data parsing layers built for scaling startup operations.</p>
+            <hr class="border-secondary border-opacity-30 mb-4">
+            <ul class="list-unstyled small d-grid gap-2 mb-4">
+              <li><i class="bi bi-check text-accent me-2"></i>Basic Contract Tracking</li>
+              <li><i class="bi bi-check text-accent me-2"></i>Standard Analytical Filtering</li>
+              <li><i class="bi bi-check text-accent me-2"></i>CSV Reporting Exports</li>
+            </ul>
+            <a href="#" class="btn btn-outline-glass w-100 btn-sm">Get Started</a>
+          </div>
+        </div>
+        <!-- Plan 2 (Recommended Highlight Mode) -->
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-4 border border-primary position-relative shadow-lg" style="box-shadow: 0 0 30px rgba(13,110,253,0.15);">
+            <span class="badge bg-primary text-white position-absolute top-0 end-0 m-3 rounded-pill small">Recommended</span>
+            <h5 class="text-white">Professional</h5>
+            <div class="my-3"><span class="display-5 fw-bold text-white">Enterprise</span></div>
+            <p class="small text-muted-custom mb-4">Advanced monitoring pipelines optimized for active procurement specialists.</p>
+            <hr class="border-secondary border-opacity-30 mb-4">
+            <ul class="list-unstyled small d-grid gap-2 mb-4">
+              <li><i class="bi bi-check text-accent me-2"></i>Full Live Data Tracking</li>
+              <li><i class="bi bi-check text-accent me-2"></i>Advanced Search Arrays</li>
+              <li><i class="bi bi-check text-accent me-2"></i>PDF / Excel Dashboard Exports</li>
+              <li><i class="bi bi-check text-accent me-2"></i>Standard Priority Assistance</li>
+            </ul>
+            <a href="#" class="btn btn-glow-primary w-100 btn-sm">Request Access</a>
+          </div>
+        </div>
+        <!-- Plan 3 -->
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-4">
+            <h5 class="text-white">Enterprise</h5>
+            <div class="my-3"><span class="display-5 fw-bold text-white">SaaS Custom</span></div>
+            <p class="small text-muted-custom mb-4">Complete systematic data engine arrays configured for deep corporate analysis.</p>
+            <hr class="border-secondary border-opacity-30 mb-4">
+            <ul class="list-unstyled small d-grid gap-2 mb-4">
+              <li><i class="bi bi-check text-accent me-2"></i>Unlimited Indexing Matrices</li>
+              <li><i class="bi bi-check text-accent me-2"></i>Dedicated System Engineers</li>
+              <li><i class="bi bi-check text-accent me-2"></i>Automated Analytical Pipelines</li>
+              <li><i class="bi bi-check text-accent me-2"></i>Custom API Endpoint Assets</li>
+            </ul>
+            <a href="#" class="btn btn-outline-glass w-100 btn-sm">Contact Support</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Inquiry Support (FAQ Component) -->
+  <section id="faq" class="section-spacing">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="h1">Frequently Asked Questions</h2>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="accordion-custom">
+            
+            <div class="accordion-item-custom">
+              <button class="accordion-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q1">
+                How frequently is GeM data updated?
+                <i class="bi bi-chevron-down ms-2 small"></i>
+              </button>
+              <div id="q1" class="collapse" data-bs-parent=".accordion-custom">
+                <div class="p-4 text-muted-custom border-top border-secondary border-opacity-20 small">
+                  Data validation protocols systematically cycle calculations matching structural availability tracking metrics, keeping information current.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item-custom">
+              <button class="accordion-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q2">
+                Can I export reports?
+                <i class="bi bi-chevron-down ms-2 small"></i>
+              </button>
+              <div id="q2" class="collapse" data-bs-parent=".accordion-custom">
+                <div class="p-4 text-muted-custom border-top border-secondary border-opacity-20 small">
+                  Yes, the dashboard integrates rapid generation processes allowing data extraction into standard PDF or multi-tab structured Excel formats instantly.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item-custom">
+              <button class="accordion-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q3">
+                Is role-based access supported?
+                <i class="bi bi-chevron-down ms-2 small"></i>
+              </button>
+              <div id="q3" class="collapse" data-bs-parent=".accordion-custom">
+                <div class="p-4 text-muted-custom border-top border-secondary border-opacity-20 small">
+                  Enterprise tiers feature internal granular permission profiles to govern access settings across discrete departmental operations smoothly.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item-custom">
+              <button class="accordion-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q4">
+                Does the platform support large datasets?
+                <i class="bi bi-chevron-down ms-2 small"></i>
+              </button>
+              <div id="q4" class="collapse" data-bs-parent=".accordion-custom">
+                <div class="p-4 text-muted-custom border-top border-secondary border-opacity-20 small">
+                  Our system architecture is configured to process millions of complex row indices concurrently without experiencing systemic latency.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item-custom">
+              <button class="accordion-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#q5">
+                Is the dashboard mobile responsive?
+                <i class="bi bi-chevron-down ms-2 small"></i>
+              </button>
+              <div id="q5" class="collapse" data-bs-parent=".accordion-custom">
+                <div class="p-4 text-muted-custom border-top border-secondary border-opacity-20 small">
+                  Yes, every monitoring layer and tracking panel conforms automatically to render fluidly across tablet configurations and handheld hardware viewports.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- High-Conversion Core Footer CTA Section -->
+  <section class="section-spacing border-top border-secondary border-opacity-10 position-relative text-center">
+    <div class="glow-container style-orb" style="background: var(--glow-blue); bottom: 0; left: 30%;"></div>
+    <div class="container">
+      <div class="glass-card p-5 max-width-lg mx-auto overflow-hidden">
+        <h2 class="display-5 fw-bold mb-3">Start Smarter GeM Procurement Analysis</h2>
+        <p class="text-muted-custom mb-4 max-width-sm mx-auto fs-5">
+          Unlock powerful procurement insights with Infinity GeM Analytics.
+        </p>
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+          <a href="#" class="btn btn-glow-primary">Launch Dashboard</a>
+          <a href="#" class="btn btn-outline-glass">Contact Team</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Complete Structural Enterprise Footer Component -->
+  <footer class="py-5 bg-black bg-opacity-40 border-top border-secondary border-opacity-10 text-muted-custom">
+    <div class="container">
+      <div class="row gy-4 mb-4">
+        <div class="col-lg-4">
+          <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-white mb-3" href="#">
+            <i class="bi bi-infinity text-primary fs-3"></i>
+            <span>Infinity GeM Analytics</span>
           </a>
-          <p class="small text-muted col-md-9 col-lg-12">Next-generation data processing and contract analytics workspaces built for secure enterprise scaling environments.</p>
+          <p class="small text-muted-custom">
+            Advanced multi-tier calculation models mapping national contract performance variables transparently.
+          </p>
         </div>
-        <div class="col-6 col-md-4 col-lg-2 offset-lg-2">
-          <h6 class="text-white fw-bold mb-3 small tracking-wider text-uppercase">Platform</h6>
-          <ul class="list-unstyled d-flex flex-column gap-2 small"><li class="text-muted">Engines Suite</li><li class="text-muted">Telemetry Views</li><li class="text-muted">Security Layer</li></ul>
+        <div class="col-6 col-md-2 ms-auto">
+          <h6 class="text-white mb-3">About</h6>
+          <ul class="list-unstyled small d-grid gap-2">
+            <li><a href="#about" class="text-muted-custom text-decoration-none">Our Story</a></li>
+            <li><a href="#features" class="text-muted-custom text-decoration-none">Features</a></li>
+          </ul>
         </div>
-        <div class="col-6 col-md-4 col-lg-2">
-          <h6 class="text-white fw-bold mb-3 small tracking-wider text-uppercase">Company</h6>
-          <ul class="list-unstyled d-flex flex-column gap-2 small"><li class="text-muted">Infrastructure</li><li class="text-muted">System Log</li><li class="text-muted">Contact Node</li></ul>
+        <div class="col-6 col-md-2">
+          <h6 class="text-white mb-3">Application</h6>
+          <ul class="list-unstyled small d-grid gap-2">
+            <li><a href="#" class="text-muted-custom text-decoration-none">Dashboard</a></li>
+            <li><a href="#analytics" class="text-muted-custom text-decoration-none">Analytics Stream</a></li>
+          </ul>
         </div>
-        <div class="col-md-4 col-lg-2">
-          <h6 class="text-white fw-bold mb-3 small tracking-wider text-uppercase">Ecosystem</h6>
-          <div class="d-flex gap-3 fs-5"><i class="bi bi-twitter-x text-muted"></i><i class="bi bi-github text-muted"></i><i class="bi bi-linkedin text-muted"></i></div>
+        <div class="col-6 col-md-2">
+          <h6 class="text-white mb-3">Governance</h6>
+          <ul class="list-unstyled small d-grid gap-2">
+            <li><a href="#" class="text-muted-custom text-decoration-none">Privacy Policy</a></li>
+            <li><a href="#" class="text-muted-custom text-decoration-none">Terms & Conditions</a></li>
+          </ul>
+        </div>
+        <div class="col-md-2">
+          <h6 class="text-white mb-3">Communications</h6>
+          <div class="d-flex gap-3 fs-5 mb-2">
+            <a href="#" class="text-muted-custom"><i class="bi bi-linkedin"></i></a>
+            <a href="mailto:info@infinitygem.local" class="text-muted-custom"><i class="bi bi-envelope-at"></i></a>
+          </div>
+          <span class="small text-secondary d-block">ops@infinitygem.local</span>
         </div>
       </div>
-      <hr class="border-secondary opacity-10 my-4">
-      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 small text-muted text-center text-md-start">
-        <div>&copy; 2026 NexusHub Inc. All cryptographic parameters and operational domains reserved securely.</div>
-        <div class="d-flex gap-4"><span>Terms of Service</span><span>Privacy Protocol</span></div>
+      <div class="pt-4 border-top border-secondary border-opacity-10 d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 small">
+        <span>&copy; 2026 Infinity GeM Analytics. All rights reserved.</span>
+        <span class="text-secondary tracking-wider small text-uppercase">National Resource Intelligence Cluster</span>
       </div>
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <script>
-    function toggleFaq(element) {
-      const item = element.parentElement;
-      const panel = item.querySelector('.accordion-premium-panel');
-      const icon = element.querySelector('i');
-      
-      if(item.classList.contains('is-open')) {
-        panel.style.maxHeight = null;
-        item.classList.remove('is-open');
-        icon.className = 'bi bi-plus-lg fs-5';
-      } else {
-        document.querySelectorAll('.accordion-premium-node.is-open').forEach(node => {
-          node.querySelector('.accordion-premium-panel').style.maxHeight = null;
-          node.querySelector('i').className = 'bi bi-plus-lg fs-5';
-          node.classList.remove('is-open');
-        });
-        
-        panel.style.maxHeight = panel.scrollHeight + "px";
-        item.classList.add('is-open');
-        icon.className = 'bi bi-dash-lg fs-5';
-      }
-    }
-  </script>
+  <!-- Bootstrap Bundle Script Integration -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+{%endblock%}

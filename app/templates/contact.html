@@ -3,150 +3,662 @@
 {% block title %}Contact Us - Infinity Platform{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | Infinity GeM Analytics</title>
+   -->
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   
-  <!-- Header Section -->
-  <div class="text-center mb-5">
-    <h1 class="display-5 fw-bold text-body-emphasis">Get In Touch</h1>
-    <p class="lead text-muted mx-auto" style="max-width: 600px;">
-      Have questions about contract workflows, database indexing, or enterprise pipelines? Connect with our support deck instantly.
-    </p>
-    <div class="d-flex justify-content-center">
-      <hr class="w-25 border-primary border-2 mt-2">
-    </div>
-  </div>
+  <!-- Google Fonts & Bootstrap Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
-  <div class="row g-5 justify-content-center">
+  <style>
+    /* Design System Token Architecture */
+    :root {
+      --bg-dark: #0f172a;
+      --surface: #111827;
+      --surface-card: rgba(17, 24, 39, 0.7);
+      --primary: #0d6efd;
+      --accent: #00bfff;
+      --text-gray: #94a3b8;
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --glow-blue: radial-gradient(circle, rgba(13, 110, 253, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+      --glow-cyan: radial-gradient(circle, rgba(0, 191, 255, 0.12) 0%, rgba(15, 23, 42, 0) 70%);
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* Scannability & Typography Overrides */
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .text-muted-custom {
+      color: var(--text-gray);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff 40%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Ambient Lighting Layouts */
+    .glow-container {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Glassmorphism Structural Cards */
+    .glass-card {
+      background: var(--surface-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-glass);
+      border-radius: 16px;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0, 191, 255, 0.3);
+      box-shadow: 0 0 30px rgba(13, 110, 253, 0.2);
+    }
+
+    /* Sticky Enterprise Header Menu */
+    .navbar-glass {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    .navbar-glass .nav-link {
+      color: var(--text-gray) !important;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
+    }
+
+    .navbar-glass .nav-link:hover,
+    .navbar-glass .nav-link.active {
+      color: #ffffff !important;
+    }
+
+    /* Premium Component Buttons */
+    .btn-glow-primary {
+      background: linear-gradient(135deg, var(--primary), #0b5ed7);
+      color: #ffffff;
+      border: none;
+      font-weight: 600;
+      padding: 0.75rem 1.75rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(13, 110, 253, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .btn-glow-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(13, 110, 253, 0.6);
+      color: #ffffff;
+    }
+
+    .btn-outline-glass {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-glass);
+      color: #ffffff;
+      font-weight: 600;
+      padding: 0.75rem 1.75rem;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline-glass:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+
+    /* Premium Input and Floating Form Layout overrides */
+    .form-floating > .form-control-custom {
+      background: rgba(15, 23, 42, 0.6) !important;
+      border: 1px solid var(--border-glass);
+      color: #ffffff !important;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+    }
+
+    .form-floating > .form-control-custom:focus {
+      background: rgba(15, 23, 42, 0.9) !important;
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(0, 191, 255, 0.2);
+      color: #ffffff;
+    }
+
+    .form-floating > label {
+      color: var(--text-gray);
+    }
+
+    .form-floating > .form-control-custom:focus ~ label,
+    .form-floating > .form-control-custom:not(:placeholder-shown) ~ label {
+      color: var(--accent);
+    }
+
+    .section-spacing {
+      padding: 100px 0;
+    }
+
+    .icon-wrapper {
+      width: 48px;
+      height: 48px;
+      background: rgba(13, 110, 253, 0.12);
+      border: 1px solid rgba(13, 110, 253, 0.25);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Accordion Custom Styling */
+    .accordion-item-custom {
+      background: var(--surface-card);
+      border: 1px solid var(--border-glass);
+      border-radius: 12px !important;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .accordion-trigger {
+      background: transparent;
+      color: #ffffff;
+      font-weight: 600;
+      padding: 1.25rem;
+      border: none;
+      width: 100%;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .accordion-trigger:not(.collapsed) {
+      color: var(--accent);
+      background: rgba(13, 110, 253, 0.05);
+    }
+
+    /* Map Simulated Filter Design Overlay */
+    .map-container {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-glass);
+    }
+
+    .map-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.2);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+
+  <!-- Interactive Hero Layout -->
+  <header class="section-spacing position-relative d-flex align-items-center">
+    <div class="glow-container" style="background: var(--glow-blue); top: -10%; left: -10%;"></div>
+    <div class="glow-container" style="background: var(--glow-cyan); bottom: 10%; right: -10%;"></div>
     
-    <!-- Left Column: Direct Redirection Cards -->
-    <div class="col-lg-5 col-xl-4">
-      <div class="d-flex flex-column gap-4">
-        
-        <h4 class="fw-bold text-body-emphasis mb-1">Instant Channels</h4>
-        <p class="text-muted small mt-0 mb-2">Click below to open external applications natively with pre-configured routing.</p>
-
-        <!-- WhatsApp Redirect Card -->
-        <a href="https://wa.me/910000000000?text=Hello%20Infinity%20Support,%20I%20have%20a%20query%20regarding%20the%20platform." 
-           target="_blank" 
-           class="card text-decoration-none border-0 shadow-sm bg-body-tertiary rounded-4 p-4 card-hover transition-all">
-          <div class="d-flex align-items-center">
-            <div class="fs-1 me-3 p-2 rounded-3 bg-success bg-opacity-10 text-success line-height-1">
-              💬
-            </div>
-            <div>
-              <h5 class="fw-bold text-success mb-1">Chat on WhatsApp</h5>
-              <p class="text-secondary small mb-0">Instant communication channel for active support issues.</p>
-            </div>
+    <div class="container">
+      <div class="row align-items-center gy-5">
+        <div class="col-lg-7">
+          <span class="badge bg-primary bg-opacity-10 text-accent border border-primary border-opacity-20 mb-3 px-3 py-2 rounded-pill">
+            <i class="bi bi-envelope-check me-2"></i>Enterprise Communications Hub
+          </span>
+          <h1 class="display-4 fw-bold mb-3 gradient-text">
+            Get in Touch with Infinity GeM Analytics
+          </h1>
+          <p class="lead text-muted-custom mb-4 fs-5">
+            Connect with our team for procurement analytics support, enterprise solutions, dashboard assistance, and GeM intelligence services.
+          </p>
+          <div class="d-flex flex-wrap gap-3 mb-5">
+            <a href="#contact-form" class="btn btn-glow-primary">Contact Support</a>
+            <a href="#" class="btn btn-outline-glass">Schedule Demo</a>
           </div>
-        </a>
-
-        <!-- Email Redirect Card -->
-        <a href="mailto:support@infinityplatform.com?subject=Platform%20Inquiry&body=Hello%20Support%20Team," 
-           class="card text-decoration-none border-0 shadow-sm bg-body-tertiary rounded-4 p-4 card-hover transition-all">
-          <div class="d-flex align-items-center">
-            <div class="fs-1 me-3 p-2 rounded-3 bg-primary bg-opacity-10 text-primary line-height-1">
-              ✉️
-            </div>
-            <div>
-              <h5 class="fw-bold text-primary mb-1">Send an Email</h5>
-              <p class="text-secondary small mb-0">Formal ticketing lane for business and system queries.</p>
-            </div>
+          <div class="row g-3">
+            <div class="col-sm-6"><i class="bi bi-shield-check text-accent me-2"></i>Enterprise Support Tier</div>
+            <div class="col-sm-6"><i class="bi bi-lightning-charge text-accent me-2"></i>Fast Response Architecture</div>
+            <div class="col-sm-6"><i class="bi bi-graph-up-arrow text-accent me-2"></i>Analytics Optimization Help</div>
+            <div class="col-sm-6"><i class="bi bi-lock text-accent me-2"></i>Secure Transmission Pipeline</div>
           </div>
-        </a>
-
-        <!-- Business Hours Context Block -->
-        <div class="p-4 rounded-4 border border-dashed bg-light mt-2">
-          <h6 class="fw-bold text-body-emphasis mb-2">⏱️ System Core Monitoring Availability</h6>
-          <p class="text-muted small mb-0">Automated integration ingestion pipelines monitor uploads 24/7. Manual admin ticketing reviews operate Mon-Fri: 9:00 AM – 6:00 PM IST.</p>
         </div>
-
+        
+        <div class="col-lg-5">
+          <!-- Dynamic Form Container Element -->
+          <div class="glass-card p-4 border border-secondary border-opacity-20" id="contact-form">
+            <h3 class="h4 mb-3 text-white">Send Us a Message</h3>
+            <p class="small text-muted-custom mb-4">Complete the system fields below to route your verification request instantly.</p>
+            
+            <form id="intelContactForm" onsubmit="handleFormSubmission(event)">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control form-control-custom text-white" id="fullName" placeholder="Full Name" required>
+                <label for="fullName">Full Name</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control form-control-custom text-white" id="companyName" placeholder="Company Name" required>
+                <label for="companyName">Company Name</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control form-control-custom text-white" id="emailAddress" placeholder="Email Address" required>
+                <label for="emailAddress">Email Address</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="tel" class="form-control form-control-custom text-white" id="phoneNumber" placeholder="Phone Number" required>
+                <label for="phoneNumber">Phone Number</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control form-control-custom text-white" id="subjectLine" placeholder="Subject" required>
+                <label for="subjectLine">Subject</label>
+              </div>
+              <div class="form-floating mb-4">
+                <textarea class="form-control form-control-custom text-white" id="messageBox" placeholder="Message" style="height: 120px" required></textarea>
+                <label for="messageBox">Message</label>
+              </div>
+              
+              <button type="submit" class="btn btn-glow-primary w-100 d-flex align-items-center justify-content-center gap-2" id="submitBtn">
+                <span id="btnText">Send Message</span>
+                <span class="spinner-border spinner-border-sm d-none" id="btnSpinner" role="status" aria-hidden="true"></span>
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
+  </header>
 
-    <!-- Right Column: Interactive Form Core Block -->
-    <div class="col-lg-7 col-xl-6">
-      <div class="card p-4 p-sm-5 border-0 shadow-sm bg-body-tertiary rounded-4">
-        <h4 class="fw-bold text-body-emphasis mb-4">Submit a System Ticket</h4>
-        
-        <!-- Flask Form Mapping -->
-        <form action="#" method="POST">
-          <!-- Mandatory Flask-WTF CSRF Ingestion Layer matching base template meta definitions -->
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <!-- High-Fidelity Contact Information Cards Grid -->
+  <section class="py-5 bg-black bg-opacity-20 border-top border-bottom border-secondary border-opacity-10">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+          <div class="glass-card p-4 h-100 d-flex align-items-start gap-3">
+            <div class="icon-wrapper flex-shrink-0 mb-0"><i class="bi bi-geo-alt"></i></div>
+            <div>
+              <h6 class="text-white mb-2">Office Address</h6>
+              <p class="small text-muted-custom mb-0">Bhopal, Madhya Pradesh, India</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="glass-card p-4 h-100 d-flex align-items-start gap-3">
+            <div class="icon-wrapper flex-shrink-0 mb-0"><i class="bi bi-envelope-at"></i></div>
+            <div>
+              <h6 class="text-white mb-2">Email Address</h6>
+              <p class="small text-muted-custom mb-0">support@infinitygemanalytics.com</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="glass-card p-4 h-100 d-flex align-items-start gap-3">
+            <div class="icon-wrapper flex-shrink-0 mb-0"><i class="bi bi-telephone"></i></div>
+            <div>
+              <h6 class="text-white mb-2">Phone Number</h6>
+              <p class="small text-muted-custom mb-0">+91 XXXXX XXXXX</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="glass-card p-4 h-100 d-flex align-items-start gap-3">
+            <div class="icon-wrapper flex-shrink-0 mb-0"><i class="bi bi-clock"></i></div>
+            <div>
+              <h6 class="text-white mb-2">Business Hours</h6>
+              <p class="small text-muted-custom mb-0">Mon - Sat : 9 AM to 6 PM</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-          <div class="row g-3">
+  <!-- Functional Services Division Segment -->
+  <section class="section-spacing">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="h1">How Can We Help?</h2>
+        <p class="text-muted-custom max-width-md mx-auto">Select target technical division vectors to triage system data queries securely.</p>
+      </div>
+      
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-4">
+            <div class="icon-wrapper"><i class="bi bi-speedometer2"></i></div>
+            <h5>Dashboard Support</h5>
+            <p class="text-muted-custom small mb-0">Technical remediation targeting interactive configuration layouts, custom visualization models, and UI panels.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-4">
+            <div class="icon-wrapper"><i class="bi bi-bar-chart-line"></i></div>
+            <h5>Procurement Analytics</h5>
+            <p class="text-muted-custom small mb-0">Methodological analytics support structuring complex historical transaction matrices across ministries.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-4">
+            <div class="icon-wrapper"><i class="bi bi-person-check"></i></div>
+            <h5>Seller Intelligence</h5>
+            <p class="text-muted-custom small mb-0">Assistance tracking seller compliance indicators, validation parameters, and vendor behavior histories.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-4">
+            <div class="icon-wrapper"><i class="bi bi-building-gear"></i></div>
+            <h5>Enterprise Solutions</h5>
+            <p class="text-muted-custom small mb-0">Custom deployment models tailored explicitly to manage multi-tiered user configurations inside organizations.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-4">
+            <div class="icon-wrapper"><i class="bi bi-braces"></i></div>
+            <h5>API Integration</h5>
+            <p class="text-muted-custom small mb-0">Direct endpoints access support to automate secure downstream distribution pipelines into external ERP arrays.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <div class="glass-card p-4">
+            <div class="icon-wrapper"><i class="bi bi-cpu"></i></div>
+            <h5>Technical Assistance</h5>
+            <p class="text-muted-custom small mb-0">Core infrastructure validation tracking down performance latencies or data synchronizations.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modern Map Visualization Row -->
+  <section class="section-spacing bg-black bg-opacity-20 border-top border-bottom border-secondary border-opacity-10">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="h1">Our Location</h2>
+      </div>
+      <div class="map-container">
+        <!-- High-End Dark Tint Map Mock Simulation (Replace src with active corporate API key if desired) -->
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d234700.8576442654!2d77.2410777598822!3d23.19934767115848!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x397c428f17565411%3A0x81ca31d5bc72913e!2sBhopal%2C%20Madhya%20Pradesh!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin" 
+                width="100%" height="450" style="border:0; filter: grayscale(1) invert(0.92) contrast(1.2);" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <div class="map-overlay"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Contact Us Layout -->
+  <section class="section-spacing">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="h1">Designed for Mission-Critical Operations</h2>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="d-flex gap-3">
+            <div class="text-accent fs-3"><i class="bi bi-clock-history"></i></div>
+            <div>
+              <h5>Fast technical support</h5>
+              <p class="text-muted-custom small">Direct communications pipeline minimizing operational delays during mission-critical analysis cycles.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex gap-3">
+            <div class="text-accent fs-3"><i class="bi bi-briefcase"></i></div>
+            <div>
+              <h5>Enterprise-grade assistance</h5>
+              <p class="text-muted-custom small">Calibrated governance structures supporting integration across complex system footprints safely.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex gap-3">
+            <div class="text-accent fs-3"><i class="bi bi-people"></i></div>
+            <div>
+              <h5>Dedicated analytics team</h5>
+              <p class="text-muted-custom small">Direct access to specialized platform engineers who understand nuances in GeM contract processing architectures.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Components Matrix Layout -->
+  <section class="section-spacing bg-black bg-opacity-20 border-top border-bottom border-secondary border-opacity-10">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="h1">Frequently Asked Questions</h2>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="accordion-custom">
             
-            <!-- User Identity Name Segment -->
-            <div class="col-md-6">
-              <label for="contactName" class="form-label small fw-medium text-secondary">Your Name</label>
-              <input type="text" class="form-control" id="contactName" name="name" 
-                     value="{% if current_user.is_authenticated %}{{ current_user.username }}{% endif %}" 
-                     placeholder="John Doe" required>
-            </div>
-            
-            <!-- Communication Email Address Segment -->
-            <div class="col-md-6">
-              <label for="contactEmail" class="form-label small fw-medium text-secondary">Email Address</label>
-              <input type="email" class="form-control" id="contactEmail" name="email" 
-                     value="{% if current_user.is_authenticated %}{{ current_user.email }}{% endif %}" 
-                     placeholder="name@example.com" required>
-            </div>
-
-            <!-- Context Classification Subject Row -->
-            <div class="col-12">
-              <label for="contactSubject" class="form-label small fw-medium text-secondary">Inquiry Classification</label>
-              <select class="form-select" id="contactSubject" name="subject" required>
-                <option value="" selected disabled>Select an option...</option>
-                <option value="technical">Technical Support / Platform Error</option>
-                <option value="billing">Excel Data Ingestion Pipeline (ECUP/ESUP)</option>
-                <option value="account">Account Verification & Permissions</option>
-                <option value="other">General Structural Consultation</option>
-              </select>
-            </div>
-
-            <!-- Message Detail Description Core Box -->
-            <div class="col-12">
-              <label for="contactMessage" class="form-label small fw-medium text-secondary">Detailed Description</label>
-              <textarea class="form-control" id="contactMessage" name="message" rows="5" 
-                        placeholder="Provide clear log descriptions or procedural questions here..." required></textarea>
-            </div>
-
-            <!-- Interactive Security Declaration Checkbox -->
-            <div class="col-12 my-2">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="dataConsent" required>
-                <label class="form-check-label text-muted small" for="dataConsent">
-                  I consent to sharing these processing coordinates to handle my technical issue.
-                </label>
+            <div class="accordion-item-custom">
+              <button class="accordion-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f1">
+                How quickly will I receive a response?
+                <i class="bi bi-chevron-down ms-2 small"></i>
+              </button>
+              <div id="f1" class="collapse" data-bs-parent=".accordion-custom">
+                <div class="p-4 text-muted-custom border-top border-secondary border-opacity-20 small">
+                  Enterprise-tier support queries systematically execute priority ticketing routing, targeting a verified standard response sequence within a business loop.
+                </div>
               </div>
             </div>
 
-            <!-- Submit Ticket Trigger Button -->
-            <div class="col-12 mt-4">
-              <button type="submit" class="btn btn-primary w-100 py-2.5 fw-medium">
-                Dispatch System Ticket 🚀
+            <div class="accordion-item-custom">
+              <button class="accordion-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f2">
+                Do you provide enterprise support?
+                <i class="bi bi-chevron-down ms-2 small"></i>
               </button>
+              <div id="f2" class="collapse" data-bs-parent=".accordion-custom">
+                <div class="p-4 text-muted-custom border-top border-secondary border-opacity-20 small">
+                  Yes, corporate deployment levels integrate assigned technical asset managers overseeing platform optimizations and validation checks continuously.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item-custom">
+              <button class="accordion-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f3">
+                Can I request a demo?
+                <i class="bi bi-chevron-down ms-2 small"></i>
+              </button>
+              <div id="f3" class="collapse" data-bs-parent=".accordion-custom">
+                <div class="p-4 text-muted-custom border-top border-secondary border-opacity-20 small">
+                  Certainly. Utilizing the interactive booking module routes system access requests to clear staging environments for procurement validation testing.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item-custom">
+              <button class="accordion-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f4">
+                Is technical support available?
+                <i class="bi bi-chevron-down ms-2 small"></i>
+              </button>
+              <div id="f4" class="collapse" data-bs-parent=".accordion-custom">
+                <div class="p-4 text-muted-custom border-top border-secondary border-opacity-20 small">
+                  Core infrastructure monitoring supports live operations, systematically tracking stability parameters to secure continuous data availability points.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item-custom">
+              <button class="accordion-trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#f5">
+                Do you offer custom analytics solutions?
+                <i class="bi bi-chevron-down ms-2 small"></i>
+              </button>
+              <div id="f5" class="collapse" data-bs-parent=".accordion-custom">
+                <div class="p-4 text-muted-custom border-top border-secondary border-opacity-20 small">
+                  Our system architects develop targeted evaluation layers built specifically to track specified ministerial categories or vendor groupings securely.
+                </div>
+              </div>
             </div>
 
           </div>
-        </form>
-
+        </div>
       </div>
     </div>
+  </section>
 
+  <!-- User Feedback Layout Elements -->
+  <section class="section-spacing">
+    <div class="container">
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-5">
+          <div class="glass-card p-4 d-flex flex-column h-100 justify-content-between">
+            <p class="text-white italic mb-4">"Professional support and excellent procurement analytics guidance."</p>
+            <h6 class="text-accent mb-0">— Business Consultant</h6>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="glass-card p-4 d-flex flex-column h-100 justify-content-between">
+            <p class="text-white italic mb-4">"Very responsive team with great dashboard assistance."</p>
+            <h6 class="text-accent mb-0">— Procurement Analyst</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- High-Conversion Core Footer CTA Section -->
+  <section class="section-spacing border-top border-secondary border-opacity-10 position-relative text-center">
+    <div class="glow-container" style="background: var(--glow-blue); bottom: 0; left: 30%;"></div>
+    <div class="container">
+      <div class="glass-card p-5 max-width-lg mx-auto overflow-hidden">
+        <h2 class="display-5 fw-bold mb-3">Ready to Transform Procurement Intelligence?</h2>
+        <p class="text-muted-custom mb-4 max-width-sm mx-auto fs-5">
+          Contact Infinity GeM Analytics today and unlock smarter GeM insights.
+        </p>
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+          <a href="#" class="btn btn-glow-primary">Request Demo</a>
+          <a href="#contact-form" class="btn btn-outline-glass">Contact Team</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Complete Structural Enterprise Footer Component -->
+  <footer class="py-5 bg-black bg-opacity-40 border-top border-secondary border-opacity-10 text-muted-custom">
+    <div class="container">
+      <div class="row gy-4 mb-4">
+        <div class="col-lg-4">
+          <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-white mb-3" href="#">
+            <i class="bi bi-infinity text-primary fs-3"></i>
+            <span>Infinity GeM Analytics</span>
+          </a>
+          <p class="small text-muted-custom">
+            Advanced multi-tier calculation models mapping national contract performance variables transparently.
+          </p>
+        </div>
+        <div class="col-6 col-md-2 ms-auto">
+          <h6 class="text-white mb-3">About</h6>
+          <ul class="list-unstyled small d-grid gap-2">
+            <li><a href="#" class="text-muted-custom text-decoration-none">Our Story</a></li>
+            <li><a href="#" class="text-muted-custom text-decoration-none">Features</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-2">
+          <h6 class="text-white mb-3">Application</h6>
+          <ul class="list-unstyled small d-grid gap-2">
+            <li><a href="#" class="text-muted-custom text-decoration-none">Dashboard</a></li>
+            <li><a href="#" class="text-muted-custom text-decoration-none">Analytics Stream</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-2">
+          <h6 class="text-white mb-3">Governance</h6>
+          <ul class="list-unstyled small d-grid gap-2">
+            <li><a href="#" class="text-muted-custom text-decoration-none">Privacy Policy</a></li>
+            <li><a href="#" class="text-muted-custom text-decoration-none">Terms & Conditions</a></li>
+          </ul>
+        </div>
+        <div class="col-md-2">
+          <h6 class="text-white mb-3">Communications</h6>
+          <div class="d-flex gap-3 fs-5 mb-2">
+            <a href="#" class="text-muted-custom"><i class="bi bi-linkedin"></i></a>
+            <a href="mailto:support@infinitygemanalytics.com" class="text-muted-custom"><i class="bi bi-envelope-at"></i></a>
+          </div>
+          <span class="small text-secondary d-block">ops@infinitygemanalytics.local</span>
+        </div>
+      </div>
+      <div class="pt-4 border-top border-secondary border-opacity-10 d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 small">
+        <span>&copy; 2026 Infinity GeM Analytics. All rights reserved.</span>
+        <span class="text-secondary tracking-wider small text-uppercase">National Resource Intelligence Cluster</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container Asset -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+    <div id="successToast" class="toast align-items-center text-white bg-success border-0 glass-card" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body d-flex align-items-center gap-2">
+          <i class="bi bi-check-circle-fill"></i> Transmission Successful! Your support request route has been queued.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
   </div>
-</div>
 
-<!-- Simple Internal Clean Transition Styling Rule overrides -->
-<style>
-  .card-hover {
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
-  }
-  .card-hover:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.08)!important;
-  }
-  .line-height-1 {
-    line-height: 1;
-  }
-</style>
+  <!-- Bootstrap Bundle Script Integration & Micro-interaction Handling Logic -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function handleFormSubmission(event) {
+      event.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+      const btnSpinner = document.getElementById('btnSpinner');
+      const successToastEl = document.getElementById('successToast');
+      
+      // Enter Loading State Configuration
+      submitBtn.disabled = true;
+      btnText.textContent = "Processing System Routing...";
+      btnSpinner.classList.remove('d-none');
+      
+      // Simulate API Submission Lag/Latency Handling
+      setTimeout(() => {
+        // Return Form to Default Operational States
+        submitBtn.disabled = false;
+        btnText.textContent = "Send Message";
+        btnSpinner.classList.add('d-none');
+        
+        // Clear Values inside inputs safely
+        document.getElementById('intelContactForm').reset();
+        
+        // Instantiate and Invoke Success Status Toast Alert
+        const toast = new bootstrap.Toast(successToastEl);
+        toast.show();
+      }, 1600);
+    }
+  </script>
+</body>
+</html>
 {% endblock %}
