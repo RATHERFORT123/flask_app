@@ -3,135 +3,100 @@
 
 <div class="container mt-4">
 
-<h3>Excel Bulk Upload</h3>
+    <h3>Excel Bulk Upload</h3>
 
-<select id="file_type" class="form-control mb-3">
-    <option value="contract">Contracts Data</option>
-    <option value="seller">Seller Data</option>
-</select>
-<input type="hidden" id="csrf_token" value="{{ csrf_token() }}">
-<div id="drop-area">
+    <div class="form-group mb-3">
+        <label for="file_type" class="form-label fw-bold">Select Data Type:</label>
+        <select id="file_type" class="form-control">
+            <option value="contract">Contracts Data</option>
+            <option value="seller">Seller Data</option>
+        </select>
+    </div>
+    
+    <input type="hidden" id="csrf_token" value="{{ csrf_token() }}">
+    
+    <div class="card p-4 bg-light mb-3">
+        <label for="fileElem" class="form-label fw-bold">Choose Excel Files to Upload:</label>
+        <input type="file" id="fileElem" class="form-control" multiple accept=".xlsx,.xls">
+    </div>
 
-    <p>Drag & Drop Excel Files Here</p>
-    <p>or</p>
+    <div class="progress mt-3" style="height:25px;">
+        <div id="progress-bar" class="progress-bar" style="width:0%">0%</div>
+    </div>
 
-    <input type="file" id="fileElem" multiple accept=".xlsx,.xls">
+    <div id="upload-status" class="mt-3"></div>
 
 </div>
-
-<div class="progress mt-3" style="height:25px;">
-    <div id="progress-bar" class="progress-bar" style="width:0%">0%</div>
-</div>
-
-<div id="upload-status" class="mt-3"></div>
-
-</div>
-
-
-<style>
-
-#drop-area{
-border:2px dashed #007bff;
-border-radius:10px;
-padding:40px;
-text-align:center;
-cursor:pointer;
-background:#f8f9fa;
-}
-
-#drop-area.highlight{
-background:#e3f2fd;
-}
-
-</style>
 
 <script>
+let fileInput = document.getElementById("fileElem");
 
-let dropArea = document.getElementById("drop-area")
-let fileInput = document.getElementById("fileElem")
-
-dropArea.addEventListener("click", () => fileInput.click())
-
+// Listen for standard file selection input
 fileInput.addEventListener("change", () => {
-    uploadFiles(fileInput.files)
-})
+    uploadFiles(fileInput.files);
+});
 
-dropArea.addEventListener("dragover", (e)=>{
-    e.preventDefault()
-    dropArea.classList.add("highlight")
-})
-
-dropArea.addEventListener("dragleave", ()=>{
-    dropArea.classList.remove("highlight")
-})
-
-dropArea.addEventListener("drop", (e)=>{
-    e.preventDefault()
-    dropArea.classList.remove("highlight")
-    uploadFiles(e.dataTransfer.files)
-})
-
-
-function uploadFiles(files){
-
-let formData = new FormData()
-
-for(let i=0;i<files.length;i++){
-    formData.append("files", files[i])
+// Helper function to reset UI cleanly for subsequent uploads
+function resetUploadUI() {
+    let bar = document.getElementById("progress-bar");
+    bar.style.width = "0%";
+    bar.innerText = "0%";
+    document.getElementById("upload-status").innerHTML = "";
+    fileInput.value = ""; // Clears file memory so same file can be picked again
 }
 
-formData.append("file_type", document.getElementById("file_type").value)
+function uploadFiles(files) {
+    if (files.length === 0) return;
 
-let csrfToken = document.getElementById("csrf_token").value
+    let formData = new FormData();
 
-let xhr = new XMLHttpRequest()
+    for (let i = 0; i < files.length; i++) {
+        formData.append("files", files[i]);
+    }
 
-xhr.open("POST","{{ url_for('upload.upload_excel') }}",true)
+    formData.append("file_type", document.getElementById("file_type").value);
+    let csrfToken = document.getElementById("csrf_token").value;
 
-// 🔥 SEND CSRF TOKEN HEADER
-xhr.setRequestHeader("X-CSRFToken", csrfToken)
+    let bar = document.getElementById("progress-bar");
 
-xhr.upload.onprogress = function(e){
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "{{ url_for('upload.upload_excel') }}", true);
+    xhr.setRequestHeader("X-CSRFToken", csrfToken);
 
-if(e.lengthComputable){
+    // Track Progress
+    xhr.upload.onprogress = function(e) {
+        if (e.lengthComputable) {
+            let percent = (e.loaded / e.total) * 100;
+            bar.style.width = percent + "%";
+            bar.innerText = Math.round(percent) + "%";
+        }
+    };
 
-let percent = (e.loaded / e.total) * 100
+    // Handle Upload Completion
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            let res = JSON.parse(xhr.responseText);
+            if (res.status === "success") {
+                // Success banner with a button to seamlessly upload more files
+                document.getElementById("upload-status").innerHTML = `
+                    <div class='alert alert-success d-flex justify-content-between align-items-center'>
+                        <span><strong>Success!</strong> Upload Complete.</span>
+                        <button class='btn btn-success btn-sm' onclick='resetUploadUI();'>Upload More Files</button>
+                    </div>`;
+            } else {
+                document.getElementById("upload-status").innerHTML =
+                    "<div class='alert alert-danger'>" + (res.message || "Upload Failed") + "</div>";
+                fileInput.value = ""; 
+            }
+        } else {
+            document.getElementById("upload-status").innerHTML =
+                "<div class='alert alert-danger'>Upload Failed (Server Error)</div>";
+            fileInput.value = "";
+        }
+    };
 
-let bar = document.getElementById("progress-bar")
-
-bar.style.width = percent + "%"
-bar.innerText = Math.round(percent) + "%"
-
+    xhr.send(formData);
 }
-
-}
-
-xhr.onload = function(){
-
-if(xhr.status === 200){
-
-let res = JSON.parse(xhr.responseText)
-
-if(res.status === "success"){
-
-document.getElementById("upload-status").innerHTML =
-"<div class='alert alert-success'>Upload Complete</div>"
-
-}
-
-}else{
-
-document.getElementById("upload-status").innerHTML =
-"<div class='alert alert-danger'>Upload Failed</div>"
-
-}
-
-}
-
-xhr.send(formData)
-
-}
-
 </script>
 
 {% endblock %}
