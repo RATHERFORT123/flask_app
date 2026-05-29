@@ -868,6 +868,279 @@ def upload_sellers_excel():
     )
 
 
+
+
+from flask import jsonify
+from flask_login import login_required
+from ..models.contract import Contract
+from .admin_user_controller import admin_required
+@admin_seller_bp.route("/contract/modal-api/<contract_id>")
+@login_required
+@admin_required
+def contract_modal_api(contract_id):
+
+    # GET CONTRACT
+    contract = Contract.query.filter_by(
+        contract_id=contract_id
+    ).first()
+
+    # NOT FOUND
+    if not contract:
+        return jsonify({
+            "success": False,
+            "message": "Contract not found"
+        }), 404
+
+    # RESPONSE
+    contract_data = {
+        "id": contract.id,
+        "contract_id": contract.contract_id,
+        "status": contract.status,
+        "organization_type": contract.organization_type,
+        "ministry": contract.ministry,
+        "department": contract.department,
+        "organization_name": contract.organization_name,
+        "office_zone": contract.office_zone,
+        "location": contract.location,
+        "buyer_designation": contract.buyer_designation,
+        "buying_mode": contract.buying_mode,
+        "bid_number": contract.bid_number,
+        "contract_date": (
+            contract.contract_date.strftime("%Y-%m-%d")
+            if contract.contract_date else None
+        ),
+        "total": contract.total,
+        "brands": contract.brands or [],
+        "items": contract.items or []
+    }
+
+    return jsonify({
+        "success": True,
+        "contract": contract_data
+    })
+
+from io import BytesIO
+from datetime import datetime, time as dt_time
+import pandas as pd
+
+from flask import (
+    Blueprint,
+    request,
+    make_response,
+    abort,
+)
+
+from flask_login import (
+    login_required,
+    current_user,
+)
+
+from sqlalchemy import func
+from app import db 
+# from app.models import Seller, Contract
+
+
+# ==========================================
+# 🛠️ HELPER PARSING FUNCTIONS & EXTENSIONS
+# ==========================================
+
+def parse_seller_filters(args):
+    """
+    Extracts explicit field arguments coming from the request query parameters.
+    Handles text patterns cleanly and captures multi-select array inputs natively.
+    """
+    filters = {}
+
+    # normal text fields
+    text_fields = [
+        "company_name",
+        "gstin",
+        "msme_reg_no",
+        "email",
+        "contact_no",
+        "contract_no"  # Added contract_no field to allow direct matching on the column
+    ]
+
+    for field in text_fields:
+        value = args.get(field, None, type=str)
+        if value:
+            filters[field] = value.strip()
+
+    # Match HTML's exact name attribute ("category_name") from select2 matrices
+    categories = args.get("category_name", "", type=str)
+    if categories:
+        # Splits comma-separated strings if passed as string arguments from url unspooling
+        filters["category_name"] = [
+            c.strip().lower()
+            for c in categories.split(",")
+            if c.strip()
+        ]
+
+    return filters
+
+
+def apply_seller_filters(query, filters):
+    """
+    Dynamically applies string-based wildcard ILIKE filters 
+    against columns present on the Seller database model blueprint.
+    """
+    for field, value in filters.items():
+        if field == "category_name":
+            # For category targets, apply structural SQL IN matching natively
+            if value:
+                query = query.filter(func.lower(Seller.category_name).in_(value))
+            continue
+
+        column = getattr(Seller, field, None)
+        if column is not None and value:
+            query = query.filter(
+                column.ilike(f"%{value}%")
+            )
+
+    return query
+
+
+# ==========================================
+# 📊 ADMINISTRATIVE EXCEL EXPORT ROUTE
+# ==========================================
+
+@admin_seller_bp.route("/sellers/export/excel")
+@login_required
+def export_sellers_excel():
+    """
+    Administrative Unrestricted Excel Export Engine
+    Allows full matrix data downloads with zero boundaries based strictly on Admin criteria.
+    """
+
+    # -----------------------------------
+    # STRICT ADMIN ACCESS CHECK
+    # -----------------------------------
+    if not current_user.is_verified or current_user.is_blocked:
+        abort(403)
+        
+    if not getattr(current_user, 'is_admin', False):
+        abort(403)
+
+    # -----------------------------------
+    # PARSE MATRIX FILTERS
+    # -----------------------------------
+    filters = parse_seller_filters(request.args)
+
+    # -----------------------------------
+    # BASE QUERY + OUTER JOIN
+    # -----------------------------------
+    query = db.session.query(
+        Seller,
+        Contract
+    ).outerjoin(
+        Contract,
+        Seller.contract_no == Contract.contract_id
+    )
+
+    # -----------------------------------
+    # APPLY ACTIVE FILTERS
+    # -----------------------------------
+    query = apply_seller_filters(query, filters)
+
+    # -----------------------------------
+    # GLOBAL LATEST SORTING
+    # -----------------------------------
+    query = query.order_by(Seller.id.desc())
+
+    # -----------------------------------
+    # FETCH TOTAL SCOPE
+    # -----------------------------------
+    results = query.all()
+
+    # -----------------------------------
+    # PROCESS EXCEL MATRIX ROWS
+    # -----------------------------------
+    data = []
+
+    for seller, contract in results:
+        items = []
+        if contract and contract.items:
+            items = contract.items
+
+        # Fallback loop initialization if there are no sub-items
+        if not items:
+            items = [None]
+
+        for item in items:
+            is_dict = isinstance(item, dict)
+            
+            data.append({
+                # -----------------------------------
+                # SELLER PROPERTY DATA
+                # -----------------------------------
+                "Seller ID": seller.id,
+                "Company Name": seller.company_name,
+                "Category": seller.category_name,
+                "Email": seller.email,
+                "GSTIN": seller.gstin,
+                "MSME Reg No": seller.msme_reg_no,
+                "Contact No": seller.contact_no,
+                "Contract No": seller.contract_no,
+                "Generated Date": seller.generated_date.strftime('%Y-%m-%d') if seller.generated_date else '-',
+
+                # -----------------------------------
+                # CONTRACT PARENT BLOCKS
+                # -----------------------------------
+                "Contract ID": contract.contract_id if contract else "",
+                "Status": contract.status if contract else "",
+                "Organization Type": contract.organization_type if contract else "",
+                "Ministry": contract.ministry if contract else "",
+                "Department": contract.department if contract else "",
+                "Organization Name": contract.organization_name if contract else "",
+                "Buying Mode": contract.buying_mode if contract else "",
+                "Contract Date": contract.contract_date if contract else "",
+                "Total Valuation": contract.total if contract else "",
+                "Buyer Designation": contract.buyer_designation if contract else "",
+                "Office Zone": contract.office_zone if contract else "",
+                "Bid Number": contract.bid_number if contract else "",
+                "Location": contract.location if contract else "",
+
+                # -----------------------------------
+                # SUB-ITEM / LINKED COMPONENT MATRIX
+                # -----------------------------------
+                "Brand": item.get("brand") if is_dict else (getattr(item, 'brand', '') if item else ""),
+                "Product": item.get("product") if is_dict else (getattr(item, 'product', '') if item else ""),
+                "Model": item.get("model") if is_dict else (getattr(item, 'model', '') if item else ""),
+                "Ordered Quantity": item.get("ordered_quantity") if is_dict else (getattr(item, 'ordered_quantity', '') if item else ""),
+                "Price": item.get("price") if is_dict else (getattr(item, 'price', '') if item else ""),
+                "HSN Code": item.get("hsn_code") if is_dict else (getattr(item, 'hsn_code', '') if item else ""),
+                "Service Component": item.get("service") if is_dict else (getattr(item, 'service', '') if item else ""),
+                "Item Category Assignment": item.get("category_name") if is_dict else (getattr(item, 'category_name', '') if item else "")
+            })
+
+    # -----------------------------------
+    # WORKBOOK PIPELINE GENERATION
+    # -----------------------------------
+    df = pd.DataFrame(data)
+    output = BytesIO()
+
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        df.to_excel(writer, index=False, sheet_name="All Sellers Matrix")
+
+        # Dynamic Auto-Width layout updates
+        worksheet = writer.sheets["All Sellers Matrix"]
+        for column_cells in worksheet.columns:
+            length = max(len(str(cell.value or "")) for cell in column_cells)
+            worksheet.column_dimensions[
+                column_cells[0].column_letter
+            ].width = min(length + 5, 50)
+
+    output.seek(0)
+
+    # -----------------------------------
+    # PARSE STREAMING DOWNLOAD ATTACHMENT
+    # -----------------------------------
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    response = make_response(output.getvalue())
+    response.headers["Content-Disposition"] = f"attachment; filename=Global_Admin_Sellers_{timestamp}.xlsx"
+    response.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+    return response
 # @login_required
 # @admin_required
 # def upload_sellers_excel():

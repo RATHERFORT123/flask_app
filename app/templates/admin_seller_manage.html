@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <style>
-/* CSS optimizations for streamlined data rendering */
+/* Core layout definitions */
 .table-sm th, .table-sm td {
     font-size: 0.85rem;
     vertical-align: middle;
@@ -27,18 +27,65 @@
     min-height: 38px;
     padding-top: 2px;
 }
-.detail-label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #6c757d;
-    font-weight: 600;
-    margin-bottom: 2px;
+
+/* Structural modal styles */
+.modal-profile-header {
+    background-color: #1e2229;
+    color: #ffffff;
 }
-.detail-value {
-    font-size: 0.9rem;
+.profile-meta-title {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #8a929a;
+    font-weight: 700;
+}
+.profile-meta-value {
+    font-size: 0.95rem;
     color: #212529;
-    font-weight: 500;
+    font-weight: 700;
+}
+.profile-total-valuation {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #198754;
+}
+.profile-section-header {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #495057;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.component-scroll-container {
+    max-height: 240px;
+    overflow-y: auto;
+    border: 1px solid #e3e6ec;
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    background-color: #ffffff;
+}
+.component-row-item {
+    font-size: 0.85rem;
+    padding: 0.6rem;
+    border-bottom: 1px solid #f1f3f7;
+    color: #333333;
+    background-color: #fafbfc;
+    margin-bottom: 4px;
+    border-radius: 4px;
+}
+.component-row-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+.alert-warning-custom {
+    background-color: #fffdf5;
+    border: 1px solid #ffebad;
+    color: #7a5f00;
+    border-radius: 0.375rem;
 }
 </style>
 
@@ -66,44 +113,53 @@
                 <div class="row g-3">
                     <div class="col-xl-2 col-md-4 col-sm-6">
                         <label class="form-label small fw-semibold text-muted mb-1">Contract Number</label>
-                        <input type="text" name="contract_no" placeholder="e.g. CON-1029" value="{{ filters.contract_no or '' }}" class="form-control form-control-sm border-secondary-subtle">
+                        <input type="text" name="contract_no" placeholder="e.g. GEMC-..." value="{{ filters.contract_no or '' }}" class="form-control form-control-sm border-secondary-subtle">
                     </div>
-
                     <div class="col-xl-2 col-md-4 col-sm-6">
                         <label class="form-label small fw-semibold text-muted mb-1">Category Lookup</label>
                         <select id="category_search" class="form-select form-select-sm" multiple style="width:100%"></select>
                         <input type="hidden" name="category_name" id="category_name" value="{{ filters.category_name or '' }}">
                     </div>
-                    
                     <div class="col-xl-2 col-md-4 col-sm-6">
                         <label class="form-label small fw-semibold text-muted mb-1">Seller ID</label>
                         <input type="text" name="seller_id" placeholder="e.g. SEL-882" value="{{ filters.seller_id or '' }}" class="form-control form-control-sm border-secondary-subtle">
                     </div>
-
                     <div class="col-xl-2 col-md-4 col-sm-6">
                         <label class="form-label small fw-semibold text-muted mb-1">Company Entity Name</label>
                         <input type="text" name="company_name" placeholder="Search Company" value="{{ filters.company_name or '' }}" class="form-control form-control-sm border-secondary-subtle">
                     </div>
-
                     <div class="col-xl-2 col-md-4 col-sm-6">
                         <label class="form-label small fw-semibold text-muted mb-1">Contact Details</label>
                         <input type="text" name="contact_no" placeholder="Phone Number" value="{{ filters.contact_no or '' }}" class="form-control form-control-sm border-secondary-subtle">
                     </div>
-
                     <div class="col-xl-2 col-md-4 col-sm-6">
                         <label class="form-label small fw-semibold text-muted mb-1">Email Coordinates</label>
                         <input type="text" name="email" placeholder="name@domain.com" value="{{ filters.email or '' }}" class="form-control form-control-sm border-secondary-subtle">
                     </div>
                 </div>
+<div class="d-flex gap-2 justify-content-end mt-3 pt-2 border-top border-light-subtle">
+    <a href="{{ url_for('admin_seller.export_sellers_excel', **filters) }}" class="btn btn-success btn-sm px-4 shadow-sm me-auto">
+        <i class="bi bi-file-earmark-excel"></i> Export Matrix to Excel
+    </a>
 
-                <div class="d-flex gap-2 justify-content-end mt-3 pt-2 border-top border-light-subtle">
+    <a href="{{ url_for('admin_seller.manage_sellers') }}" class="btn btn-outline-secondary btn-sm px-4">
+        <i class="bi bi-arrow-counterclockwise"></i> Reset Filters
+    </a>
+    <button type="submit" class="btn btn-primary btn-sm px-4 shadow-sm">
+        <i class="bi bi-funnel"></i> Apply Filter
+    </button>
+</div>
+
+
+
+                <!-- <div class="d-flex gap-2 justify-content-end mt-3 pt-2 border-top border-light-subtle">
                     <a href="{{ url_for('admin_seller.manage_sellers') }}" class="btn btn-outline-secondary btn-sm px-4">
                         <i class="bi bi-arrow-counterclockwise"></i> Reset Filters
                     </a>
                     <button type="submit" class="btn btn-primary btn-sm px-4 shadow-sm">
                         <i class="bi bi-funnel"></i> Apply Filter
                     </button>
-                </div>
+                </div> -->
             </form>
         </div>
     </div>
@@ -115,95 +171,51 @@
                     <tr>
                         <th class="ps-3">Contract No</th>
                         <th>Generated Date</th>
-                        <th>Service Start Date</th>
-                        <th>Service End Date</th>
-                        <th>Category Assignment</th>
+                        <th>S S Date</th>
+                        <th>S E Date</th>
+                        <th>Category </th>
                         <th>Seller ID</th>
                         <th>Company Title</th>
-                        <th>Contact Connection</th>
-                        <th>Email Domain</th>
+                        <th>Contact </th>
+                        <th>Email </th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-
-{% for seller in sellers %}
-<tr class="border-bottom">
-
-    <td class="ps-3 fw-bold text-dark">
-        {{ seller.contract_no }}
-    </td>
-
-    <td>
-        {{ seller.generated_date.strftime('%Y-%m-%d') if seller.generated_date else '-' }}
-    </td>
-
-    <td>
-        {{ seller.service_start_date.strftime('%Y-%m-%d') if seller.service_start_date else '-' }}
-    </td>
-
-    <td>
-        {{ seller.service_end_date.strftime('%Y-%m-%d') if seller.service_end_date else '-' }}
-    </td>
-
-    <td>
-        {{ seller.category_name or '-' }}
-    </td>
-
-    <td>
-        {{ seller.seller_id or '-' }}
-    </td>
-
-    <td>
-        {{ seller.company_name or '-' }}
-    </td>
-
-    <td>
-        {{ seller.contact_no or '-' }}
-    </td>
-
-    <td>
-        {{ seller.email or '-' }}
-    </td>
-
-    <td class="text-center px-3">
-        <div class="d-flex justify-content-center gap-3">
-            <button type="button" 
-                    class="btn btn-sm btn-link text-info p-0 view-seller-btn"
-                    data-contract-no="{{ seller.contract_no }}"
-                    data-generated-date="{{ seller.generated_date.strftime('%Y-%m-%d') if seller.generated_date else '-' }}"
-                    data-start-date="{{ seller.service_start_date.strftime('%Y-%m-%d') if seller.service_start_date else '-' }}"
-                    data-end-date="{{ seller.service_end_date.strftime('%Y-%m-%d') if seller.service_end_date else '-' }}"
-                    data-category="{{ seller.category_name or '-' }}"
-                    data-seller-id="{{ seller.seller_id or '-' }}"
-                    data-company="{{ seller.company_name or '-' }}"
-                    data-contact="{{ seller.contact_no or '-' }}"
-                    data-email="{{ seller.email or '-' }}"
-                    data-address="{{ seller.address or '-' }}"
-                    data-msme="{{ seller.msme_reg_no or '-' }}"
-                    data-gstin="{{ seller.gstin or '-' }}"
-                    title="View Comprehensive Blueprint">
-                <i class="bi bi-eye-fill fs-6"></i>
-            </button>
-            <a href="{{ url_for('admin_seller.manage_sellers', edit_id=seller.id, page=pagination.page, **filters) }}" class="btn btn-sm btn-link text-primary p-0" title="Modify Record">
-                <i class="bi bi-pencil-square fs-6"></i>
-            </a>
-            <a href="{{ url_for('admin_seller.manage_sellers', delete_id=seller.id, page=pagination.page, **filters) }}" class="btn btn-sm btn-link text-danger p-0" onclick="return confirm('Are you sure you want to delete this seller?');" title="Remove Record">
-                <i class="bi bi-trash3-fill fs-6"></i>
-            </a>
-        </div>
-    </td>
-
-</tr>
-{% else %}
-<tr>
-    <td colspan="10" class="text-center text-muted py-5">
-        No active seller profiles found.
-    </td>
-</tr>
-{% endfor %}
-
-</tbody>
+                {% for seller in sellers %}
+                <tr class="border-bottom">
+                    <td class="ps-3 fw-bold text-dark">{{ seller.contract_no }}</td>
+                    <td>{{ seller.generated_date.strftime('%Y-%m-%d') if seller.generated_date else '-' }}</td>
+                    <td>{{ seller.service_start_date.strftime('%Y-%m-%d') if seller.service_start_date else '-' }}</td>
+                    <td>{{ seller.service_end_date.strftime('%Y-%m-%d') if seller.service_end_date else '-' }}</td>
+                    <td>{{ seller.category_name or '-' }}</td>
+                    <td>{{ seller.seller_id or '-' }}</td>
+                    <td>{{ seller.company_name or '-' }}</td>
+                    <td>{{ seller.contact_no or '-' }}</td>
+                    <td>{{ seller.email or '-' }}</td>
+                    <td class="text-center px-3">
+                        <div class="d-flex justify-content-center gap-3">
+                            <button type="button" 
+                                    class="btn btn-sm btn-link text-info p-0 fetch-contract-btn"
+                                    data-contract-token="{{ seller.contract_no }}"
+                                    title="View Verification Profile">
+                                <i class="bi bi-eye-fill fs-6"></i>
+                            </button>
+                            <!-- <a href="{{ url_for('admin_seller.manage_sellers', edit_id=seller.id, page=pagination.page, **filters) }}" class="btn btn-sm btn-link text-primary p-0">
+                                <i class="bi bi-pencil-square fs-6"></i>
+                            </a>
+                            <a href="{{ url_for('admin_seller.manage_sellers', delete_id=seller.id, page=pagination.page, **filters) }}" class="btn btn-sm btn-link text-danger p-0" onclick="return confirm('Are you sure you want to delete this seller?');">
+                                <i class="bi bi-trash3-fill fs-6"></i>
+                            </a> -->
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="10" class="text-center text-muted py-5">No active records found.</td>
+                </tr>
+                {% endfor %}
+                </tbody>
             </table>
         </div>
     </div>
@@ -213,14 +225,13 @@
         <div class="text-muted small">
             Displaying Matrix View <span class="fw-bold text-dark">{{ pagination.page }}</span> of <span class="fw-bold text-dark">{{ pagination.pages }}</span> pages.
         </div>
-        <nav aria-label="Seller Database Navigation Block">
+        <nav aria-label="Page navigation">
             <ul class="pagination pagination-sm mb-0 shadow-sm">
-               {% if pagination.has_prev %}
-<li class="page-item">
-    <a class="page-link" href="{{ url_for('admin_seller.manage_sellers', page=pagination.prev_num, **filters) }}">Previous</a>
-</li>
-{% else %}  <li class="page-item disabled"><span class="page-link">Previous</span></li>
-{% endif %}
+                {% if pagination.has_prev %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('admin_seller.manage_sellers', page=pagination.prev_num, **filters) }}">Previous</a></li>
+                {% else %}
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                {% endif %}
 
                 {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
                     {% if p %}
@@ -235,9 +246,7 @@
                 {% endfor %}
 
                 {% if pagination.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="{{ url_for('admin_seller.manage_sellers', page=pagination.next_num, **filters) }}">Next</a>
-                </li>
+                <li class="page-item"><a class="page-link" href="{{ url_for('admin_seller.manage_sellers', page=pagination.next_num, **filters) }}">Next</a></li>
                 {% else %}
                 <li class="page-item disabled"><span class="page-link">Next</span></li>
                 {% endif %}
@@ -250,84 +259,99 @@
 
 <div class="modal fade" id="viewSellerModal" tabindex="-1" aria-labelledby="viewSellerModalTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-secondary text-white py-3">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 8px;">
+            <div class="modal-header modal-profile-header py-3 px-4">
                 <h5 class="modal-title d-flex align-items-center gap-2" id="viewSellerModalTitle">
-                    <i class="bi bi-briefcase text-warning"></i>
-                    <span>Seller & Contractual Account Blueprint</span>
+                    <i class="bi bi-file-earmark-text text-warning"></i>
+                    <span class="fw-semibold" style="font-size: 1.15rem;">Contract Verification Profile</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body p-4 bg-white">
                 
-                <h6 class="text-uppercase text-primary tracking-wide small fw-bold mb-3 border-bottom pb-1">Contractual Registry Info</h6>
-                <div class="row g-3 mb-4">
-                    <div class="col-md-4">
-                        <div class="detail-label">Contract Number</div>
-                        <div class="detail-value" id="view_contract_no"></div>
+                <div class="row align-items-center mb-4 pb-2 border-bottom border-light">
+                    <div class="col-sm-7">
+                        <div class="profile-meta-title">Contract Reference Key</div>
+                        <div class="fw-bold text-dark fs-5 mt-1" id="profile_contract_id">---</div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="detail-label">Generated Date</div>
-                        <div class="detail-value" id="view_generated_date"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="detail-label">Category Assignment</div>
-                        <div class="detail-value" id="view_category"></div>
+                    <div class="col-sm-5 text-sm-end mt-2 mt-sm-0">
+                        <div class="profile-meta-title">Total Valuation</div>
+                        <div class="profile-total-valuation mt-1" id="profile_total">---</div>
                     </div>
                 </div>
 
-                <h6 class="text-uppercase text-primary tracking-wide small fw-bold mb-3 border-bottom pb-1">Service SLA Timelines</h6>
                 <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        <div class="detail-label">Service Start Date</div>
-                        <div class="detail-value" id="view_start_date"></div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="profile-meta-title">Verification Status</div>
+                        <div class="mt-1">
+                            <span class="badge bg-primary px-2.5 py-1.5 rounded" id="profile_status" style="font-size:0.75rem; font-weight: 600;">---</span>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="detail-label">Service End Date</div>
-                        <div class="detail-value" id="view_end_date"></div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="profile-meta-title">Execution Date</div>
+                        <div class="profile-meta-value mt-1 text-dark fw-semibold" id="profile_date">-</div>
                     </div>
-                </div>
-
-                <h6 class="text-uppercase text-primary tracking-wide small fw-bold mb-3 border-bottom pb-1">Corporate & Communications Mapping</h6>
-                <div class="row g-3 mb-4">
-                    <div class="col-md-3">
-                        <div class="detail-label">Seller ID</div>
-                        <div class="detail-value" id="view_seller_id"></div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="detail-label">Company Title</div>
-                        <div class="detail-value" id="view_company"></div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="detail-label">Contact Connection</div>
-                        <div class="detail-value" id="view_contact"></div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="detail-label">Email Coordinates</div>
-                        <div class="detail-value" id="view_email"></div>
+                    <div class="col-md-4 col-12">
+                        <div class="profile-meta-title">Buying Entity Name</div>
+                        <div class="profile-meta-value mt-1 text-wrap text-dark fw-semibold" id="profile_org_name">---</div>
                     </div>
                 </div>
 
                 <div class="mb-4">
-                    <div class="detail-label">Physical Address Block</div>
-                    <div class="detail-value text-wrap" id="view_address"></div>
+                    <div class="profile-section-header mb-3">
+                        <i class="bi bi-shop text-warning fs-5"></i> Vendor & Seller Profiles
+                    </div>
+                    
+                    <div id="seller_warning_block" class="p-3 alert-warning-custom align-items-center gap-3 mb-0 d-none">
+                        <i class="bi bi-exclamation-triangle-fill fs-5 text-warning"></i>
+                        <span class="fw-medium">No seller record mapped to this contract token ID.</span>
+                    </div>
+
+                    <div id="seller_data_block" class="card border border-light-subtle bg-light p-3 rounded-3 d-none">
+                        <div class="row g-3">
+                            <div class="col-md-4 col-sm-6">
+                                <div class="profile-meta-title">Company Legal Name</div>
+                                <div class="profile-meta-value text-dark" id="profile_company_name">---</div>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                                <div class="profile-meta-title">Seller Identifier</div>
+                                <div class="profile-meta-value text-dark" id="profile_seller_id">---</div>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                                <div class="profile-meta-title">Contact Connection</div>
+                                <div class="profile-meta-value text-dark" id="profile_contact_no">---</div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="profile-meta-title">Email Coordinates</div>
+                                <div class="profile-meta-value text-break text-dark" id="profile_email">---</div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="profile-meta-title">GSTIN Matrix Reference</div>
+                                <div class="profile-meta-value text-monospace text-primary" id="profile_gstin">---</div>
+                            </div>
+                            <div class="col-12">
+                                <div class="profile-meta-title">MSME Registration Reference</div>
+                                <div class="profile-meta-value text-dark fw-semibold" id="profile_msme_reg">---</div>
+                            </div>
+                            <div class="col-12">
+                                <div class="profile-meta-title">Physical Workspace Location</div>
+                                <div class="profile-meta-value text-wrap text-secondary" id="profile_address">---</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <h6 class="text-uppercase text-primary tracking-wide small fw-bold mb-3 border-bottom pb-1">Statutory Compliance Indices</h6>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="detail-label">MSME Registration No</div>
-                        <div class="detail-value" id="view_msme"></div>
+                <div class="mb-2">
+                    <div class="profile-section-header mb-2">
+                        <i class="bi bi-box-seam text-primary fs-5"></i> Linked Structural Components
                     </div>
-                    <div class="col-md-6">
-                        <div class="detail-label">GSTIN Structure</div>
-                        <div class="detail-value" id="view_gstin"></div>
-                    </div>
+                    <div class="component-scroll-container" id="profile_items_scroll_box">
+                        </div>
                 </div>
 
             </div>
-            <div class="modal-footer bg-light py-2">
-                <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">Close Profile</button>
+            <div class="modal-footer border-top-0 bg-light py-2 px-4">
+                <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">Close View</button>
             </div>
         </div>
     </div>
@@ -343,12 +367,9 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
             <form method="post" action="{{ url_for('admin_seller.manage_sellers') }}">
                 <div class="modal-body p-4">
                     {{ form.hidden_tag() }}
-
-                    <h6 class="text-uppercase text-secondary tracking-wide small fw-bold mb-3 border-bottom pb-1">Contractual Registry Info</h6>
                     <div class="row g-3 mb-4">
                         <div class="col-md-4">
                             {{ form.contract_no.label(class="form-label small fw-semibold text-muted mb-1") }}
@@ -363,62 +384,10 @@
                             {{ form.category_name(class="form-control border-secondary-subtle") }}
                         </div>
                     </div>
-
-                    <h6 class="text-uppercase text-secondary tracking-wide small fw-bold mb-3 border-bottom pb-1">Service SLA Timelines</h6>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            {{ form.service_start_date.label(class="form-label small fw-semibold text-muted mb-1") if form.service_start_date else 'Service Start Date' }}
-                            {{ form.service_start_date(class="form-control border-secondary-subtle", type="date") if form.service_start_date else '<input type="date" name="service_start_date" class="form-control border-secondary-subtle">' }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form.service_end_date.label(class="form-label small fw-semibold text-muted mb-1") if form.service_end_date else 'Service End Date' }}
-                            {{ form.service_end_date(class="form-control border-secondary-subtle", type="date") if form.service_end_date else '<input type="date" name="service_end_date" class="form-control border-secondary-subtle">' }}
-                        </div>
-                    </div>
-
-                    <h6 class="text-uppercase text-secondary tracking-wide small fw-bold mb-3 border-bottom pb-1">Corporate & Communications Mapping</h6>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-3">
-                            {{ form.seller_id.label(class="form-label small fw-semibold text-muted mb-1") }}
-                            {{ form.seller_id(class="form-control border-secondary-subtle") }}
-                        </div>
-                        <div class="col-md-3">
-                            {{ form.company_name.label(class="form-label small fw-semibold text-muted mb-1") }}
-                            {{ form.company_name(class="form-control border-secondary-subtle") }}
-                        </div>
-                        <div class="col-md-3">
-                            {{ form.contact_no.label(class="form-label small fw-semibold text-muted mb-1") }}
-                            {{ form.contact_no(class="form-control border-secondary-subtle") }}
-                        </div>
-                        <div class="col-md-3">
-                            {{ form.email.label(class="form-label small fw-semibold text-muted mb-1") }}
-                            {{ form.email(class="form-control border-secondary-subtle", type="email") }}
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        {{ form.address.label(class="form-label small fw-semibold text-muted mb-1") }}
-                        {{ form.address(class="form-control border-secondary-subtle", rows="2") }}
-                    </div>
-
-                    <h6 class="text-uppercase text-secondary tracking-wide small fw-bold mb-3 border-bottom pb-1">Statutory Compliance Indices</h6>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            {{ form.msme_reg_no.label(class="form-label small fw-semibold text-muted mb-1") }}
-                            {{ form.msme_reg_no(class="form-control border-secondary-subtle") }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form.gstin.label(class="form-label small fw-semibold text-muted mb-1") }}
-                            {{ form.gstin(class="form-control border-secondary-subtle") }}
-                        </div>
-                    </div>
                 </div>
-
                 <div class="modal-footer bg-light py-2">
                     <button type="button" class="btn btn-outline-secondary btn-sm px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary btn-sm px-4 shadow-sm">
-                        <i class="bi bi-save2"></i> {{ form.submit.label.text if form.submit else 'Save Changes' }}
-                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm px-4 shadow-sm">Save Changes</button>
                 </div>
             </form>
         </div>
@@ -431,7 +400,7 @@
 
 <script>
 $(document).ready(function() {
-    // Initialize AJAX Search Engine on Select2
+    // Select2 setup
     $('#category_search').select2({
         placeholder: ' Select Category Targets',
         minimumInputLength: 1,
@@ -440,55 +409,106 @@ $(document).ready(function() {
             url: "{{ url_for('search.search_categories') }}",
             dataType: 'json',
             delay: 300,
-            data: function (params) {
-                return { term: params.term };
-            },
+            data: function (params) { return { term: params.term }; },
             processResults: function (data) {
-                return {
-                    results: data.map(function (item) {
-                        return { id: item, text: item };
-                    })
-                };
+                return { results: data.map(function (item) { return { id: item, text: item }; }) };
             }
         }
     });
 
-    // Populate active dynamic items from filters
-    var categories = "{{ filters.category_name or '' }}"
-        .split(',')
-        .map(v => v.trim())
-        .filter(Boolean);
-
-    categories.forEach(function (c) {
-        $('#category_search').append(new Option(c, c, true, true));
-    });
-
+    var categories = "{{ filters.category_name or '' }}".split(',').map(v => v.trim()).filter(Boolean);
+    categories.forEach(function (c) { $('#category_search').append(new Option(c, c, true, true)); });
     $('#category_search').trigger('change');
-
-    // Keep flat target string synchronized on filter mutation
     $('#category_search').on('change', function () {
         const values = $(this).val();
         $('#category_name').val(values ? values.join(',') : '');
     });
 
-    // Handle View Details Click - Maps Data Attributes onto the UI Modal
-    $('.view-seller-btn').on('click', function() {
-        $('#view_contract_no').text($(this).data('contract-no'));
-        $('#view_generated_date').text($(this).data('generated-date'));
-        $('#view_start_date').text($(this).data('start-date'));
-        $('#view_end_date').text($(this).data('end-date'));
-        $('#view_category').text($(this).data('category'));
-        $('#view_seller_id').text($(this).data('seller-id'));
-        $('#view_company').text($(this).data('company'));
-        $('#view_contact').text($(this).data('contact'));
-        $('#view_email').text($(this).data('email'));
-        $('#view_address').text($(this).data('address'));
-        $('#view_msme').text($(this).data('msme'));
-        $('#view_gstin').text($(this).data('gstin'));
+    // Dynamic Asynchronous Event Engine
+    $('.fetch-contract-btn').on('click', function() {
+        const tokenString = $(this).data('contract-token');
+        const internalHTML = $(this).html();
+        
+        $(this).html('<span class="spinner-border spinner-border-sm text-info" role="status"></span>').addClass('disabled');
 
-        // Initialize and fire up the Bootstrap detail block modal
-        var viewModal = new bootstrap.Modal(document.getElementById('viewSellerModal'));
-        viewModal.show();
+        fetch(`/admin/contracts/contract/modal-api/${tokenString}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Network payload request failure.');
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.contract) {
+                    $('#profile_contract_id').text(data.contract.contract_id || '-');
+                    
+                    if (data.contract.total) {
+                        const numericTotal = parseFloat(data.contract.total);
+                        $('#profile_total').text('₹' + numericTotal.toLocaleString('en-IN'));
+                    } else {
+                        $('#profile_total').text('₹0');
+                    }
+                    
+                    $('#profile_status').text(data.contract.status || '-');
+                    // Handle execution date display logic securely
+                    $('#profile_date').text(data.contract.contract_date || '-');
+                    $('#profile_org_name').text(data.contract.organization_name || '-');
+
+                    if (!data.seller || Object.keys(data.seller).length === 0 || !data.seller.company_name) {
+                        $('#seller_data_block').addClass('d-none');
+                        $('#seller_warning_block').removeClass('d-none').addClass('d-flex');
+                    } else {
+                        $('#seller_warning_block').addClass('d-none').removeClass('d-flex');
+                        $('#seller_data_block').removeClass('d-none');
+                        
+                        $('#profile_company_name').text(data.seller.company_name || '-');
+                        $('#profile_seller_id').text(data.seller.seller_id || '-');
+                        $('#profile_contact_no').text(data.seller.contact_no || '-');
+                        $('#profile_email').text(data.seller.email || '-');
+                        $('#profile_gstin').text(data.seller.gstin || '-');
+                        $('#profile_msme_reg').text(data.seller.msme_reg_no || '-');
+                        $('#profile_address').text(data.seller.address || '-');
+                    }
+
+                    const scrollBox = $('#profile_items_scroll_box');
+                    scrollBox.empty();
+
+                    if (data.contract.items && data.contract.items.length > 0) {
+                        data.contract.items.forEach(item => {
+                            const rowPrice = item.price ? '₹' + parseFloat(item.price).toLocaleString('en-IN') : '-';
+                            
+                            // FIXED: Added safe fallback to fetch data from item.service if item.product is null
+                            const displayProductName = item.product || item.service || 'Unnamed structural item component';
+                            
+                            scrollBox.append(`
+                                <div class="component-row-item shadow-sm border-start border-3 border-primary">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <span class="fw-bold text-dark text-wrap small" style="max-width: 80%;">${displayProductName}</span>
+                                        <span class="badge bg-success">${rowPrice}</span>
+                                    </div>
+                                    <div class="text-muted" style="font-size: 0.78rem;">
+                                        <span class="me-3"><strong>Brand:</strong> ${item.brand || '-'}</span>
+                                        <span class="me-3"><strong>Model:</strong> ${item.model || '-'}</span>
+                                        <span><strong>Qty:</strong> ${item.ordered_quantity || '0'}</span>
+                                    </div>
+                                </div>
+                            `);
+                        });
+                    } else {
+                        scrollBox.append('<div class="p-3 text-center text-muted small">No related line item parameters found.</div>');
+                    }
+
+                    var viewModal = new bootstrap.Modal(document.getElementById('viewSellerModal'));
+                    viewModal.show();
+                } else {
+                    alert('Backend operational error: Invalid data structure returned from server.');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Critical Exception: Check connection or route configurations.');
+            })
+            .finally(() => {
+                $(this).html(internalHTML).removeClass('disabled');
+            });
     });
 });
 </script>
