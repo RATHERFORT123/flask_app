@@ -1,212 +1,362 @@
 {% extends "base.html" %}
-{% block title %}Seller Management{% endblock %}
+{% block title %}Seller Management & Analytics{% endblock %}
 {% block content %}
 <style>
-    .pagination .page-link {
-        font-size: 13px;
-        padding: 4px 8px;
+    /* Premium Colorful Dashboard Framework Theme Variables */
+    :root {
+        --bs-card-border-radius: 0.75rem;
+        --bs-card-inner-border-radius: 0.75rem;
+        --theme-primary-gradient: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        --theme-accent-gradient: linear-gradient(135deg, #f8f9fa 0%, #e2e8f0 100%);
+        --theme-success-badge: linear-gradient(135deg, #d1e7dd 0%, #c1ffd8 100%);
     }
+    
+    .dashboard-container {
+        background-color: #f4f6f9;
+        min-height: 100vh;
+    }
+
+    .custom-card {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        border-radius: var(--bs-card-border-radius);
+        background-color: #ffffff;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+
+    /* Vibrant Accents on Cards */
+    .card-accent-primary {
+        border-left: 4px solid #0d6efd;
+    }
+    .card-accent-info {
+        border-left: 4px solid #0dcaf0;
+    }
+
+    .custom-table th {
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        background-color: #ebf1fa !important;
+        color: #2c3e50;
+        padding: 0.9rem 1rem;
+        border-bottom: 2px solid #cbd5e1;
+    }
+
+    .custom-table td {
+        padding: 0.9rem 1rem;
+        vertical-align: middle;
+        font-size: 0.875rem;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: #f8fafd !important;
+    }
+
+    .pagination .page-link {
+        font-size: 0.8125rem;
+        padding: 0.4rem 0.8rem;
+        color: #495057;
+        border-radius: 0.375rem;
+        margin: 0 2px;
+        border: 1px solid #dee2e6;
+        transition: all 0.2s ease;
+    }
+
+    .pagination .page-item.active .page-link {
+        background: var(--theme-primary-gradient);
+        border-color: #0d6efd;
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
+    }
+
     .modal-seller-header {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
+        background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+        border-bottom: 2px solid #b9cde3;
+    }
+
+    .form-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #495057;
+        margin-bottom: 0.4rem;
+    }
+
+    .form-control-custom {
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #ced4da;
+        background-color: #fff;
+        transition: all 0.2s ease;
+    }
+
+    .form-control-custom:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+        background-color: #fff;
+    }
+
+    .dropdown-item-custom {
+        padding: 0.45rem 0.75rem;
+        border-radius: 0.375rem;
+        transition: background-color 0.15s ease;
+    }
+
+    .dropdown-item-custom:hover {
+        background-color: #e8f0fe;
+    }
+    
+    .dashed-border-box {
+        border: 2px dashed #b1c2d4 !important;
+        border-radius: 0.5rem;
+        background-color: #fafbfc;
+    }
+
+    /* Colorful Dynamic Badge Metrics Definitions */
+    .badge-emerald {
+        background-color: #d1e7dd;
+        color: #0f5132;
+        border: 1px solid #badbcc;
+    }
+    .badge-indigo {
+        background-color: #e0cffc;
+        color: #432874;
+        border: 1px solid #d1b9fa;
+    }
+    .badge-ocean {
+        background-color: #cff4fc;
+        color: #055160;
+        border: 1px solid #b6effb;
+    }
+    .badge-amber {
+        background-color: #fff3cd;
+        color: #664d03;
+        border: 1px solid #ffecb5;
     }
 </style>
 
-<div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="mb-1">Seller Management & Analytics</h2>
+<div class="dashboard-container py-4">
+    <div class="container-fluid">
+        <!-- Dashboard Header Area -->
+        <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-white rounded shadow-sm border-start border-4 border-primary">
+            <div>
+                <h3 class="fw-bold text-dark mb-1"><i class="fas fa-chart-pie text-primary me-2"></i>Seller Management & Analytics</h3>
+                <p class="text-muted small mb-0">Overview metrics, structural ledger validations, and analytical verification matrices.</p>
+            </div>
         </div>
-    </div>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3 align-items-end" id="sellerFilterForm">
-                <div class="col-md-2">
-                    <label for="company_name" class="form-label">Company Name</label>
-                    <input type="text" class="form-control form-control-sm" name="company_name" id="company_name"
-                        value="{{ filters_applied.get('company_name', '') }}">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Category</label>
-
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle w-100 text-start" type="button"
-                            id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                            Select Categories
-                        </button>
-
-                        <ul class="dropdown-menu w-100 p-2" aria-labelledby="categoryDropdown" id="categoryDropdownMenu"
-                            style="max-height:200px; overflow-y:auto;">
-
-                            {% if user_categories %}
-                                {% for cat in user_categories %}
-                                <li class="dropdown-item">
-                                    <div class="form-check">
-                                        <input class="form-check-input category-checkbox" type="checkbox"
-                                            name="category_name" value="{{ cat }}" id="cat_{{ loop.index }}" 
-                                            {% if cat.lower() in filters_applied.get('category_name', []) %}checked{% endif %}>
-                                        <label class="form-check-label w-100" for="cat_{{ loop.index }}">
-                                            {{ cat }}
-                                        </label>
-                                    </div>
-                                </li>
-                                {% endfor %}
-                            {% else %}
-                                <li class="dropdown-item text-muted">No categories</li>
-                            {% endif %}
-
-                        </ul>
+        <!-- Filter Form Control Card -->
+        <div class="card custom-card card-accent-primary">
+            <div class="card-body p-4 bg-white">
+                <form method="get" class="row g-3 align-items-end" id="sellerFilterForm">
+                    <div class="col-xl-3 col-md-4 col-sm-6">
+                        <label for="company_name" class="form-label text-primary"><i class="fas fa-building me-1"></i>Company Name</label>
+                        <input type="text" class="form-control form-control-custom w-100" name="company_name" id="company_name"
+                            value="{{ filters_applied.get('company_name', '') }}" placeholder="Search company string...">
                     </div>
-                </div>
-                <div class="col-md-1">
-                    <label for="gstin" class="form-label">GSTIN</label>
-                    <input type="text" class="form-control form-control-sm" name="gstin" id="gstin"
-                        value="{{ filters_applied.get('gstin', '') }}">
-                </div>
-                <div class="col-md-1">
-                    <label for="msme_reg_no" class="form-label">MSME Reg No</label>
-                    <input type="text" class="form-control form-control-sm" name="msme_reg_no" id="msme_reg_no"
-                        value="{{ filters_applied.get('msme_reg_no', '') }}">
-                </div>
-                <div class="col-md-2">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="text" class="form-control form-control-sm" name="email" id="email"
-                        value="{{ filters_applied.get('email', '') }}">
-                </div>
-                <div class="col-md-1">
-                    <label for="contact_no" class="form-label">Contact No</label>
-                    <input type="text" class="form-control form-control-sm" name="contact_no" id="contact_no"
-                        value="{{ filters_applied.get('contact_no', '') }}">
-                </div>
-                <div class="col-md-2 d-flex justify-content-end mt-3">
-                    <button type="submit" class="btn btn-primary btn-sm me-2">Filter</button>
-                    <a href="{{ url_for('user.user_sellers') }}" class="btn btn-outline-secondary btn-sm me-2">Reset</a>
-                    <button type="button" onclick="exportExcelWithFilters()" class="btn btn-success btn-sm">
-                        <i class="fas fa-file-excel"></i> Export Excel
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal fade" id="contractModal" tabindex="-1">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Seller Contracts Profile</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                
-                <div class="modal-body p-0" id="contractModalWrapper">
-                    <div class="modal-seller-header p-4 mb-3" id="modalSellerHeader">
-                        </div>
                     
-                    <div class="p-4 pt-0" id="contractModalBody">
-                        <div class="text-center text-muted py-4">Loading Contract Ledger...</div>
+                    <div class="col-xl-2 col-md-4 col-sm-6">
+                        <label class="form-label text-info"><i class="fas fa-th-large me-1"></i>Category Filter</label>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start form-control-custom d-flex justify-content-between align-items-center" type="button"
+                                id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                <span class="text-truncate">Select Categories</span>
+                            </button>
+                            <ul class="dropdown-menu w-100 p-2 shadow-lg" aria-labelledby="categoryDropdown" id="categoryDropdownMenu"
+                                style="max-height:240px; overflow-y:auto;">
+                                {% if user_categories %}
+                                    {% for cat in user_categories %}
+                                    <li class="dropdown-item-custom">
+                                        <div class="form-check mb-0">
+                                            <input class="form-check-input category-checkbox" type="checkbox"
+                                                name="category_name" value="{{ cat }}" id="cat_{{ loop.index }}" 
+                                                {% if cat.lower() in filters_applied.get('category_name', []) %}checked{% endif %}>
+                                            <label class="form-check-label w-100 small cursor-pointer fw-medium" for="cat_{{ loop.index }}">
+                                                {{ cat }}
+                                            </label>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li class="p-2 text-muted small text-center">No categories mapped</li>
+                                {% endif %}
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="modal-footer">
-                    <button id="modalBulkExcelBtn" type="button" class="btn btn-success me-auto" disabled>
-                        <i class="fas fa-file-excel"></i> Export All to Excel
-                    </button>
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close Window</button>
-                </div>
+
+                    <div class="col-xl-2 col-md-4 col-sm-6">
+                        <label for="gstin" class="form-label text-success"><i class="fas fa-id-card me-1"></i>GSTIN Identification</label>
+                        <input type="text" class="form-control form-control-custom w-100" name="gstin" id="gstin"
+                            value="{{ filters_applied.get('gstin', '') }}" placeholder="15-digit GSTIN">
+                    </div>
+
+                    <div class="col-xl-1 col-md-3 col-sm-6">
+                        <label for="msme_reg_no" class="form-label text-warning"><i class="fas fa-certificate me-1"></i>MSME ID</label>
+                        <input type="text" class="form-control form-control-custom w-100" name="msme_reg_no" id="msme_reg_no"
+                            value="{{ filters_applied.get('msme_reg_no', '') }}" placeholder="Reg No.">
+                    </div>
+
+                    <div class="col-xl-2 col-md-5 col-sm-6">
+                        <label for="email" class="form-label text-danger"><i class="fas fa-envelope me-1"></i>Email Address</label>
+                        <input type="text" class="form-control form-control-custom w-100" name="email" id="email"
+                            value="{{ filters_applied.get('email', '') }}" placeholder="name@company.com">
+                    </div>
+
+                    <div class="col-xl-2 col-md-4 col-sm-6">
+                        <label for="contact_no" class="form-label text-secondary"><i class="fas fa-phone me-1"></i>Contact Connection</label>
+                        <input type="text" class="form-control form-control-custom w-100" name="contact_no" id="contact_no"
+                            value="{{ filters_applied.get('contact_no', '') }}" placeholder="Phone reference">
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+                        <a href="{{ url_for('user.user_sellers') }}" class="btn btn-light border btn-sm px-3 fw-medium">
+                            <i class="fas fa-undo me-1 text-danger"></i> Reset
+                        </a>
+                        <button type="button" onclick="exportExcelWithFilters()" class="btn btn-success btn-sm px-3 fw-medium">
+                            <i class="fas fa-file-excel me-1"></i> Export Data Grid
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-sm px-4 fw-medium shadow-sm">
+                            <i class="fas fa-filter me-1"></i> Apply Filters
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-    </div>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title mb-3">
-                Unique Company Name Overview
-                <span class="badge bg-primary ms-2">
-                    Total Unique Sellers: {{ pagination.total }}
-                </span>
-            </h5>
-            {% if unique_sellers %}
-            <div class="table-responsive">
-                <table class="table table-striped table-hover mb-0" id="sellersDisplayTable">
-                    <thead>
-                        <tr>
-                            <th>Contract Details</th>
-                            <th>Company Name</th>
-                            <th>Count</th>
-                            <th>Email</th>
-                            <th>Category</th>
-                            <th>GSTIN</th>
-                            <th>Contact No</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for entry in unique_sellers %}
-                        <tr>
-                            <td>
-                                <button class="btn btn-sm btn-primary action-view-btn"
-                                    data-contracts='{{ entry.contract_nos | tojson }}'
-                                    data-company="{{ entry.company_name or '-' }}"
-                                    data-count="{{ entry.count }}"
-                                    data-email="{{ entry.seller.email or '-' }}"
-                                    data-category="{{ entry.seller.category_name or '-' }}"
-                                    data-gstin="{{ entry.seller.gstin or '-' }}"
-                                    data-contact="{{ entry.seller.contact_no or '-' }}">
-                                    View
-                                </button>
-                            </td>
-                            <td class="target-company-name">{{ entry.company_name or '-' }}</td>
-                            <td>{{ entry.count }}</td>
-                            <td>{{ entry.seller.email or '-' }}</td>
-                            <td>{{ entry.seller.category_name or '-' }}</td>
-                            <td>{{ entry.seller.gstin or '-' }}</td>
-                            <td>{{ entry.seller.contact_no or '-' }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+        <!-- Analytical Main Grid Display -->
+        <div class="card custom-card card-accent-info">
+            <div class="card-body p-0">
+                <div class="p-4 border-bottom d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 bg-white">
+                    <h5 class="fw-bold mb-0 text-dark align-self-center">
+                        Unique Company Overview Record Base
+                    </h5>
+                    <span class="badge badge-indigo rounded-pill px-3 py-2 fs-7 fw-bold shadow-sm">
+                        Total Unique Entities: {{ pagination.total }}
+                    </span>
+                </div>
+                
+                {% if unique_sellers %}
+                <div class="table-responsive">
+                    <table class="table align-middle custom-table mb-0" id="sellersDisplayTable">
+                        <thead>
+                            <tr>
+                                <th>Company Name</th>
+                                <th class="text-center">Count</th>
+                                <th>Email Endpoint</th>
+                                <th>Industry Category</th>
+                                <th>GSTIN Number</th>
+                                <th>Contact Information</th>
+                                <th class="text-center" style="width: 100px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in unique_sellers %}
+                            <tr>
+                                <td class="fw-bold text-primary target-company-name">{{ entry.company_name or '-' }}</td>
+                                <td class="text-center"><span class="badge badge-emerald font-monospace px-2.5 py-1.5 fw-bold fs-7 shadow-sm">{{ entry.count }}</span></td>
+                                <td class="text-dark fw-medium">{{ entry.seller.email or '-' }}</td>
+                                <td><span class="badge badge-indigo px-2.5 py-1.5 fw-bold">{{ entry.seller.category_name or '-' }}</span></td>
+                                <td class="font-monospace text-uppercase text-muted fs-7 fw-semibold">{{ entry.seller.gstin or '-' }}</td>
+                                <td class="text-secondary font-monospace">{{ entry.seller.contact_no or '-' }}</td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-primary action-view-btn px-3 shadow-sm"
+                                        data-contracts='{{ entry.contract_nos | tojson }}'
+                                        data-company="{{ entry.company_name or '-' }}"
+                                        data-count="{{ entry.count }}"
+                                        data-email="{{ entry.seller.email or '-' }}"
+                                        data-category="{{ entry.seller.category_name or '-' }}"
+                                        data-gstin="{{ entry.seller.gstin or '-' }}"
+                                        data-contact="{{ entry.seller.contact_no or '-' }}">
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Advanced Meta Information Pagination Footer Block -->
+                <div class="p-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 border-top bg-white">
+                    <p class="text-muted small mb-0">
+                        Displaying records <strong>{{ (pagination.page-1)*pagination.per_page+1 }}</strong> 
+                        to <strong>{{ (pagination.page-1)*pagination.per_page + unique_sellers|length }}</strong> 
+                        of <strong>{{ pagination.total }}</strong> unique system profiles.
+                    </p>
+                    <nav aria-label="Page navigation architecture text-end">
+                        <ul class="pagination pagination-sm mb-0 justify-content-center">
+                            <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                                <a class="page-link pagination-filter-link" data-page="{{ pagination.prev_num }}" href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+
+                            {% set start = pagination.page - 2 %}
+                            {% set end = pagination.page + 2 %}
+                            {% if start < 1 %}{% set start = 1 %}{% endif %}
+                            {% if end > pagination.pages %}{% set end = pagination.pages %}{% endif %}
+
+                            {% for p in range(start, end + 1) %}
+                            <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                                <a class="page-link pagination-filter-link" data-page="{{ p }}" href="#">{{ p }}</a>
+                            </li>
+                            {% endfor %}
+
+                            <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                                <a class="page-link pagination-filter-link" data-page="{{ pagination.next_num }}" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                {% else %}
+                <div class="p-5 text-center text-muted bg-white">
+                    <i class="fas fa-folder-open fa-3x mb-3 text-warning"></i>
+                    <p class="mb-0 fw-medium text-dark">No active operational parameters or profile metrics matched your current search definitions.</p>
+                </div>
+                {% endif %}
             </div>
-            <div class="d-flex justify-content-between align-items-center mt-3">
-                <p class="text-muted mb-0">
-                    Showing {{ (pagination.page-1)*pagination.per_page+1 }}
-                    to {{ (pagination.page-1)*pagination.per_page + unique_sellers|length }}
-                    of {{ pagination.total }} unique sellers
-                </p>
-                <nav aria-label="Page navigation">
-                    <ul class="pagination pagination-sm mb-0">
-                        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
-                            <a class="page-link pagination-filter-link" data-page="{{ pagination.prev_num }}" href="#">
-                                &lt;
-                            </a>
-                        </li>
-
-                        {% set start = pagination.page - 2 %}
-                        {% set end = pagination.page + 2 %}
-                        {% if start < 1 %}{% set start = 1 %}{% endif %}
-                        {% if end > pagination.pages %}{% set end = pagination.pages %}{% endif %}
-
-                        {% for p in range(start, end + 1) %}
-                        <li class="page-item {% if p == pagination.page %}active{% endif %}">
-                            <a class="page-link pagination-filter-link" data-page="{{ p }}" href="#">
-                                {{ p }}
-                            </a>
-                        </li>
-                        {% endfor %}
-
-                        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
-                            <a class="page-link pagination-filter-link" data-page="{{ pagination.next_num }}" href="#">
-                                &gt;
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            {% else %}
-            <div class="text-muted">No sellers found matching the criteria.</div>
-            {% endif %}
         </div>
     </div>
 </div>
 
+<!-- Modal Contract Architecture Engine -->
+<div class="modal fade" id="contractModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 0.75rem;">
+            <div class="modal-header border-bottom p-4 align-items-center bg-dark text-white">
+                <h5 class="modal-title fw-bold text-white"><i class="fas fa-file-invoice text-warning me-2"></i>Seller Contracts Profile</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body p-0" id="contractModalWrapper">
+                <!-- Segment Render Header Target -->
+                <div class="modal-seller-header p-4" id="modalSellerHeader"></div>
+                
+                <div class="p-4" id="contractModalBody">
+                    <div class="text-center text-muted py-5">
+                        <div class="spinner-border text-primary me-2" role="status"></div>
+                        <span class="fw-medium">Querying dynamic ledger indexes...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer p-3 bg-light border-top">
+                <button id="modalBulkExcelBtn" type="button" class="btn btn-success btn-sm px-3 me-auto shadow-sm" disabled>
+                    <i class="fas fa-file-excel me-1"></i> Export All Ledger Items
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">Close Window</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dependency Script Controls -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -222,9 +372,6 @@
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-        // ---------------------------------------------------------
-        // VIEW BUTTON EVENT BINDINGS
-        // ---------------------------------------------------------
         document.querySelectorAll(".action-view-btn").forEach(btn => {
             btn.addEventListener("click", function() {
                 activeModalSellerMeta = {
@@ -241,58 +388,41 @@
             });
         });
 
-        // ---------------------------------------------------------
-        // MODAL FOOTER BULK EXCEL EXPORT
-        // ---------------------------------------------------------
         document.getElementById("modalBulkExcelBtn").addEventListener("click", function() {
             if (activeModalContractsList.length > 0) {
                 exportAllLoadedContractsToExcel(activeModalContractsList, activeModalSellerMeta);
             }
         });
 
-        // ---------------------------------------------------------
-        // INTEGRATED DOWNLOAD PDF DELEGATED CLICK EVENT FUNCTIONALITY
-        // ---------------------------------------------------------
         document.body.addEventListener('click', async function (e) {
-            if (e.target && e.target.classList.contains('download-contract-btn')) {
-                const btn = e.target;
+            const btn = e.target.closest('.download-contract-btn');
+            if (btn) {
                 const contractId = btn.dataset.contractId;
                 const originalText = btn.innerHTML;
 
-                // BUTTON LOADING STATE
                 btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Fetching...';
 
                 try {
-                    // FETCH PDF URL FROM FLASK BACKEND
                     const response = await fetch(`/user/contracts/${encodeURIComponent(contractId)}/pdf`);
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}`);
-                    }
+                    if (!response.ok) throw new Error(`HTTP Error Status: ${response.status}`);
 
                     const data = await response.json();
-                    console.log("PDF RESPONSE:", data);
-
-                    // SUCCESS RESPONSE PROCESSING
                     if (data.success && data.pdf_url) {
-                        // CREATE HIDDEN DOWNLOAD LINK
                         const downloadLink = document.createElement('a');
                         downloadLink.href = data.pdf_url;
                         downloadLink.target = "_blank";
                         downloadLink.download = `${contractId}.pdf`;
-
                         document.body.appendChild(downloadLink);
                         downloadLink.click();
                         downloadLink.remove();
                     } else {
-                        alert(data.message || "PDF file not found.");
+                        alert(data.message || "Target PDF instance could not be safely resolved.");
                     }
                 } catch (err) {
-                    console.error("PDF DOWNLOAD ERROR:", err);
-                    alert("Failed to download contract PDF.");
+                    console.error("PDF engine failure logs:", err);
+                    alert("Systemic error encountered during transmission.");
                 } finally {
-                    // RESET BUTTON STATE
                     btn.disabled = false;
                     btn.innerHTML = originalText;
                 }
@@ -302,10 +432,13 @@
 
     function openContractModalWithMeta(contractNos, rowMeta) {
         renderSellerHeaderBlock(rowMeta);
-        
         activeModalContractsList = [];
         document.getElementById("modalBulkExcelBtn").disabled = true;
-        document.getElementById("contractModalBody").innerHTML = '<div class="text-center text-muted py-4"><i class="fas fa-spinner fa-spin"></i> Loading Contract Ledger...</div>';
+        document.getElementById("contractModalBody").innerHTML = `
+            <div class="text-center text-muted py-5">
+                <div class="spinner-border text-primary me-2" role="status"></div>
+                Querying relational structures...
+            </div>`;
         
         const modalInstance = new bootstrap.Modal(document.getElementById("contractModal"));
         modalInstance.show();
@@ -322,45 +455,41 @@
         .then(rawData => {
             const data = sanitizeJSON(rawData);
             activeModalContractsList = data; 
-            
             renderContractModalContent(data, contractNos);
-            
             const hasExcelData = data && data.some(c => c.items && c.items.length > 0);
             document.getElementById("modalBulkExcelBtn").disabled = !hasExcelData;
         })
         .catch(err => {
-            // Error handling fallback: Display items cleanly with the download links if backend hits an unexpected hitch
             renderContractModalContent([], contractNos);
         });
     }
 
     function renderSellerHeaderBlock(meta) {
-        const headerBlock = document.getElementById("modalSellerHeader");
-        headerBlock.innerHTML = `
+        document.getElementById("modalSellerHeader").innerHTML = `
             <div class="row g-3">
                 <div class="col-12">
-                    <span class="badge bg-secondary mb-1">Active Selected Entity</span>
-                    <h4 class="text-primary fw-bold mb-0">${meta.company}</h4>
+                    <span class="badge badge-indigo mb-2 px-2.5 py-1.5 fs-8 text-uppercase fw-bold shadow-sm">Active Entity Target Matrix</span>
+                    <h4 class="fw-bold text-dark mb-0"><i class="fas fa-building text-primary me-2"></i>${meta.company}</h4>
                 </div>
                 <div class="col-sm-4 col-md-2">
-                    <small class="text-muted d-block">Total Transactions</small>
-                    <span class="fw-semibold text-dark">${meta.count} Record(s)</span>
+                    <small class="text-muted d-block text-uppercase font-weight-bold tracking-wider fs-8 mb-1 fw-bold">Total Ledgers</small>
+                    <span class="badge badge-emerald font-monospace px-2.5 py-1 fw-bold">${meta.count} Records</span>
                 </div>
                 <div class="col-sm-4 col-md-3">
-                    <small class="text-muted d-block">Email Address</small>
-                    <span class="fw-semibold text-dark">${meta.email}</span>
+                    <small class="text-muted d-block text-uppercase tracking-wider fs-8 mb-1 fw-bold">Communications Link</small>
+                    <span class="fw-semibold text-dark text-decoration-underline">${meta.email}</span>
                 </div>
                 <div class="col-sm-4 col-md-3">
-                    <small class="text-muted d-block">Industry Category</small>
-                    <span class="fw-semibold text-dark">${meta.category}</span>
+                    <small class="text-muted d-block text-uppercase tracking-wider fs-8 mb-1 fw-bold">Industry Classification</small>
+                    <span class="fw-bold text-primary">${meta.category}</span>
                 </div>
                 <div class="col-sm-6 col-md-2">
-                    <small class="text-muted d-block">GSTIN Identification</small>
-                    <span class="fw-semibold text-dark">${meta.gstin}</span>
+                    <small class="text-muted d-block text-uppercase tracking-wider fs-8 mb-1 fw-bold">GSTIN Unique</small>
+                    <span class="fw-bold text-success font-monospace text-uppercase">${meta.gstin}</span>
                 </div>
                 <div class="col-sm-6 col-md-2">
-                    <small class="text-muted d-block">Contact Connection</small>
-                    <span class="fw-semibold text-dark">${meta.contact}</span>
+                    <small class="text-muted d-block text-uppercase tracking-wider fs-8 mb-1 fw-bold">Contact Node</small>
+                    <span class="fw-semibold text-secondary font-monospace">${meta.contact}</span>
                 </div>
             </div>
         `;
@@ -368,76 +497,65 @@
 
     function renderContractModalContent(apiContracts, requestedContractNos) {
         let html = "";
-        
         if (!requestedContractNos || requestedContractNos.length === 0) {
-            document.getElementById("contractModalBody").innerHTML = '<div class="text-center text-muted py-4">No contract numbers assigned to this profile.</div>';
+            document.getElementById("contractModalBody").innerHTML = '<div class="text-center text-muted py-5">No localized parameters found inside context index.</div>';
             return;
         }
 
-        // Fast lookup map cache dictionary configuration
         const contractDataMap = {};
         if (apiContracts && Array.isArray(apiContracts)) {
             apiContracts.forEach(c => {
-                if (c && c.contract_id) {
-                    contractDataMap[c.contract_id] = c;
-                }
+                if (c && c.contract_id) contractDataMap[c.contract_id] = c;
             });
         }
 
-        // Loop over the full initial layout request array to protect un-synchronized records
         requestedContractNos.forEach((contractId) => {
             const matchedContract = contractDataMap[contractId];
-            
             if (matchedContract) {
-                // Scenario A: Mapped record match exists inside database query sets
                 const displayTotal = matchedContract.total ? `₹${matchedContract.total.toLocaleString('en-IN')}` : '₹0';
-                
                 html += `
-                  <div class="card border rounded p-3 mb-4 shadow-sm bg-white">
-                    <div class="d-flex justify-content-between align-items-start border-bottom pb-2 mb-3">
+                  <div class="card custom-card border p-3 mb-3 bg-white shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2.5 mb-3">
                         <div>
-                            <span class="badge bg-dark mb-1">Contract ID Reference</span>
-                            <h5 class="fw-bold text-secondary mb-0">${matchedContract.contract_id}</h5>
+                            <span class="text-muted small text-uppercase fw-bold d-block fs-8">Contract Identification ID</span>
+                            <h5 class="fw-bold text-primary font-monospace mb-0">${matchedContract.contract_id}</h5>
                         </div>
-                        <div class="text-end">
-                            <span class="badge bg-success font-monospace p-2" style="font-size:14px;">
+                        <div>
+                            <span class="badge bg-success text-white font-monospace px-3 py-2 fs-6 fw-bold shadow-sm">
                                 ${displayTotal}
                             </span>
                         </div>
                     </div>
-                    
-                    <p class="small text-muted mb-3">
-                        <strong>Organization:</strong> ${matchedContract.organization_name || "-"} &nbsp;|&nbsp; 
-                        <strong>Ministry:</strong> ${matchedContract.ministry || "-"}
+                    <p class="small text-secondary mb-3">
+                        <strong class="text-dark"><i class="fas fa-sitemap text-muted me-1"></i>Organization Group:</strong> ${matchedContract.organization_name || "-"} &nbsp;|&nbsp; 
+                        <strong class="text-dark"><i class="fas fa-landmark text-muted me-1"></i>Ministry Scope:</strong> ${matchedContract.ministry || "-"}
                     </p>
                 `;
 
                 const brandMap = {};
                 (matchedContract.items || []).forEach(i => {
-                    const brand = i.brand || "Unknown Brand";
+                    const brand = i.brand || "Unspecified Brand Reference";
                     brandMap[brand] = brandMap[brand] || [];
                     brandMap[brand].push(i);
                 });
 
-                const hasItems = Object.keys(brandMap).length > 0;
-
-                if (!hasItems) {
+                if (Object.keys(brandMap).length === 0) {
                     html += `
-                    <div class="alert alert-light border border-dashed text-center py-3 my-2 text-muted">
-                        <i class="fas fa-info-circle me-1"></i> Contract mapping exists, but line items are empty.
+                    <div class="alert alert-light border dashed-border-box text-center py-4 my-2 text-muted small">
+                        <i class="fas fa-info-circle me-1 text-primary"></i> Contract metrics found, but structure contains empty subline variables.
                     </div>`;
                 } else {
                     for (const brand in brandMap) {
-                        html += `<h6 class="mt-2 mb-1 text-primary fw-bold"><i class="fas fa-tag"></i> ${brand}</h6>`;
+                        html += `<h6 class="mt-3 mb-2 text-dark fw-bold d-flex align-items-center fs-7 text-uppercase"><i class="fas fa-tag text-info me-2"></i>${brand}</h6>`;
                         html += `
-                        <div class="table-responsive mb-3">
-                            <table class="table table-sm table-bordered table-striped align-middle mb-0" style="font-size:13px;">
+                        <div class="table-responsive border rounded mb-3">
+                            <table class="table table-sm table-striped align-middle mb-0 text-secondary" style="font-size:0.8125rem;">
                               <thead class="table-light">
-                                <tr>
-                                  <th>Product Name</th>
-                                  <th>Model Code</th>
-                                  <th style="width: 80px;" class="text-center">Qty</th>
-                                  <th style="width: 140px;" class="text-end">Unit Valuation</th>
+                                <tr class="table-primary text-dark">
+                                  <th class="ps-3">Product Specifications</th>
+                                  <th>Model Reference</th>
+                                  <th style="width: 90px;" class="text-center">Qty</th>
+                                  <th style="width: 150px;" class="text-end pe-3">Unit Valuation</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -446,44 +564,40 @@
                         brandMap[brand].forEach(i => {
                             html += `
                               <tr>
-                                <td>${i.product || "-"}</td>
-                                <td><code>${i.model || "-"}</code></td>
-                                <td class="text-center font-monospace">${i.ordered_quantity || 0}</td>
-                                <td class="text-end font-monospace">₹${i.price?.toLocaleString('en-IN') || 0}</td>
+                                <td class="ps-3 fw-bold text-dark">${i.product || "-"}</td>
+                                <td><code class="text-danger fw-semibold fs-7">${i.model || "-"}</code></td>
+                                <td class="text-center font-monospace fw-bold text-primary">${i.ordered_quantity || 0}</td>
+                                <td class="text-end font-monospace pe-3 fw-bold text-success">₹${i.price?.toLocaleString('en-IN') || 0}</td>
                               </tr>
                             `;
                         });
-
                         html += `</tbody></table></div>`;
                     }
                 }
             } else {
-                // Scenario B: Database has no matching lines yet — Render using requested ID data metrics directly
                 html += `
-                  <div class="card border rounded p-3 mb-4 shadow-sm bg-white">
-                    <div class="d-flex justify-content-between align-items-start border-bottom pb-2 mb-3">
+                  <div class="card custom-card border p-3 mb-3 bg-white shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2.5 mb-3">
                         <div>
-                            <span class="badge bg-dark mb-1">Contract ID Reference</span>
-                            <h5 class="fw-bold text-secondary mb-0">${contractId}</h5>
+                            <span class="text-muted small text-uppercase fw-bold d-block fs-8">Contract Identification Reference</span>
+                            <h5 class="fw-bold text-dark font-monospace mb-0">${contractId}</h5>
                         </div>
-                        <div class="text-end">
-                            <span class="badge bg-warning text-dark font-monospace p-2" style="font-size:12px;">
-                                Processing Details
+                        <div>
+                            <span class="badge badge-amber px-2.5 py-1.5 fs-7 fw-bold">
+                                Sync Incomplete
                             </span>
                         </div>
                     </div>
-                    
-                    <div class="alert alert-light border text-center py-3 my-2 text-muted" style="border-style: dashed !important;">
-                        <i class="fas fa-exclamation-circle me-1"></i> Item specifications are not available in the analytical database database yet. Document download engine remains available below.
+                    <div class="alert alert-light border dashed-border-box text-center py-4 my-2 text-muted small">
+                        <i class="fas fa-exclamation-circle text-warning me-1"></i> Processing asynchronous records. External mapping binary available below.
                     </div>
                 `;
             }
 
-            // Consistent dynamic button instantiation matching original CSS framework layout triggers
             html += `
-                <div class="d-flex justify-content-start border-top pt-3 mt-2 bg-light p-2 rounded">
-                    <button class="btn btn-success btn-sm download-contract-btn" data-contract-id="${contractId}">
-                        <i class="fas fa-file-pdf"></i> Download
+                <div class="d-flex justify-content-start border-top pt-3 mt-2">
+                    <button class="btn btn-success btn-sm download-contract-btn px-3 shadow-sm" data-contract-id="${contractId}">
+                        <i class="fas fa-file-pdf me-1"></i> Stream PDF Document
                     </button>
                 </div>
               </div>
@@ -499,7 +613,6 @@
 
         contractsList.forEach((contract, index) => {
             if (!contract.items || contract.items.length === 0) return; 
-            
             const rows = [];
             contract.items.forEach(i => {
                 rows.push({
@@ -535,13 +648,11 @@
         const checked = document.querySelectorAll(".category-checkbox:checked");
 
         if(checked.length === 0){
-            btn.textContent = "Select Categories";
-        }
-        else if(checked.length === 1){
-            btn.textContent = checked[0].value;
-        }
-        else{
-            btn.textContent = checked.length + " categories selected";
+            btn.querySelector('span').textContent = "Select Categories";
+        } else if(checked.length === 1){
+            btn.querySelector('span').textContent = checked[0].value;
+        } else{
+            btn.querySelector('span').textContent = checked.length + " categories selected";
         }
     }
 
@@ -556,7 +667,6 @@
 
                 const form = document.getElementById("sellerFilterForm");
                 const urlParams = new URLSearchParams(new FormData(form));
-                
                 urlParams.set("page", targetPage);
                 window.location.search = urlParams.toString();
             });
